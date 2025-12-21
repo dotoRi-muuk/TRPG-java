@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRPG 데미지 계산기</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎲 TRPG 데미지 계산기</h1>
+            <p class="subtitle">직업별 기술 데미지를 계산합니다</p>
+        </header>
+
+        <main>
+            <!-- 주사위 굴리기 섹션 -->
+            <section class="section dice-section">
+                <h2>🎲 주사위 굴리기</h2>
+                <div class="form-group">
+                    <label for="diceCount">주사위 개수</label>
+                    <input type="number" id="diceCount" value="1" min="1" max="20">
+                </div>
+                <div class="form-group">
+                    <label for="diceSides">주사위 면 수</label>
+                    <select id="diceSides">
+                        <option value="4">D4</option>
+                        <option value="6" selected>D6</option>
+                        <option value="8">D8</option>
+                        <option value="10">D10</option>
+                        <option value="12">D12</option>
+                        <option value="20">D20</option>
+                    </select>
+                </div>
+                <button onclick="rollDice()" class="btn btn-primary">주사위 굴리기</button>
+                <div id="diceResult" class="result"></div>
+            </section>
+
+            <!-- 직업 선택 섹션 -->
+            <section class="section job-section">
+                <h2>⚔️ 직업 선택</h2>
+                <div class="job-tabs">
+                    <button class="tab-btn active" onclick="showJobCategory('normal', event)">기본 직업</button>
+                    <button class="tab-btn" onclick="showJobCategory('hidden', event)">히든 직업</button>
+                </div>
+
+                <!-- 기본 직업 -->
+                <div id="normal-jobs" class="job-category">
+                    <div class="job-cards">
+                        <div class="job-card" onclick="selectJob('warrior', event)">
+                            <h3>⚔️ 전사</h3>
+                            <p>힘, 체력</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('archer', event)">
+                            <h3>🏹 궁수</h3>
+                            <p>힘, 민첩</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('rogue', event)">
+                            <h3>🗡️ 도적</h3>
+                            <p>힘, 민첩, 신속</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('mage', event)">
+                            <h3>🔮 마법사</h3>
+                            <p>지능, 지혜</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('priest', event)">
+                            <h3>✝️ 사제</h3>
+                            <p>지능, 지혜</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 히든 직업 -->
+                <div id="hidden-jobs" class="job-category" style="display: none;">
+                    <div class="job-cards">
+                        <div class="job-card" onclick="selectJob('samurai', event)">
+                            <h3>⚔️ 무사</h3>
+                            <p>힘 (+체력)</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('berserker', event)">
+                            <h3>💢 버서커</h3>
+                            <p>힘, 체력 (+민첩)</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('gambler', event)">
+                            <h3>🎰 겜블러</h3>
+                            <p>힘, 민첩 (운)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 기술 선택 및 데미지 계산 섹션 -->
+            <section id="skill-section" class="section" style="display: none;">
+                <h2 id="selected-job-title">기술 선택</h2>
+                
+                <!-- 전사 스킬 -->
+                <div id="warrior-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="warrior-power">힘</label>
+                            <input type="number" id="warrior-power" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="warrior-maxHealth">최대 체력</label>
+                            <input type="number" id="warrior-maxHealth" value="100" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="warrior-curHealth">현재 체력</label>
+                            <input type="number" id="warrior-curHealth" value="100" min="0">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateWarrior('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateWarrior('strike')" class="btn btn-skill">강타 (D10)</button>
+                        <button onclick="calculateWarrior('side')" class="btn btn-skill">가로베기 (D8)</button>
+                    </div>
+                    <div class="skill-buttons">
+                        <h4>전용 수비</h4>
+                        <div class="form-group">
+                            <label for="warrior-damageTaken">받은 데미지</label>
+                            <input type="number" id="warrior-damageTaken" value="10" min="0">
+                        </div>
+                        <button onclick="calculateWarriorShield()" class="btn btn-skill">육참골단</button>
+                    </div>
+                </div>
+
+                <!-- 궁수 스킬 -->
+                <div id="archer-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="archer-stat">스탯 (힘 또는 민첩)</label>
+                            <input type="number" id="archer-stat" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="archer-strength">힘 (동시 사용)</label>
+                            <input type="number" id="archer-strength" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="archer-dexterity">민첩 (동시 사용)</label>
+                            <input type="number" id="archer-dexterity" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="archer-consecutiveHits">연속 공격 횟수 (사냥감)</label>
+                            <input type="number" id="archer-consecutiveHits" value="1" min="1">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateArcher('plain')" class="btn btn-skill">기본공격 - 단일 (D4)</button>
+                        <button onclick="calculateArcher('plain-dual')" class="btn btn-skill">기본공격 - 동시 (D6)</button>
+                        <button onclick="calculateArcher('quickshot')" class="btn btn-skill">퀵샷 (3xD4)</button>
+                        <button onclick="calculateArcher('dash')" class="btn btn-skill">대쉬 - 단일 (D4)</button>
+                        <button onclick="calculateArcher('dash-dual')" class="btn btn-skill">대쉬 - 동시 (D6)</button>
+                        <button onclick="calculateArcher('hunt')" class="btn btn-skill">사냥감</button>
+                    </div>
+                </div>
+
+                <!-- 도적 스킬 -->
+                <div id="rogue-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="rogue-stat">스탯 (힘/민첩)</label>
+                            <input type="number" id="rogue-stat" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="rogue-dexterity">민첩 (투척용)</label>
+                            <input type="number" id="rogue-dexterity" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="rogue-swiftness">신속</label>
+                            <input type="number" id="rogue-swiftness" value="10" min="1">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="rogue-useTwoDice">
+                                D4 x 2 사용 (기본공격)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateRogue('plain')" class="btn btn-skill">기본공격</button>
+                        <button onclick="calculateRogue('stab')" class="btn btn-skill">쑤시기 (D6)</button>
+                        <button onclick="calculateRogue('throw')" class="btn btn-skill">투척/속공 (D6)</button>
+                    </div>
+                </div>
+
+                <!-- 마법사 스킬 -->
+                <div id="mage-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="mage-intelligence">지능</label>
+                            <input type="number" id="mage-intelligence" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="mage-additionalMana">추가 마나 (마나 블래스트)</label>
+                            <input type="number" id="mage-additionalMana" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="mage-damageTaken">받은 데미지 (매직가드)</label>
+                            <input type="number" id="mage-damageTaken" value="10" min="0">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="mage-useMana">
+                                마나 소모 (기본공격 D8)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateMage('plain')" class="btn btn-skill">기본공격</button>
+                        <button onclick="calculateMage('magic-bullet')" class="btn btn-skill">마탄 (D8x3)</button>
+                        <button onclick="calculateMage('mana-blast')" class="btn btn-skill">마나 블래스트 (D6x6)</button>
+                        <button onclick="calculateMage('magic-guard')" class="btn btn-skill">매직가드 (수비)</button>
+                    </div>
+                </div>
+
+                <!-- 사제 스킬 -->
+                <div id="priest-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="priest-intelligence">지능</label>
+                            <input type="number" id="priest-intelligence" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="priest-damageTaken">받은 데미지 (희생)</label>
+                            <input type="number" id="priest-damageTaken" value="10" min="0">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculatePriest('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculatePriest('revenge')" class="btn btn-skill">복수 (D4x6)</button>
+                        <button onclick="calculatePriest('sacrifice')" class="btn btn-skill">희생 (수비)</button>
+                    </div>
+                </div>
+
+                <!-- 무사 스킬 -->
+                <div id="samurai-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="samurai-stat">힘</label>
+                            <input type="number" id="samurai-stat" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="samurai-consumedStamina">소모 스태미나 (종점)</label>
+                            <input type="number" id="samurai-consumedStamina" value="0" min="0">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="samurai-isMula">
+                                물아 모드 (데미지 150%)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="samurai-kakugo">
+                                각오 (데미지 200%)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="samurai-seishaKetsudan">
+                                생사결단 (데미지 300%)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateSamurai('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateSamurai('quick-draw')" class="btn btn-skill">발검 (D8)</button>
+                        <button onclick="calculateSamurai('battou')" class="btn btn-skill">발도 (D12)</button>
+                        <button onclick="calculateSamurai('jabeop')" class="btn btn-skill">자법 (3D6)</button>
+                        <button onclick="calculateSamurai('il-seom')" class="btn btn-skill">일섬 (3D6)</button>
+                        <button onclick="calculateSamurai('ranged-attack')" class="btn btn-skill">난격 (5D4)</button>
+                        <button onclick="calculateSamurai('flash-strike')" class="btn btn-skill">섬격 (D12 200%)</button>
+                        <button onclick="calculateSamurai('final-point')" class="btn btn-skill">종점 (3D20)</button>
+                        <button onclick="calculateSamurai('bloom')" class="btn btn-skill">개화 (8D6)</button>
+                    </div>
+                </div>
+
+                <!-- 버서커 스킬 -->
+                <div id="berserker-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="berserker-stat">힘</label>
+                            <input type="number" id="berserker-stat" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="berserker-maxHealth">최대 체력</label>
+                            <input type="number" id="berserker-maxHealth" value="100" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="berserker-currentHealth">현재 체력</label>
+                            <input type="number" id="berserker-currentHealth" value="100" min="0">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateBerserker('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateBerserker('chop-down')" class="btn btn-skill">찍어내리기 (D8)</button>
+                        <button onclick="calculateBerserker('smash')" class="btn btn-skill">부수기 (2D6)</button>
+                        <button onclick="calculateBerserker('strike')" class="btn btn-skill">일격 (D20)</button>
+                        <button onclick="calculateBerserker('mindless-barrage')" class="btn btn-skill">무지성 난타 (4D8)</button>
+                        <button onclick="calculateBerserker('savage-assault')" class="btn btn-skill">흉폭한 맹공 (5D12)</button>
+                        <button onclick="calculateBerserker('last-strike')" class="btn btn-skill">최후의 일격 (4D20)</button>
+                    </div>
+                </div>
+
+                <!-- 겜블러 스킬 -->
+                <div id="gambler-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="gambler-stat">힘/민첩</label>
+                            <input type="number" id="gambler-stat" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="gambler-luck">운</label>
+                            <input type="number" id="gambler-luck" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="gambler-reducedLuck">감소한 운 (일확천금)</label>
+                            <input type="number" id="gambler-reducedLuck" value="0" min="0">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="gambler-jackpotActive">
+                                일확천금 패시브 활성화
+                            </label>
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateGambler('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateGambler('coin-toss')" class="btn btn-skill">코인 토스</button>
+                        <button onclick="calculateGambler('joker-card')" class="btn btn-skill">조커 카드</button>
+                        <button onclick="calculateGambler('blackjack')" class="btn btn-skill">블랙잭</button>
+                        <button onclick="calculateGambler('yatzy-dice')" class="btn btn-skill">야추 다이스</button>
+                        <button onclick="calculateGambler('royal-flush')" class="btn btn-skill">로얄 플러쉬</button>
+                    </div>
+                </div>
+
+                <!-- 결과 출력 -->
+                <div id="damageResult" class="result"></div>
+            </section>
+
+            <!-- 계산 로그 -->
+            <section id="log-section" class="section">
+                <h2>📜 계산 로그</h2>
+                <div id="calculationLog" class="log-area"></div>
+            </section>
+        </main>
+
+        <footer>
+            <p>TRPG 데미지 계산기 v1.0</p>
+        </footer>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
