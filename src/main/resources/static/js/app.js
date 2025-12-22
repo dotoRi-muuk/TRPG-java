@@ -48,7 +48,17 @@ function selectJob(job, event) {
         'priest': '✝️ 사제',
         'samurai': '⚔️ 무사',
         'berserker': '💢 버서커',
-        'gambler': '🎰 겜블러'
+        'gambler': '🎰 겜블러',
+        'assassin': '🗡️ 암살자',
+        'knight': '🛡️ 기사',
+        'ninja': '🥷 닌자',
+        'gunslinger': '🔫 건슬링거',
+        'sniper': '🎯 저격수',
+        'masterarcher': '🏹 명궁',
+        'crossbowman': '🎯 석궁사수',
+        'spearman': '🔱 창술사',
+        'trickster': '🃏 트릭스터',
+        'poacher': '🦌 밀렵꾼'
     };
     document.getElementById('selected-job-title').textContent = jobNames[job] + ' 기술';
     
@@ -331,6 +341,230 @@ async function calculateGambler(skill) {
     }
 }
 
+// Assassin calculations
+async function calculateAssassin(skill) {
+    const stat = parseInt(document.getElementById('assassin-stat').value) || 10;
+    const isReturnTurn = document.getElementById('assassin-isReturnTurn').checked;
+    const isFirstAssault = document.getElementById('assassin-isFirstAssault').checked;
+    
+    try {
+        const response = await fetch(`${API_BASE}/assassin/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ stat, isReturnTurn, isFirstAssault })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '암살자 - ' + getSkillName('assassin', skill));
+        addLog(`🗡️ 암살자 - ${getSkillName('assassin', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+// Knight calculations
+async function calculateKnight(skill) {
+    const stat = parseInt(document.getElementById('knight-stat').value) || 10;
+    
+    try {
+        const response = await fetch(`${API_BASE}/knight/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ stat })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '기사 - ' + getSkillName('knight', skill));
+        addLog(`🛡️ 기사 - ${getSkillName('knight', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+// Ninja calculations
+async function calculateNinja(skill) {
+    const stat = parseInt(document.getElementById('ninja-stat').value) || 10;
+    const shurikenCount = parseInt(document.getElementById('ninja-shurikenCount').value) || 1;
+    const isIllusionTurn = document.getElementById('ninja-isIllusionTurn').checked;
+    const isCloneActive = document.getElementById('ninja-isCloneActive').checked;
+    const isReflexActive = document.getElementById('ninja-isReflexActive').checked;
+    
+    try {
+        const response = await fetch(`${API_BASE}/ninja/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ stat, shurikenCount, isIllusionTurn, isCloneActive, isReflexActive })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '닌자 - ' + getSkillName('ninja', skill));
+        addLog(`🥷 닌자 - ${getSkillName('ninja', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+// Gunslinger calculations
+async function calculateGunslinger(skill) {
+    const stat = parseInt(document.getElementById('gunslinger-stat').value) || 10;
+    const isFirstShot = document.getElementById('gunslinger-isFirstShot').checked;
+    const dodgedLastTurn = document.getElementById('gunslinger-dodgedLastTurn').checked;
+    const isJudgeTurn = document.getElementById('gunslinger-isJudgeTurn').checked;
+    
+    try {
+        const response = await fetch(`${API_BASE}/gunslinger/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ stat, isFirstShot, dodgedLastTurn, isJudgeTurn })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '건슬링거 - ' + getSkillName('gunslinger', skill));
+        addLog(`🔫 건슬링거 - ${getSkillName('gunslinger', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+// Sniper calculations
+async function calculateSniper(skill) {
+    const stat = parseInt(document.getElementById('sniper-stat').value) || 10;
+    const numBuffs = parseInt(document.getElementById('sniper-numBuffs').value) || 0;
+    const notAttackedFor5Turns = document.getElementById('sniper-notAttackedFor5Turns').checked;
+    const noBasicAttackUsed = document.getElementById('sniper-noBasicAttackUsed').checked;
+    
+    try {
+        const response = await fetch(`${API_BASE}/sniper/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ stat, numBuffs, notAttackedFor5Turns, noBasicAttackUsed })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '저격수 - ' + getSkillName('sniper', skill));
+        addLog(`🎯 저격수 - ${getSkillName('sniper', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+// MasterArcher calculations
+async function calculateMasterArcher(skill) {
+    const stat = parseInt(document.getElementById('masterarcher-stat').value) || 10;
+    const isHeavyString = document.getElementById('masterarcher-isHeavyString').checked;
+    const isFirstTarget = document.getElementById('masterarcher-isFirstTarget').checked;
+    
+    try {
+        const response = await fetch(`${API_BASE}/masterarcher/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ stat, isHeavyString, isFirstTarget })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '명궁 - ' + getSkillName('masterarcher', skill));
+        addLog(`🏹 명궁 - ${getSkillName('masterarcher', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+// Crossbowman calculations
+async function calculateCrossbowman(skill) {
+    const stat = parseInt(document.getElementById('crossbowman-stat').value) || 10;
+    const arrows = parseInt(document.getElementById('crossbowman-arrows').value) || 1;
+    const arrowsToBreak = parseInt(document.getElementById('crossbowman-arrowsToBreak').value) || 1;
+    const damageTaken = parseInt(document.getElementById('crossbowman-damageTaken').value) || 10;
+    const focusedAttack = document.getElementById('crossbowman-focusedAttack').checked;
+    
+    try {
+        const response = await fetch(`${API_BASE}/crossbowman/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ stat, arrows, arrowsToBreak, damageTaken, focusedAttack })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '석궁사수 - ' + getSkillName('crossbowman', skill));
+        addLog(`🎯 석궁사수 - ${getSkillName('crossbowman', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+// Spearman calculations
+async function calculateSpearman(skill) {
+    const stat = parseInt(document.getElementById('spearman-stat').value) || 10;
+    
+    try {
+        const response = await fetch(`${API_BASE}/spearman/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ stat })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '창술사 - ' + getSkillName('spearman', skill));
+        addLog(`🔱 창술사 - ${getSkillName('spearman', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+// Trickster calculations
+async function calculateTrickster(skill) {
+    const stat = parseInt(document.getElementById('trickster-stat').value) || 10;
+    const isFocusedFire = document.getElementById('trickster-isFocusedFire').checked;
+    const isRepeatCustomer = document.getElementById('trickster-isRepeatCustomer').checked;
+    const hasEventBonus = document.getElementById('trickster-hasEventBonus').checked;
+    const oilHit = document.getElementById('trickster-oilHit').checked;
+    
+    try {
+        const response = await fetch(`${API_BASE}/trickster/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ stat, isFocusedFire, isRepeatCustomer, hasEventBonus, oilHit })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '트릭스터 - ' + getSkillName('trickster', skill));
+        addLog(`🃏 트릭스터 - ${getSkillName('trickster', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+// Poacher calculations
+async function calculatePoacher(skill) {
+    const stat = parseInt(document.getElementById('poacher-stat').value) || 10;
+    const hasDebuff = document.getElementById('poacher-hasDebuff').checked;
+    const isLoaded = document.getElementById('poacher-isLoaded').checked;
+    
+    try {
+        const response = await fetch(`${API_BASE}/poacher/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ stat, hasDebuff, isLoaded })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '밀렵꾼 - ' + getSkillName('poacher', skill));
+        addLog(`🦌 밀렵꾼 - ${getSkillName('poacher', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
 // Show damage result
 function showDamageResult(damage, label) {
     document.getElementById('damageResult').innerHTML = `
@@ -414,6 +648,89 @@ function getSkillName(job, skill) {
             'blackjack': '블랙잭',
             'yatzy-dice': '야추 다이스',
             'royal-flush': '로얄 플러쉬'
+        },
+        assassin: {
+            'plain': '기본공격',
+            'assassinate': '암살',
+            'critical-stab': '급소 찌르기',
+            'throat-slit': '목 긋기',
+            'wrist-slit': '손목 긋기',
+            'rear-attack': '후방 공격'
+        },
+        knight: {
+            'plain': '기본공격',
+            'smash-down': '내려치기',
+            'sweep': '후려치기',
+            'head-strike': '머리치기',
+            'defense-break': '수비파괴',
+            'stun': '기절시키기',
+            'critical-strike': '일격'
+        },
+        ninja: {
+            'plain': '기본공격',
+            'strike': '일격',
+            'chaos': '난도',
+            'throw-shuriken': '투척 표창',
+            'illusion-barrage': '환영난무',
+            'focus-throw': '일점투척'
+        },
+        gunslinger: {
+            'plain': '기본공격',
+            'double-shot': '더블샷',
+            'headshot': '헤드샷',
+            'quick-draw': '퀵드로우',
+            'focus-fire': '일점사',
+            'backstab': '백스탭'
+        },
+        sniper: {
+            'plain': '기본공격',
+            'secure': '확보',
+            'assemble': '조립',
+            'load': '장전',
+            'aim': '조준',
+            'fire': '발사'
+        },
+        masterarcher: {
+            'plain': '기본공격',
+            'power-shot': '파위샷',
+            'explosive-arrow': '폭탄 화살',
+            'split-arrow': '분열 화살',
+            'piercing-arrow': '관통 화살',
+            'double-shot': '더블 샷'
+        },
+        crossbowman: {
+            'plain': '기본공격',
+            'throw': '던지기',
+            'quick-load': '빠른 장전',
+            'single-shot': '단일사격',
+            'rage-arrow': '발광 화살',
+            'paralyze-arrow': '마비 화살',
+            'break-arrows': '화살 꺾기',
+            'desperate-load': '이럴 때 일수록!'
+        },
+        spearman: {
+            'plain': '기본공격',
+            'spin-thrust': '돌려 찌르기',
+            'spin-strike': '회전 타격',
+            'low-slash': '하단 베기',
+            'combo-front-thrust': '[연계]정면 찌르기',
+            'combo-flash-spear': '[연계]일섬창',
+            'combo-thunder-strike': '[연계]천뢰격'
+        },
+        trickster: {
+            'plain': '기본공격',
+            'fake-dagger': '페이크 단검',
+            'bean-shot': '콩알탄',
+            'oil-barrel': '기름통 투척',
+            'lighter-throw': '라이터 투척',
+            'huge-dagger': '특대형 단검'
+        },
+        poacher: {
+            'plain': '기본공격',
+            'head-chop': '머리찍기',
+            'set-trap': '덫 깔기',
+            'snare-shot': '올가미 탄',
+            'headshot': '헤드샷'
         }
     };
     
