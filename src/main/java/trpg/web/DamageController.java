@@ -1272,7 +1272,7 @@ public class DamageController {
     public Map<String, Object> masterArcherPlain(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
         boolean isHeavyString = (Boolean) request.getOrDefault("isHeavyString", false);
-        boolean isFirstTarget = (Boolean) request.getOrDefault("isFirstTarget", true);
+        boolean isFirstTarget = (Boolean) request.getOrDefault("isFirstTarget", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
@@ -1289,7 +1289,7 @@ public class DamageController {
     public Map<String, Object> masterArcherPowerShot(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
         boolean isHeavyString = (Boolean) request.getOrDefault("isHeavyString", false);
-        boolean isFirstTarget = (Boolean) request.getOrDefault("isFirstTarget", true);
+        boolean isFirstTarget = (Boolean) request.getOrDefault("isFirstTarget", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
@@ -1306,7 +1306,7 @@ public class DamageController {
     public Map<String, Object> masterArcherExplosiveArrow(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
         boolean isHeavyString = (Boolean) request.getOrDefault("isHeavyString", false);
-        boolean isFirstTarget = (Boolean) request.getOrDefault("isFirstTarget", true);
+        boolean isFirstTarget = (Boolean) request.getOrDefault("isFirstTarget", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
@@ -1323,7 +1323,7 @@ public class DamageController {
     public Map<String, Object> masterArcherSplitArrow(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
         boolean isHeavyString = (Boolean) request.getOrDefault("isHeavyString", false);
-        boolean isFirstTarget = (Boolean) request.getOrDefault("isFirstTarget", true);
+        boolean isFirstTarget = (Boolean) request.getOrDefault("isFirstTarget", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
@@ -1339,7 +1339,7 @@ public class DamageController {
     @PostMapping("/masterarcher/piercing-arrow")
     public Map<String, Object> masterArcherPiercingArrow(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
-        boolean isFirstTarget = (Boolean) request.getOrDefault("isFirstTarget", true);
+        boolean isFirstTarget = (Boolean) request.getOrDefault("isFirstTarget", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
@@ -1356,7 +1356,7 @@ public class DamageController {
     public Map<String, Object> masterArcherDoubleShot(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
         boolean isHeavyString = (Boolean) request.getOrDefault("isHeavyString", false);
-        boolean isFirstTarget = (Boolean) request.getOrDefault("isFirstTarget", true);
+        boolean isFirstTarget = (Boolean) request.getOrDefault("isFirstTarget", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
