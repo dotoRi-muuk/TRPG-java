@@ -49,9 +49,7 @@ public class Crossbowman {
             out.println("비거리 계산 성공! 데미지 200%");
         }
 
-        int defaultDamage = Main.dice(arrows, 6, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(arrows, 6, out);
 
         double multiplier = 1.0;
 
@@ -71,7 +69,12 @@ public class Crossbowman {
             }
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
         out.printf("총 데미지 : %d%n", totalDamage);
         out.printf("※ 화살 %d개 소모%n", arrows);
 
@@ -106,10 +109,11 @@ public class Crossbowman {
      */
     public static int throwAttack(int stat, PrintStream out) {
         out.println("석궁사수-던지기 사용 (D6)");
-        int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
-        return defaultDamage + sideDamage;
+        int baseDamage = Main.dice(1, 6, out);
+        int sideDamage = Main.sideDamage(baseDamage, stat, out);
+        int totalDamage = baseDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", baseDamage, sideDamage, totalDamage);
+        return totalDamage;
     }
 
     /**
@@ -129,12 +133,13 @@ public class Crossbowman {
      */
     public static int singleShot(int stat, PrintStream out) {
         out.println("석궁사수-단일사격 사용 (D10)");
-        int defaultDamage = Main.dice(1, 10, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
+        int baseDamage = Main.dice(1, 10, out);
+        int sideDamage = Main.sideDamage(baseDamage, stat, out);
+        int totalDamage = baseDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", baseDamage, sideDamage, totalDamage);
         out.println("※ 스태미나 2 소모");
         out.println("※ 화살 1개만 소모");
-        return defaultDamage + sideDamage;
+        return totalDamage;
     }
 
     /**
@@ -143,13 +148,14 @@ public class Crossbowman {
      */
     public static int rageArrow(int stat, PrintStream out) {
         out.println("석궁사수-발광 화살 사용 (2D8)");
-        int defaultDamage = Main.dice(2, 8, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
+        int baseDamage = Main.dice(2, 8, out);
+        int sideDamage = Main.sideDamage(baseDamage, stat, out);
+        int totalDamage = baseDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", baseDamage, sideDamage, totalDamage);
         out.println("※ 스태미나 4 소모");
         out.println("※ 화살 2개 소모");
         out.println("※ 다음턴까지 적이 받는 데미지 150%%");
-        return defaultDamage + sideDamage;
+        return totalDamage;
     }
 
     /**
@@ -158,13 +164,14 @@ public class Crossbowman {
      */
     public static int paralyzeArrow(int stat, PrintStream out) {
         out.println("석궁사수-마비 화살 사용 (2D8)");
-        int defaultDamage = Main.dice(2, 8, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
+        int baseDamage = Main.dice(2, 8, out);
+        int sideDamage = Main.sideDamage(baseDamage, stat, out);
+        int totalDamage = baseDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", baseDamage, sideDamage, totalDamage);
         out.println("※ 스태미나 6 소모");
         out.println("※ 화살 1개 소모");
         out.println("※ 다음턴까지 적의 모든 스탯 -2 D6");
-        return defaultDamage + sideDamage;
+        return totalDamage;
     }
 
     /**

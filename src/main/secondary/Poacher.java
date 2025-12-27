@@ -28,27 +28,24 @@ public class Poacher {
         int statCheck = stat - Main.dice(1, 20, out);
         out.printf("스탯 판정: %d - D20 = %d%n", stat, statCheck);
 
-        int defaultDamage;
+        int baseDamage;
         if (statCheck >= 10) {
             out.println("판정 성공! 2D8 사용");
             if (isLoaded) {
                 out.println("장전 적용: 2D8 → 2D12");
-                defaultDamage = Main.dice(2, 12, out);
+                baseDamage = Main.dice(2, 12, out);
             } else {
-                defaultDamage = Main.dice(2, 8, out);
+                baseDamage = Main.dice(2, 8, out);
             }
         } else {
             out.println("기본 2D4 사용");
             if (isLoaded) {
                 out.println("장전 적용: 2D4 → 2D6");
-                defaultDamage = Main.dice(2, 6, out);
+                baseDamage = Main.dice(2, 6, out);
             } else {
-                defaultDamage = Main.dice(2, 4, out);
+                baseDamage = Main.dice(2, 4, out);
             }
         }
-
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
 
         double multiplier = 1.0;
 
@@ -64,7 +61,12 @@ public class Poacher {
             out.println("약자멸시 패시브 적용 (체력 차이 10% 이상): x2.0");
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
         out.printf("총 데미지 : %d%n", totalDamage);
         return totalDamage;
     }
@@ -82,9 +84,7 @@ public class Poacher {
      */
     public static int headChop(int stat, boolean hasDebuff, boolean isWeaknessActive, PrintStream out) {
         out.println("밀렵꾼-머리찍기 사용 (D8)");
-        int defaultDamage = Main.dice(1, 8, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(1, 8, out);
 
         double multiplier = 1.0;
 
@@ -98,7 +98,12 @@ public class Poacher {
             out.println("약자멸시 패시브 적용: x2.0");
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 1 소모");
         return totalDamage;
@@ -118,9 +123,7 @@ public class Poacher {
     public static int setTrap(int stat, boolean hasDebuff, boolean isWeaknessActive, PrintStream out) {
         out.println("밀렵꾼-덫 깔기 사용 (D10)");
         out.println("※ 이번 턴 적의 공격 데미지 75%%");
-        int defaultDamage = Main.dice(1, 10, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(1, 10, out);
 
         double multiplier = 1.0;
 
@@ -134,7 +137,12 @@ public class Poacher {
             out.println("약자멸시 패시브 적용: x2.0");
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 3 소모");
         return totalDamage;
@@ -154,9 +162,7 @@ public class Poacher {
     public static int snareShot(int stat, boolean hasDebuff, boolean isWeaknessActive, PrintStream out) {
         out.println("밀렵꾼-올가미 탄 사용 (D8)");
         out.println("※ 다음턴까지 적 행동불가 부여");
-        int defaultDamage = Main.dice(1, 8, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(1, 8, out);
 
         double multiplier = 1.0;
 
@@ -170,7 +176,12 @@ public class Poacher {
             out.println("약자멸시 패시브 적용: x2.0");
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 8 소모");
         return totalDamage;
@@ -189,9 +200,7 @@ public class Poacher {
      */
     public static int headshot(int stat, boolean hasDebuff, boolean isWeaknessActive, PrintStream out) {
         out.println("밀렵꾼-헤드샷 사용 (2D12)");
-        int defaultDamage = Main.dice(2, 12, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(2, 12, out);
 
         double multiplier = 1.0;
 
@@ -205,7 +214,12 @@ public class Poacher {
             out.println("약자멸시 패시브 적용: x2.0");
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 4 소모");
         return totalDamage;
