@@ -14,21 +14,27 @@ public class Assassin {
      */
     public static int plain(int stat, boolean isReturnTurn, boolean isFirstAssault, PrintStream out) {
         out.println("암살자-기본공격 사용");
-        int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(1, 6, out);
+
+        double multiplier = 1.0;
 
         // 암살 대상 패시브
         if (isReturnTurn) {
-            totalDamage *= 4;
-            out.printf("암살 대상 패시브 적용 (전장 복귀 턴): x4.0 → %d%n", totalDamage);
+            multiplier *= 4.0;
+            out.println("암살 대상 패시브 적용 (전장 복귀 턴): x4.0");
         }
 
         // 생사여탈 패시브
         if (isFirstAssault) {
-            totalDamage *= 2;
-            out.printf("생사여탈 패시브 적용 (전투 시작 암살): x2.0 → %d%n", totalDamage);
+            multiplier *= 2.0;
+            out.println("생사여탈 패시브 적용 (전투 시작 암살): x2.0");
         }
+
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
 
         out.printf("총 데미지 : %d%n", totalDamage);
         return totalDamage;
@@ -51,9 +57,7 @@ public class Assassin {
      */
     public static int assassinate(int stat, boolean isReturnTurn, boolean isFirstAssault, boolean isConfirmKillActive, PrintStream out) {
         out.println("암살자-암살 사용 (4D20)");
-        int defaultDamage = Main.dice(4, 20, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(4, 20, out);
 
         double multiplier = 1.0;
 
@@ -73,7 +77,12 @@ public class Assassin {
             out.println("확인사살 적용 (적 체력 30%% 이하): x2.0");
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 44 소모");
         return totalDamage;
@@ -85,14 +94,19 @@ public class Assassin {
      */
     public static int criticalStab(int stat, boolean isReturnTurn, PrintStream out) {
         out.println("암살자-급소 찌르기 사용 (2D10)");
-        int defaultDamage = Main.dice(2, 10, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(2, 10, out);
 
+        double multiplier = 1.0;
         if (isReturnTurn) {
-            totalDamage *= 4;
-            out.printf("암살 대상 패시브 적용: x4.0 → %d%n", totalDamage);
+            multiplier *= 4.0;
+            out.println("암살 대상 패시브 적용: x4.0");
         }
+
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
 
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 5 소모");
@@ -105,14 +119,19 @@ public class Assassin {
      */
     public static int throatSlit(int stat, boolean isReturnTurn, PrintStream out) {
         out.println("암살자-목 긋기 사용 (D20)");
-        int defaultDamage = Main.dice(1, 20, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(1, 20, out);
 
+        double multiplier = 1.0;
         if (isReturnTurn) {
-            totalDamage *= 4;
-            out.printf("암살 대상 패시브 적용: x4.0 → %d%n", totalDamage);
+            multiplier *= 4.0;
+            out.println("암살 대상 패시브 적용: x4.0");
         }
+
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
 
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 4 소모");
@@ -125,14 +144,19 @@ public class Assassin {
      */
     public static int wristSlit(int stat, boolean isReturnTurn, PrintStream out) {
         out.println("암살자-손목 긋기 사용 (4D4)");
-        int defaultDamage = Main.dice(4, 4, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(4, 4, out);
 
+        double multiplier = 1.0;
         if (isReturnTurn) {
-            totalDamage *= 4;
-            out.printf("암살 대상 패시브 적용: x4.0 → %d%n", totalDamage);
+            multiplier *= 4.0;
+            out.println("암살 대상 패시브 적용: x4.0");
         }
+
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
 
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 3 소모");
@@ -145,14 +169,19 @@ public class Assassin {
      */
     public static int rearAttack(int stat, boolean isReturnTurn, PrintStream out) {
         out.println("암살자-후방 공격 사용 (3D6)");
-        int defaultDamage = Main.dice(3, 6, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(3, 6, out);
 
+        double multiplier = 1.0;
         if (isReturnTurn) {
-            totalDamage *= 4;
-            out.printf("암살 대상 패시브 적용: x4.0 → %d%n", totalDamage);
+            multiplier *= 4.0;
+            out.println("암살 대상 패시브 적용: x4.0");
         }
+
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
 
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 3 소모");
