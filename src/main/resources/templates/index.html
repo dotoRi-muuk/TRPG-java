@@ -747,6 +747,237 @@
                     </div>
                 </div>
 
+                <!-- 마도사 스킬 -->
+                <div id="archmage-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="archmage-intelligence">지능</label>
+                            <input type="number" id="archmage-intelligence" value="10" min="1">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="archmage-usedManaCirculation">
+                                마력 순환 사용
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="archmage-usedMagicConcentration">
+                                마력 집중 사용
+                            </label>
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateArchmage('magic-bolt')" class="btn btn-skill">마력탄 (5D4)</button>
+                        <button onclick="calculateArchmage('ether-catastrophe')" class="btn btn-skill">에테르 카타스트로피 (5D20)</button>
+                        <button onclick="calculateArchmage('lumen-conversion-aoe')" class="btn btn-skill">루멘 컨버전 광역 (4D20)</button>
+                        <button onclick="calculateArchmage('lumen-conversion-single')" class="btn btn-skill">루멘 컨버전 단일 (10D12)</button>
+                    </div>
+                    <div class="skill-buttons">
+                        <h4>전용 수비</h4>
+                        <div class="form-group">
+                            <label for="archmage-baseChantTime">영창 기본 시간</label>
+                            <input type="number" id="archmage-baseChantTime" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="archmage-remainingChantTime">남은 영창 시간</label>
+                            <input type="number" id="archmage-remainingChantTime" value="5" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="archmage-damageTaken">받은 데미지</label>
+                            <input type="number" id="archmage-damageTaken" value="10" min="0">
+                        </div>
+                        <button onclick="calculateArchmageDefense()" class="btn btn-skill">폭주오라</button>
+                    </div>
+                </div>
+
+                <!-- 결계술사 스킬 -->
+                <div id="barriermage-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="barriermage-selectedBarrierCount">선택한 결계 수 (잔영)</label>
+                            <input type="number" id="barriermage-selectedBarrierCount" value="1" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="barriermage-manaSpentOnBarrier">결계에 소모된 마나 (회수)</label>
+                            <input type="number" id="barriermage-manaSpentOnBarrier" value="10" min="0">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateBarrierMage('force-field-barrier')" class="btn btn-skill">역장 결계 (D6 보호막)</button>
+                        <button onclick="calculateBarrierMage('barrier-afterimage')" class="btn btn-skill">결계 잔영</button>
+                        <button onclick="calculateBarrierMage('energy-recovery')" class="btn btn-skill">기운 회수</button>
+                    </div>
+                </div>
+
+                <!-- 마검사 스킬 -->
+                <div id="magicswordsman-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="magicswordsman-intelligence">지능</label>
+                            <input type="number" id="magicswordsman-intelligence" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="magicswordsman-manaSpent">이전 행동 소모 마나 (플로우 오라)</label>
+                            <input type="number" id="magicswordsman-manaSpent" value="5" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="magicswordsman-damageTaken">받은 데미지 (플로우 오라)</label>
+                            <input type="number" id="magicswordsman-damageTaken" value="10" min="0">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateMagicSwordsman('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateMagicSwordsman('mana-slash')" class="btn btn-skill">마나 슬래쉬 (3D6)</button>
+                        <button onclick="calculateMagicSwordsman('mana-strike')" class="btn btn-skill">마나 스트라이크 (2D10)</button>
+                        <button onclick="calculateMagicSwordsman('mana-spear')" class="btn btn-skill">마나 스피어 (D20)</button>
+                        <button onclick="calculateMagicSwordsman('spin-chryst')" class="btn btn-skill">스핀 크라이스트 (4D8)</button>
+                        <button onclick="calculateMagicSwordsman('triple-slain')" class="btn btn-skill">트리플 슬레인 (3D12)</button>
+                        <button onclick="calculateMagicSwordsman('ethereal-imperio')" class="btn btn-skill">에테리얼 임페리오 (3D20)</button>
+                        <button onclick="calculateMagicSwordsman('speed-drain')" class="btn btn-skill">스피드레인 (마나 2D8)</button>
+                        <button onclick="calculateMagicSwordsman('flow-aura')" class="btn btn-skill">플로우 오라 (수비)</button>
+                    </div>
+                </div>
+
+                <!-- 소환술사 스킬 -->
+                <div id="summoner-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="summoner-intelligence">지능</label>
+                            <input type="number" id="summoner-intelligence" value="10" min="1">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateSummoner('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateSummoner('punch-to-beat-summon')" class="btn btn-skill">소환수를 이기는 주먹 (D10)</button>
+                        <button onclick="calculateSummoner('punch-to-obey')" class="btn btn-skill">말을 잘 듣게 하는 주먹 (D10)</button>
+                    </div>
+                </div>
+
+                <!-- 연금술사 스킬 -->
+                <div id="alchemist-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="alchemist-intelligence">지능</label>
+                            <input type="number" id="alchemist-intelligence" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="alchemist-unknownPotions">미지의 물약 개수</label>
+                            <input type="number" id="alchemist-unknownPotions" value="5" min="0">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateAlchemist('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateAlchemist('toxic-potion')" class="btn btn-skill">독성물약 (5D4)</button>
+                        <button onclick="calculateAlchemist('explosive-potion')" class="btn btn-skill">폭발물약 (5D6)</button>
+                        <button onclick="calculateAlchemist('healing-potion')" class="btn btn-skill">회복물약 (D10)</button>
+                        <button onclick="calculateAlchemist('hasty-preparation')" class="btn btn-skill">성급한 준비 (D8 물약)</button>
+                        <button onclick="calculateAlchemist('perfect-preparation')" class="btn btn-skill">완벽한 준비 (D20 물약)</button>
+                    </div>
+                </div>
+
+                <!-- 빛의 사제 스킬 -->
+                <div id="lightpriest-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="lightpriest-intelligence">지능</label>
+                            <input type="number" id="lightpriest-intelligence" value="10" min="1">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="lightpriest-hasAttacked">
+                                전투 내 공격 이력 (자비 해제)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateLightPriest('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateLightPriest('heal')" class="btn btn-skill">힐 (D6)</button>
+                        <button onclick="calculateLightPriest('healing-wind')" class="btn btn-skill">치유의 바람 (2D6)</button>
+                        <button onclick="calculateLightPriest('chalice-of-light')" class="btn btn-skill">빛의 성배 (5D4)</button>
+                        <button onclick="calculateLightPriest('prayer')" class="btn btn-skill">기원 (5D8 보호막)</button>
+                        <button onclick="calculateLightPriest('heavens-door')" class="btn btn-skill">헤븐즈 도어 (4D10 부활)</button>
+                    </div>
+                </div>
+
+                <!-- 어둠의 사제 스킬 -->
+                <div id="darkpriest-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="darkpriest-intelligence">지능</label>
+                            <input type="number" id="darkpriest-intelligence" value="10" min="1">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateDarkPriest('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateDarkPriest('dark-energy')" class="btn btn-skill">어둠의 기운 (D4)</button>
+                        <button onclick="calculateDarkPriest('grip')" class="btn btn-skill">손아귀 (D8)</button>
+                        <button onclick="calculateDarkPriest('uzumania')" class="btn btn-skill">우즈마니아 (4D12)</button>
+                        <button onclick="calculateDarkPriest('exilister')" class="btn btn-skill">엑실리스터 (4D20)</button>
+                        <button onclick="calculateDarkPriest('annihilation-plain')" class="btn btn-skill">어나이스필레인 (7D12)</button>
+                        <button onclick="calculateDarkPriest('ensiasticalia')" class="btn btn-skill">엔시아스티켈리아 (9D10)</button>
+                    </div>
+                </div>
+
+                <!-- 번개의 사제 스킬 -->
+                <div id="lightningpriest-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="lightningpriest-intelligence">지능</label>
+                            <input type="number" id="lightningpriest-intelligence" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="lightningpriest-n">일렉트릭 필드 영창 턴</label>
+                            <input type="number" id="lightningpriest-n" value="3" min="0" max="6">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateLightningPriest('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateLightningPriest('spark')" class="btn btn-skill">스파크 (2D4)</button>
+                        <button onclick="calculateLightningPriest('chain-lightning-damage')" class="btn btn-skill">체인 라이트닝 공격 (2D6)</button>
+                        <button onclick="calculateLightningPriest('chain-lightning-shield')" class="btn btn-skill">체인 라이트닝 보호막 (2D4)</button>
+                        <button onclick="calculateLightningPriest('electric-field')" class="btn btn-skill">일렉트릭 필드</button>
+                        <button onclick="calculateLightningPriest('strike')" class="btn btn-skill">스트라이크 (2D8)</button>
+                        <button onclick="calculateLightningPriest('divine-lightning')" class="btn btn-skill">신뇌격 (3D20)</button>
+                    </div>
+                </div>
+
+                <!-- 영혼의 사제 스킬 -->
+                <div id="soulpriest-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="soulpriest-intelligence">지능</label>
+                            <input type="number" id="soulpriest-intelligence" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="soulpriest-soulsSpent">소모할 영혼 (원한)</label>
+                            <input type="number" id="soulpriest-soulsSpent" value="5" min="1">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateSoulPriest('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateSoulPriest('absorb')" class="btn btn-skill">흡수 (2D4 회복)</button>
+                        <button onclick="calculateSoulPriest('curse')" class="btn btn-skill">저주 (3D4)</button>
+                        <button onclick="calculateSoulPriest('chest-pain')" class="btn btn-skill">흉통 (8D4)</button>
+                        <button onclick="calculateSoulPriest('grudge')" class="btn btn-skill">원한 (영혼D12)</button>
+                        <button onclick="calculateSoulPriest('collect')" class="btn btn-skill">수거 (D4 영혼)</button>
+                    </div>
+                </div>
+
+                <!-- 시간의 사제 스킬 -->
+                <div id="timepriest-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="timepriest-intelligence">지능</label>
+                            <input type="number" id="timepriest-intelligence" value="10" min="1">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateTimePriest('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateTimePriest('corrosion')" class="btn btn-skill">부식 (4D8)</button>
+                    </div>
+                </div>
+
                 <!-- 결과 출력 -->
                 <div id="damageResult" class="result"></div>
             </section>

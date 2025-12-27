@@ -575,6 +575,237 @@ async function calculatePoacher(skill) {
     }
 }
 
+// Archmage calculations
+async function calculateArchmage(skill) {
+    const intelligence = parseInt(document.getElementById('archmage-intelligence').value) || 10;
+    const usedManaCirculation = document.getElementById('archmage-usedManaCirculation').checked;
+    const usedMagicConcentration = document.getElementById('archmage-usedMagicConcentration').checked;
+    
+    try {
+        const response = await fetch(`${API_BASE}/archmage/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ intelligence, usedManaCirculation, usedMagicConcentration })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '마도사 - ' + getSkillName('archmage', skill));
+        addLog(`🧙 마도사 - ${getSkillName('archmage', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+async function calculateArchmageDefense() {
+    const baseChantTime = parseInt(document.getElementById('archmage-baseChantTime').value) || 10;
+    const remainingChantTime = parseInt(document.getElementById('archmage-remainingChantTime').value) || 5;
+    const damageTaken = parseInt(document.getElementById('archmage-damageTaken').value) || 10;
+    
+    try {
+        const response = await fetch(`${API_BASE}/archmage/rampage-aura`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ baseChantTime, remainingChantTime, damageTaken })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '마도사 - 폭주오라 (감소된 데미지)');
+        addLog(`🧙 마도사 - 폭주오라`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+// BarrierMage calculations
+async function calculateBarrierMage(skill) {
+    const selectedBarrierCount = parseInt(document.getElementById('barriermage-selectedBarrierCount').value) || 1;
+    const manaSpentOnBarrier = parseInt(document.getElementById('barriermage-manaSpentOnBarrier').value) || 10;
+    
+    try {
+        const response = await fetch(`${API_BASE}/barriermage/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ selectedBarrierCount, manaSpentOnBarrier })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '결계술사 - ' + getSkillName('barriermage', skill));
+        addLog(`🛡️ 결계술사 - ${getSkillName('barriermage', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+// MagicSwordsman calculations
+async function calculateMagicSwordsman(skill) {
+    const intelligence = parseInt(document.getElementById('magicswordsman-intelligence').value) || 10;
+    const manaSpentInPreviousAction = parseInt(document.getElementById('magicswordsman-manaSpent').value) || 5;
+    const damageTaken = parseInt(document.getElementById('magicswordsman-damageTaken').value) || 10;
+    
+    try {
+        const response = await fetch(`${API_BASE}/magicswordsman/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ intelligence, manaSpentInPreviousAction, damageTaken })
+        });
+        
+        const data = await response.json();
+        const label = skill === 'flow-aura' ? '마검사 - 플로우 오라 (감소된 데미지)' : '마검사 - ' + getSkillName('magicswordsman', skill);
+        showDamageResult(data.damage, label);
+        addLog(`⚔️ 마검사 - ${getSkillName('magicswordsman', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+// Summoner calculations
+async function calculateSummoner(skill) {
+    const intelligence = parseInt(document.getElementById('summoner-intelligence').value) || 10;
+    
+    try {
+        const response = await fetch(`${API_BASE}/summoner/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ intelligence })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '소환술사 - ' + getSkillName('summoner', skill));
+        addLog(`🐉 소환술사 - ${getSkillName('summoner', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+// Alchemist calculations
+async function calculateAlchemist(skill) {
+    const intelligence = parseInt(document.getElementById('alchemist-intelligence').value) || 10;
+    const unknownPotions = parseInt(document.getElementById('alchemist-unknownPotions').value) || 5;
+    
+    try {
+        const response = await fetch(`${API_BASE}/alchemist/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ intelligence, unknownPotions })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '연금술사 - ' + getSkillName('alchemist', skill));
+        addLog(`⚗️ 연금술사 - ${getSkillName('alchemist', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+// LightPriest calculations
+async function calculateLightPriest(skill) {
+    const intelligence = parseInt(document.getElementById('lightpriest-intelligence').value) || 10;
+    const hasAttacked = document.getElementById('lightpriest-hasAttacked').checked;
+    
+    try {
+        const response = await fetch(`${API_BASE}/lightpriest/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ intelligence, hasAttacked })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '빛의 사제 - ' + getSkillName('lightpriest', skill));
+        addLog(`✨ 빛의 사제 - ${getSkillName('lightpriest', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+// DarkPriest calculations
+async function calculateDarkPriest(skill) {
+    const intelligence = parseInt(document.getElementById('darkpriest-intelligence').value) || 10;
+    
+    try {
+        const response = await fetch(`${API_BASE}/darkpriest/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ intelligence })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '어둠의 사제 - ' + getSkillName('darkpriest', skill));
+        addLog(`🌑 어둠의 사제 - ${getSkillName('darkpriest', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+// LightningPriest calculations
+async function calculateLightningPriest(skill) {
+    const intelligence = parseInt(document.getElementById('lightningpriest-intelligence').value) || 10;
+    const n = parseInt(document.getElementById('lightningpriest-n').value) || 3;
+    
+    try {
+        const response = await fetch(`${API_BASE}/lightningpriest/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ intelligence, n })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '번개의 사제 - ' + getSkillName('lightningpriest', skill));
+        addLog(`⚡ 번개의 사제 - ${getSkillName('lightningpriest', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+// SoulPriest calculations
+async function calculateSoulPriest(skill) {
+    const intelligence = parseInt(document.getElementById('soulpriest-intelligence').value) || 10;
+    const soulsSpent = parseInt(document.getElementById('soulpriest-soulsSpent').value) || 5;
+    
+    try {
+        const response = await fetch(`${API_BASE}/soulpriest/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ intelligence, soulsSpent })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '영혼의 사제 - ' + getSkillName('soulpriest', skill));
+        addLog(`👻 영혼의 사제 - ${getSkillName('soulpriest', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
+// TimePriest calculations
+async function calculateTimePriest(skill) {
+    const intelligence = parseInt(document.getElementById('timepriest-intelligence').value) || 10;
+    
+    try {
+        const response = await fetch(`${API_BASE}/timepriest/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ intelligence })
+        });
+        
+        const data = await response.json();
+        showDamageResult(data.damage, '시간의 사제 - ' + getSkillName('timepriest', skill));
+        addLog(`⏰ 시간의 사제 - ${getSkillName('timepriest', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
 // Show damage result
 function showDamageResult(damage, label) {
     document.getElementById('damageResult').innerHTML = `
@@ -741,6 +972,80 @@ function getSkillName(job, skill) {
             'set-trap': '덫 깔기',
             'snare-shot': '올가미 탄',
             'headshot': '헤드샷'
+        },
+        archmage: {
+            'magic-bolt': '마력탄',
+            'ether-catastrophe': '에테르 카타스트로피',
+            'lumen-conversion-aoe': '루멘 컨버전 (광역)',
+            'lumen-conversion-single': '루멘 컨버전 (단일)',
+            'rampage-aura': '폭주오라'
+        },
+        barriermage: {
+            'force-field-barrier': '역장 결계',
+            'barrier-afterimage': '결계 잔영',
+            'energy-recovery': '기운 회수'
+        },
+        magicswordsman: {
+            'plain': '기본공격',
+            'mana-slash': '마나 슬래쉬',
+            'mana-strike': '마나 스트라이크',
+            'mana-spear': '마나 스피어',
+            'spin-chryst': '스핀 크라이스트',
+            'triple-slain': '트리플 슬레인',
+            'ethereal-imperio': '에테리얼 임페리오',
+            'speed-drain': '스피드레인',
+            'flow-aura': '플로우 오라'
+        },
+        summoner: {
+            'plain': '기본공격',
+            'punch-to-beat-summon': '소환수를 이기는 주먹',
+            'punch-to-obey': '말을 잘 듣게 하는 주먹'
+        },
+        alchemist: {
+            'plain': '기본공격',
+            'toxic-potion': '독성물약',
+            'explosive-potion': '폭발물약',
+            'healing-potion': '회복물약',
+            'hasty-preparation': '성급한 준비',
+            'perfect-preparation': '완벽한 준비'
+        },
+        lightpriest: {
+            'plain': '기본공격',
+            'heal': '힐',
+            'healing-wind': '치유의 바람',
+            'chalice-of-light': '빛의 성배',
+            'prayer': '기원',
+            'heavens-door': '헤븐즈 도어'
+        },
+        darkpriest: {
+            'plain': '기본공격',
+            'dark-energy': '어둠의 기운',
+            'grip': '손아귀',
+            'uzumania': '우즈마니아',
+            'exilister': '엑실리스터',
+            'annihilation-plain': '어나이스필레인',
+            'ensiasticalia': '엔시아스티켈리아'
+        },
+        lightningpriest: {
+            'plain': '기본공격',
+            'spark': '스파크',
+            'chain-lightning-damage': '체인 라이트닝 (공격)',
+            'chain-lightning-shield': '체인 라이트닝 (보호막)',
+            'electric-field': '일렉트릭 필드',
+            'strike': '스트라이크',
+            'divine-lightning': '신뇌격'
+        },
+        soulpriest: {
+            'plain': '기본공격',
+            'absorb': '흡수',
+            'curse': '저주',
+            'chest-pain': '흉통',
+            'grudge': '원한',
+            'collect': '수거'
+        },
+        timepriest: {
+            'plain': '기본공격',
+            'corrosion': '부식'
         }
     };
     
