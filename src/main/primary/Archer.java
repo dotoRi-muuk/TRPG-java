@@ -14,9 +14,10 @@ public class Archer {
     public static int plain(int stat, PrintStream out) {
         out.println("궁수-기본공격 사용 (단일 스탯, D4)");
         int defaultDamage = Main.dice(1, 4, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
-        return defaultDamage + sideDamage;
+        int sideDamage = Main.sideDamage(defaultDamage, stat, out);
+        int totalDamage = defaultDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, totalDamage);
+        return totalDamage;
     }
 
     /**
@@ -27,9 +28,10 @@ public class Archer {
         int defaultDamage = Main.dice(1, 6, out);
         // 두 스탯 중 더 높은 값으로 사이드 데미지 계산
         int higherStat = Math.max(strength, dexterity);
-        int sideDamage = Main.sideDamage(higherStat, out);
-        out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
-        return defaultDamage + sideDamage;
+        int sideDamage = Main.sideDamage(defaultDamage, higherStat, out);
+        int totalDamage = defaultDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, totalDamage);
+        return totalDamage;
     }
 
     /**
@@ -38,18 +40,19 @@ public class Archer {
      */
     public static int quickShot(int stat, PrintStream out) {
         out.println("궁수-퀵샷 사용");
-        int totalDamage = 0;
+        int baseDamage = 0;
 
         for (int i = 1; i <= 3; i++) {
             int diceResult = Main.dice(1, 4, out);
             int adjustedDamage = Math.max(1, diceResult - 1);
             out.printf("%d번째 공격: %d - 1 = %d%n", i, diceResult, adjustedDamage);
-            totalDamage += adjustedDamage;
+            baseDamage += adjustedDamage;
         }
 
-        int sideDamage = Main.sideDamage(stat, out);
-        out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
-        return totalDamage + sideDamage;
+        int sideDamage = Main.sideDamage(baseDamage, stat, out);
+        int totalDamage = baseDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", baseDamage, sideDamage, totalDamage);
+        return totalDamage;
     }
 
     /**
@@ -62,9 +65,10 @@ public class Archer {
         int defaultDamage = Main.dice(1, 4, out);
         int boostedDamage = (int) (defaultDamage * 1.5);
         out.printf("기본 데미지 150%%: %d * 1.5 = %d%n", defaultDamage, boostedDamage);
-        int sideDamage = Main.sideDamage(stat, out);
-        out.printf("총 데미지 : %d + %d = %d%n", boostedDamage, sideDamage, boostedDamage + sideDamage);
-        return boostedDamage + sideDamage;
+        int sideDamage = Main.sideDamage(boostedDamage, stat, out);
+        int totalDamage = boostedDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", boostedDamage, sideDamage, totalDamage);
+        return totalDamage;
     }
 
     /**
@@ -78,9 +82,10 @@ public class Archer {
         int boostedDamage = (int) (defaultDamage * 1.5);
         out.printf("기본 데미지 150%%: %d * 1.5 = %d%n", defaultDamage, boostedDamage);
         int higherStat = Math.max(strength, dexterity);
-        int sideDamage = Main.sideDamage(higherStat, out);
-        out.printf("총 데미지 : %d + %d = %d%n", boostedDamage, sideDamage, boostedDamage + sideDamage);
-        return boostedDamage + sideDamage;
+        int sideDamage = Main.sideDamage(boostedDamage, higherStat, out);
+        int totalDamage = boostedDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", boostedDamage, sideDamage, totalDamage);
+        return totalDamage;
     }
 
     /**
@@ -93,16 +98,18 @@ public class Archer {
         out.printf("연속 공격 횟수: %d회%n", consecutiveHits);
 
         int defaultDamage = Main.dice(1, 4, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int baseDamage = defaultDamage + sideDamage;
 
         double multiplier = getHuntMultiplier(consecutiveHits);
-        int finalDamage = (int) (baseDamage * multiplier);
+        int damageAfterMultiplier = (int) (defaultDamage * multiplier);
 
-        out.printf("기본 데미지: %d, 배율: %.0f%%, 최종 데미지: %d%n",
-                   baseDamage, multiplier * 100, finalDamage);
+        out.printf("기본 데미지: %d, 배율: %.0f%%, 배율 적용 후: %d%n",
+                   defaultDamage, multiplier * 100, damageAfterMultiplier);
 
-        return finalDamage;
+        int sideDamage = Main.sideDamage(damageAfterMultiplier, stat, out);
+        int totalDamage = damageAfterMultiplier + sideDamage;
+
+        out.printf("최종 데미지: %d%n", totalDamage);
+        return totalDamage;
     }
 
     /**
@@ -115,17 +122,19 @@ public class Archer {
         out.printf("연속 공격 횟수: %d회%n", consecutiveHits);
 
         int defaultDamage = Main.dice(1, 6, out);
-        int higherStat = Math.max(strength, dexterity);
-        int sideDamage = Main.sideDamage(higherStat, out);
-        int baseDamage = defaultDamage + sideDamage;
 
         double multiplier = getHuntMultiplier(consecutiveHits);
-        int finalDamage = (int) (baseDamage * multiplier);
+        int damageAfterMultiplier = (int) (defaultDamage * multiplier);
 
-        out.printf("기본 데미지: %d, 배율: %.0f%%, 최종 데미지: %d%n",
-                   baseDamage, multiplier * 100, finalDamage);
+        out.printf("기본 데미지: %d, 배율: %.0f%%, 배율 적용 후: %d%n",
+                   defaultDamage, multiplier * 100, damageAfterMultiplier);
 
-        return finalDamage;
+        int higherStat = Math.max(strength, dexterity);
+        int sideDamage = Main.sideDamage(damageAfterMultiplier, higherStat, out);
+        int totalDamage = damageAfterMultiplier + sideDamage;
+
+        out.printf("최종 데미지: %d%n", totalDamage);
+        return totalDamage;
     }
 
     /**

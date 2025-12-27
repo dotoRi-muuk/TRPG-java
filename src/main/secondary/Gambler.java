@@ -14,16 +14,20 @@ public class Gambler {
      */
     public static int plain(int stat, int reducedLuck, boolean jackpotActive, PrintStream out) {
         out.println("겜블러-기본공격 사용");
-        int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(1, 6, out);
 
+        double multiplier = 1.0;
         // 일확천금 패시브
         if (jackpotActive && reducedLuck > 0) {
-            double multiplier = 1.0 + (reducedLuck * 0.5);
-            totalDamage = (int) (totalDamage * multiplier);
-            out.printf("일확천금 패시브 적용: 감소 운 %d → x%.1f = %d%n", reducedLuck, multiplier, totalDamage);
+            multiplier = 1.0 + (reducedLuck * 0.5);
+            out.printf("일확천금 패시브 적용: 감소 운 %d → x%.1f%n", reducedLuck, multiplier);
         }
+
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
 
         out.printf("총 데미지 : %d%n", totalDamage);
         return totalDamage;
@@ -36,7 +40,7 @@ public class Gambler {
      */
     public static int coinToss(int stat, int luck, int reducedLuck, boolean jackpotActive, PrintStream out) {
         out.println("겜블러-코인 토스 사용");
-        int defaultDamage = Main.dice(1, 4, out);
+        int baseDamage = Main.dice(1, 4, out);
 
         // 운 판정
         int luckCheck = luck - Main.dice(1, 20, out);
@@ -44,17 +48,20 @@ public class Gambler {
 
         if (luckCheck > 0) {
             out.println("운 판정 성공! D12로 변경");
-            defaultDamage = Main.dice(1, 12, out);
+            baseDamage = Main.dice(1, 12, out);
         }
 
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
-
+        double multiplier = 1.0;
         if (jackpotActive && reducedLuck > 0) {
-            double multiplier = 1.0 + (reducedLuck * 0.5);
-            totalDamage = (int) (totalDamage * multiplier);
-            out.printf("일확천금 패시브 적용: x%.1f → %d%n", multiplier, totalDamage);
+            multiplier = 1.0 + (reducedLuck * 0.5);
+            out.printf("일확천금 패시브 적용: x%.1f%n", multiplier);
         }
+
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
 
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 1 소모");
@@ -68,24 +75,27 @@ public class Gambler {
      */
     public static int jokerCard(int stat, int luck, int reducedLuck, boolean jackpotActive, PrintStream out) {
         out.println("겜블러-조커 카드 사용");
-        int defaultDamage = Main.dice(1, 6, out);
+        int baseDamage = Main.dice(1, 6, out);
 
         int luckCheck = luck - Main.dice(1, 20, out);
         out.printf("운 판정: %d - D20 = %d%n", luck, luckCheck);
 
         if (luckCheck > 0) {
             out.println("운 판정 성공! 2D12로 변경");
-            defaultDamage = Main.dice(2, 12, out);
+            baseDamage = Main.dice(2, 12, out);
         }
 
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
-
+        double multiplier = 1.0;
         if (jackpotActive && reducedLuck > 0) {
-            double multiplier = 1.0 + (reducedLuck * 0.5);
-            totalDamage = (int) (totalDamage * multiplier);
-            out.printf("일확천금 패시브 적용: x%.1f → %d%n", multiplier, totalDamage);
+            multiplier = 1.0 + (reducedLuck * 0.5);
+            out.printf("일확천금 패시브 적용: x%.1f%n", multiplier);
         }
+
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
 
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 3 소모");
@@ -99,24 +109,27 @@ public class Gambler {
      */
     public static int blackjack(int stat, int luck, int reducedLuck, boolean jackpotActive, PrintStream out) {
         out.println("겜블러-블랙잭 사용");
-        int defaultDamage = Main.dice(1, 6, out);
+        int baseDamage = Main.dice(1, 6, out);
 
         int luckCheck = luck - Main.dice(1, 20, out);
         out.printf("운 판정: %d - D20 = %d%n", luck, luckCheck);
 
         if (luckCheck > 0) {
             out.println("운 판정 성공! 3D8로 변경");
-            defaultDamage = Main.dice(3, 8, out);
+            baseDamage = Main.dice(3, 8, out);
         }
 
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
-
+        double multiplier = 1.0;
         if (jackpotActive && reducedLuck > 0) {
-            double multiplier = 1.0 + (reducedLuck * 0.5);
-            totalDamage = (int) (totalDamage * multiplier);
-            out.printf("일확천금 패시브 적용: x%.1f → %d%n", multiplier, totalDamage);
+            multiplier = 1.0 + (reducedLuck * 0.5);
+            out.printf("일확천금 패시브 적용: x%.1f%n", multiplier);
         }
+
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
 
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 3 소모");
@@ -130,7 +143,7 @@ public class Gambler {
      */
     public static int yatzyDice(int stat, int luck, int reducedLuck, boolean jackpotActive, PrintStream out) {
         out.println("겜블러-야추 다이스 사용");
-        int defaultDamage = Main.dice(1, 8, out);
+        int baseDamage = Main.dice(1, 8, out);
 
         // 운 판정 1회
         int luckCheck1 = luck - Main.dice(1, 20, out);
@@ -142,17 +155,20 @@ public class Gambler {
 
         if (luckCheck1 > 0 && luckCheck2 > 0) {
             out.println("운 판정 2회 성공! 2D20으로 변경");
-            defaultDamage = Main.dice(2, 20, out);
+            baseDamage = Main.dice(2, 20, out);
         }
 
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
-
+        double multiplier = 1.0;
         if (jackpotActive && reducedLuck > 0) {
-            double multiplier = 1.0 + (reducedLuck * 0.5);
-            totalDamage = (int) (totalDamage * multiplier);
-            out.printf("일확천금 패시브 적용: x%.1f → %d%n", multiplier, totalDamage);
+            multiplier = 1.0 + (reducedLuck * 0.5);
+            out.printf("일확천금 패시브 적용: x%.1f%n", multiplier);
         }
+
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
 
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 4 소모");
@@ -166,7 +182,7 @@ public class Gambler {
      */
     public static int royalFlush(int stat, int luck, int reducedLuck, boolean jackpotActive, PrintStream out) {
         out.println("겜블러-로얄 플러쉬 사용");
-        int defaultDamage = Main.dice(1, 4, out);
+        int baseDamage = Main.dice(1, 4, out);
 
         int successCount = 0;
         for (int i = 1; i <= 3; i++) {
@@ -179,17 +195,20 @@ public class Gambler {
 
         if (successCount == 3) {
             out.println("운 판정 3회 성공! 4D20으로 변경");
-            defaultDamage = Main.dice(4, 20, out);
+            baseDamage = Main.dice(4, 20, out);
         }
 
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
-
+        double multiplier = 1.0;
         if (jackpotActive && reducedLuck > 0) {
-            double multiplier = 1.0 + (reducedLuck * 0.5);
-            totalDamage = (int) (totalDamage * multiplier);
-            out.printf("일확천금 패시브 적용: x%.1f → %d%n", multiplier, totalDamage);
+            multiplier = 1.0 + (reducedLuck * 0.5);
+            out.printf("일확천금 패시브 적용: x%.1f%n", multiplier);
         }
+
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
 
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 7 소모");

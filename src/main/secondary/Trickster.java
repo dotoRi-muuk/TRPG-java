@@ -41,12 +41,17 @@ public class Trickster {
 
         while (attackCount <= maxAttacks) {
             out.printf("--- %d번째 공격 ---%n", attackCount);
-            int defaultDamage = Main.dice(1, 6, out);
-            int sideDamage = Main.sideDamage(stat, out);
-            int attackDamage = (int) ((defaultDamage + sideDamage) * eventMultiplier);
+            int baseDamage = Main.dice(1, 6, out);
+
+            // 돌발 이벤트 적용 후 sideDamage 계산
+            int damageAfterEvent = (int) (baseDamage * eventMultiplier);
             if (skillUsedCount > 0) {
-                out.printf("돌발 이벤트 적용: x%.1f = %d%n", eventMultiplier, attackDamage);
+                out.printf("돌발 이벤트 적용: x%.1f = %d%n", eventMultiplier, damageAfterEvent);
             }
+
+            // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+            int sideDamage = Main.sideDamage(damageAfterEvent, stat, out);
+            int attackDamage = damageAfterEvent + sideDamage;
             totalDamage += attackDamage;
 
             // 난사 판정
@@ -98,17 +103,21 @@ public class Trickster {
      */
     public static int fakeDagger(int stat, int skillUsedCount, boolean isEventPrepared, PrintStream out) {
         out.println("트릭스터-페이크 단검 사용 (D4)");
-        int defaultDamage = Main.dice(1, 4, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(1, 4, out);
 
+        double multiplier = 1.0;
         // 돌발 이벤트 패시브
         if (skillUsedCount > 0) {
             double eventBonus = isEventPrepared ? 1.0 : 0.5;
-            double eventMultiplier = 1.0 + (skillUsedCount * eventBonus);
-            totalDamage = (int) (totalDamage * eventMultiplier);
-            out.printf("돌발 이벤트 패시브 적용: 기술 %d회 → x%.1f = %d%n", skillUsedCount, eventMultiplier, totalDamage);
+            multiplier = 1.0 + (skillUsedCount * eventBonus);
+            out.printf("돌발 이벤트 패시브 적용: 기술 %d회 → x%.1f%n", skillUsedCount, multiplier);
         }
+
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
 
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 이번 턴 이후의 공격 데미지 150%%");
@@ -129,16 +138,20 @@ public class Trickster {
      */
     public static int beanShot(int stat, int skillUsedCount, boolean isEventPrepared, PrintStream out) {
         out.println("트릭스터-콩알탄 사용 (2D6)");
-        int defaultDamage = Main.dice(2, 6, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(2, 6, out);
 
+        double multiplier = 1.0;
         if (skillUsedCount > 0) {
             double eventBonus = isEventPrepared ? 1.0 : 0.5;
-            double eventMultiplier = 1.0 + (skillUsedCount * eventBonus);
-            totalDamage = (int) (totalDamage * eventMultiplier);
-            out.printf("돌발 이벤트 패시브 적용: x%.1f = %d%n", eventMultiplier, totalDamage);
+            multiplier = 1.0 + (skillUsedCount * eventBonus);
+            out.printf("돌발 이벤트 패시브 적용: x%.1f%n", multiplier);
         }
+
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
 
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 2 소모");
@@ -158,16 +171,20 @@ public class Trickster {
      */
     public static int oilBarrel(int stat, int skillUsedCount, boolean isEventPrepared, PrintStream out) {
         out.println("트릭스터-기름통 투척 사용 (D4)");
-        int defaultDamage = Main.dice(1, 4, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(1, 4, out);
 
+        double multiplier = 1.0;
         if (skillUsedCount > 0) {
             double eventBonus = isEventPrepared ? 1.0 : 0.5;
-            double eventMultiplier = 1.0 + (skillUsedCount * eventBonus);
-            totalDamage = (int) (totalDamage * eventMultiplier);
-            out.printf("돌발 이벤트 패시브 적용: x%.1f = %d%n", eventMultiplier, totalDamage);
+            multiplier = 1.0 + (skillUsedCount * eventBonus);
+            out.printf("돌발 이벤트 패시브 적용: x%.1f%n", multiplier);
         }
+
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
 
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 2 소모");
@@ -187,23 +204,26 @@ public class Trickster {
      */
     public static int lighterThrow(int stat, int skillUsedCount, boolean isEventPrepared, boolean oilHit, PrintStream out) {
         out.println("트릭스터-라이터 투척 사용 (D8)");
-        int defaultDamage = Main.dice(1, 8, out);
+        int baseDamage = Main.dice(1, 8, out);
 
         if (oilHit) {
             int bonusDamage = Main.dice(3, 6, out);
-            defaultDamage += bonusDamage;
+            baseDamage += bonusDamage;
             out.printf("기름통 적중! 추가 3D6: +%d%n", bonusDamage);
         }
 
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
-
+        double multiplier = 1.0;
         if (skillUsedCount > 0) {
             double eventBonus = isEventPrepared ? 1.0 : 0.5;
-            double eventMultiplier = 1.0 + (skillUsedCount * eventBonus);
-            totalDamage = (int) (totalDamage * eventMultiplier);
-            out.printf("돌발 이벤트 패시브 적용: x%.1f = %d%n", eventMultiplier, totalDamage);
+            multiplier = 1.0 + (skillUsedCount * eventBonus);
+            out.printf("돌발 이벤트 패시브 적용: x%.1f%n", multiplier);
         }
+
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
 
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 2 소모");
@@ -223,9 +243,7 @@ public class Trickster {
      */
     public static int hugeDagger(int stat, int skillUsedCount, boolean isEventPrepared, boolean isGiantScarActive, PrintStream out) {
         out.println("트릭스터-특대형 단검 사용 (D20)");
-        int defaultDamage = Main.dice(1, 20, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(1, 20, out);
 
         double multiplier = 1.0;
 
@@ -241,7 +259,12 @@ public class Trickster {
             out.println("거대한 상흔 적용: 이후 데미지 200%%");
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 3 소모");
         return totalDamage;

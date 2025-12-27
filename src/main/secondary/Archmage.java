@@ -89,18 +89,20 @@ public class Archmage {
      */
     public static int magicBolt(int intelligence, PrintStream out) {
         out.println("마도사-마력탄 사용 (5D4)");
-        int totalDamage = 0;
+        int baseDamage = 0;
 
         for (int i = 1; i <= 5; i++) {
             int diceResult = Main.dice(1, 4, out);
             out.printf("%d번째 마력탄: %d%n", i, diceResult);
-            totalDamage += diceResult;
+            baseDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
-        out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(baseDamage, intelligence, out);
+        int totalDamage = baseDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", baseDamage, sideDamage, totalDamage);
         out.println("※ 마나 2 소모, 쿨타임 3턴");
-        return totalDamage + sideDamage;
+        return totalDamage;
     }
 
     /**
@@ -154,17 +156,19 @@ public class Archmage {
         }
         out.printf("최종 영창 시간: %d턴%n", baseChant);
 
-        int totalDamage = 0;
+        int baseDamage = 0;
         for (int i = 1; i <= 5; i++) {
             int diceResult = Main.dice(1, 20, out);
             out.printf("%d번째 에테르: %d%n", i, diceResult);
-            totalDamage += diceResult;
+            baseDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
-        out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(baseDamage, intelligence, out);
+        int totalDamage = baseDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", baseDamage, sideDamage, totalDamage);
         out.println("※ 영창 10턴, 마나 7 소모, 쿨타임 10턴");
-        return totalDamage + sideDamage;
+        return totalDamage;
     }
 
     /**
@@ -190,18 +194,20 @@ public class Archmage {
         }
         out.printf("최종 영창 시간: %d턴%n", baseChant);
 
-        int totalDamage = 0;
+        int baseDamage = 0;
         for (int i = 1; i <= 4; i++) {
             int diceResult = Main.dice(1, 20, out);
             out.printf("%d번째 루멘: %d%n", i, diceResult);
-            totalDamage += diceResult;
+            baseDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
-        out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(baseDamage, intelligence, out);
+        int totalDamage = baseDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", baseDamage, sideDamage, totalDamage);
         out.println("※ 피격 대상 다음턴까지 마나 사용 봉인");
         out.println("※ 영창 18턴, 마나 15 소모, 쿨타임 20턴");
-        return totalDamage + sideDamage;
+        return totalDamage;
     }
 
     /**
@@ -227,18 +233,20 @@ public class Archmage {
         }
         out.printf("최종 영창 시간: %d턴%n", baseChant);
 
-        int totalDamage = 0;
+        int baseDamage = 0;
         for (int i = 1; i <= 10; i++) {
             int diceResult = Main.dice(1, 12, out);
             out.printf("%d번째 루멘: %d%n", i, diceResult);
-            totalDamage += diceResult;
+            baseDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
-        out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(baseDamage, intelligence, out);
+        int totalDamage = baseDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", baseDamage, sideDamage, totalDamage);
         out.println("※ 피격 대상 다음턴까지 마나 사용 봉인");
         out.println("※ 영창 18턴, 마나 15 소모, 쿨타임 20턴");
-        return totalDamage + sideDamage;
+        return totalDamage;
     }
 
     /**

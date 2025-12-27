@@ -50,7 +50,7 @@ public class Summoner {
     public static int plain(int intelligence, PrintStream out) {
         out.println("소환술사-기본공격 사용");
         int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(defaultDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
         return defaultDamage + sideDamage;
     }
@@ -105,7 +105,7 @@ public class Summoner {
     public static int punchToBeatSummon(int intelligence, PrintStream out) {
         out.println("소환술사-소환수를 이기는 주먹 사용 (D10)");
         int defaultDamage = Main.dice(1, 10, out);
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(defaultDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
         out.println("※ 스태미나 3 소모");
         return defaultDamage + sideDamage;
@@ -123,7 +123,7 @@ public class Summoner {
     public static int punchToObey(int intelligence, PrintStream out) {
         out.println("소환술사-말을 잘 듣게 하는 주먹 사용 (D10)");
         int defaultDamage = Main.dice(1, 10, out);
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(defaultDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
         out.println("※ 스태미나 2 소모");
         return defaultDamage + sideDamage;
@@ -189,4 +189,5 @@ public class Summoner {
         return 2.0;
     }
 }
+
 

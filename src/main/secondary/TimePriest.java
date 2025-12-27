@@ -52,10 +52,12 @@ public class TimePriest {
      */
     public static int plain(int intelligence, PrintStream out) {
         out.println("시간의 사제-기본공격 사용");
-        int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(intelligence, out);
-        out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
-        return defaultDamage + sideDamage;
+        int baseDamage = Main.dice(1, 6, out);
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(baseDamage, intelligence, out);
+        int totalDamage = baseDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", baseDamage, sideDamage, totalDamage);
+        return totalDamage;
     }
 
     /**
@@ -105,17 +107,19 @@ public class TimePriest {
         out.println("시간의 사제-부식 사용 (4D8)");
         out.println("※ 자유 영창: 매턴 영창 1회당 4D8");
 
-        int totalDamage = 0;
+        int baseDamage = 0;
         for (int i = 1; i <= 4; i++) {
             int diceResult = Main.dice(1, 8, out);
             out.printf("%d번째 부식: %d%n", i, diceResult);
-            totalDamage += diceResult;
+            baseDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
-        out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(baseDamage, intelligence, out);
+        int totalDamage = baseDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", baseDamage, sideDamage, totalDamage);
         out.println("※ 마나 15 소모, 쿨타임 10턴");
-        return totalDamage + sideDamage;
+        return totalDamage;
     }
 
     /**

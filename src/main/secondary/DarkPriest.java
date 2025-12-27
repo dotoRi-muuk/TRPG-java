@@ -62,7 +62,7 @@ public class DarkPriest {
     public static int plain(int intelligence, PrintStream out) {
         out.println("어둠의 사제-기본공격 사용");
         int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(defaultDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
         return defaultDamage + sideDamage;
     }
@@ -81,7 +81,7 @@ public class DarkPriest {
     public static int darkEnergy(int intelligence, PrintStream out) {
         out.println("어둠의 사제-어둠의 기운 사용 (D4, 광역)");
         int defaultDamage = Main.dice(1, 4, out);
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(defaultDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
         out.println("※ 다음 턴까지 대상 데미지 80%");
         out.println("※ 마나 2 소모");
@@ -105,7 +105,7 @@ public class DarkPriest {
     public static int grip(int intelligence, PrintStream out) {
         out.println("어둠의 사제-손아귀 사용 (D8)");
         int defaultDamage = Main.dice(1, 8, out);
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(defaultDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
         out.println("※ 다음 턴동안 행동불가 부여");
         out.println("※ 마나 5 소모, 쿨타임 4턴");
@@ -133,7 +133,7 @@ public class DarkPriest {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
         out.println("※ 발동 대기 후 이외 행동 가능");
         out.println("※ 마나 8 소모, 쿨타임 6턴");
@@ -161,7 +161,7 @@ public class DarkPriest {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
         out.println("※ 발동 대기 후 이외 행동 가능");
         out.println("※ 마나 14 소모, 쿨타임 9턴");
@@ -190,7 +190,7 @@ public class DarkPriest {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
         out.println("※ 남은 영창 2턴 이하 시 모든 아군 공격 불가");
         out.println("※ 마나 18 소모, 쿨타임 12턴");
@@ -219,7 +219,7 @@ public class DarkPriest {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
         out.println("※ 발동 시 다음 턴 모든 아군 받는 피해 200%");
         out.println("※ 마나 16 소모, 쿨타임 13턴");
@@ -317,4 +317,5 @@ public class DarkPriest {
         return 2.0;
     }
 }
+
 

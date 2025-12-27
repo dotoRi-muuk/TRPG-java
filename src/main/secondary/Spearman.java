@@ -12,11 +12,17 @@ public class Spearman {
      */
     public static int plain(int stat, PrintStream out) {
         out.println("창술사-기본공격 사용");
-        int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = (int) ((defaultDamage + sideDamage) * 0.5);
+        int baseDamage = Main.dice(1, 6, out);
 
-        out.printf("약점파악 패시브 적용 (기본 기술 50%%): %d%n", totalDamage);
+        // 약점파악 패시브: 기본 기술 50%
+        int damageAfterPassives = (int) (baseDamage * 0.5);
+        out.printf("약점파악 패시브 적용 (기본 기술 50%%): %d%n", damageAfterPassives);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
+        out.printf("총 데미지 : %d%n", totalDamage);
         return totalDamage;
     }
 
@@ -26,11 +32,17 @@ public class Spearman {
      */
     public static int spinThrust(int stat, PrintStream out) {
         out.println("창술사-돌려 찌르기 사용 (D8)");
-        int defaultDamage = Main.dice(1, 8, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = (int) ((defaultDamage + sideDamage) * 0.5);
+        int baseDamage = Main.dice(1, 8, out);
 
-        out.printf("약점파악 패시브 적용 (기본 기술 50%%): %d%n", totalDamage);
+        // 약점파악 패시브: 기본 기술 50%
+        int damageAfterPassives = (int) (baseDamage * 0.5);
+        out.printf("약점파악 패시브 적용 (기본 기술 50%%): %d%n", damageAfterPassives);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
+        out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 1 소모");
         return totalDamage;
     }
@@ -41,11 +53,17 @@ public class Spearman {
      */
     public static int spinStrike(int stat, PrintStream out) {
         out.println("창술사-회전 타격 사용 (D10)");
-        int defaultDamage = Main.dice(1, 10, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = (int) ((defaultDamage + sideDamage) * 0.5);
+        int baseDamage = Main.dice(1, 10, out);
 
-        out.printf("약점파악 패시브 적용 (기본 기술 50%%): %d%n", totalDamage);
+        // 약점파악 패시브: 기본 기술 50%
+        int damageAfterPassives = (int) (baseDamage * 0.5);
+        out.printf("약점파악 패시브 적용 (기본 기술 50%%): %d%n", damageAfterPassives);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
+        out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ [연계] 획득");
         out.println("※ 스태미나 2 소모");
         return totalDamage;
@@ -57,11 +75,17 @@ public class Spearman {
      */
     public static int lowSlash(int stat, PrintStream out) {
         out.println("창술사-하단 베기 사용 (D6)");
-        int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = (int) ((defaultDamage + sideDamage) * 0.5);
+        int baseDamage = Main.dice(1, 6, out);
 
-        out.printf("약점파악 패시브 적용 (기본 기술 50%%): %d%n", totalDamage);
+        // 약점파악 패시브: 기본 기술 50%
+        int damageAfterPassives = (int) (baseDamage * 0.5);
+        out.printf("약점파악 패시브 적용 (기본 기술 50%%): %d%n", damageAfterPassives);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
+        out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ [연계] 획득");
         out.println("※ 이번 턴 상대 수비 불가");
         out.println("※ 스태미나 2 소모");
@@ -84,9 +108,7 @@ public class Spearman {
      */
     public static int comboFrontThrust(int stat, boolean isAdaptationActive, PrintStream out) {
         out.println("창술사-[연계]정면 찌르기 사용 (2D10)");
-        int defaultDamage = Main.dice(2, 10, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(2, 10, out);
 
         // 약점파악 패시브: [연계]기술 200%
         double multiplier = 2.0;
@@ -98,8 +120,14 @@ public class Spearman {
             out.println("적응 스킬 적용: x4.0");
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
-        out.printf("[연계]기술 배율 적용: x%.1f = %d%n", multiplier, totalDamage);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+        out.printf("[연계]기술 배율 적용: x%.1f = %d%n", multiplier, damageAfterPassives);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
+        out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 1 소모");
         return totalDamage;
     }
@@ -120,9 +148,7 @@ public class Spearman {
      */
     public static int comboFlashSpear(int stat, boolean isAdaptationActive, PrintStream out) {
         out.println("창술사-[연계]일섬창 사용 (4D8)");
-        int defaultDamage = Main.dice(4, 8, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(4, 8, out);
 
         // 약점파악 패시브: [연계]기술 200%
         double multiplier = 2.0;
@@ -134,8 +160,14 @@ public class Spearman {
             out.println("적응 스킬 적용: x4.0");
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
-        out.printf("[연계]기술 배율 적용: x%.1f = %d%n", multiplier, totalDamage);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+        out.printf("[연계]기술 배율 적용: x%.1f = %d%n", multiplier, damageAfterPassives);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
+        out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 3 소모");
         return totalDamage;
     }
@@ -156,9 +188,7 @@ public class Spearman {
      */
     public static int comboThunderStrike(int stat, boolean isAdaptationActive, PrintStream out) {
         out.println("창술사-[연계]천뢰격 사용 (5D12)");
-        int defaultDamage = Main.dice(5, 12, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(5, 12, out);
 
         // 약점파악 패시브: [연계]기술 200%
         double multiplier = 2.0;
@@ -170,8 +200,14 @@ public class Spearman {
             out.println("적응 스킬 적용: x4.0");
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
-        out.printf("[연계]기술 배율 적용: x%.1f = %d%n", multiplier, totalDamage);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+        out.printf("[연계]기술 배율 적용: x%.1f = %d%n", multiplier, damageAfterPassives);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
+        out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 5 소모");
         return totalDamage;
     }

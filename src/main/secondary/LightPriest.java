@@ -51,10 +51,12 @@ public class LightPriest {
      */
     public static int plain(int intelligence, PrintStream out) {
         out.println("빛의 사제-기본공격 사용");
-        int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(intelligence, out);
-        out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
-        return defaultDamage + sideDamage;
+        int baseDamage = Main.dice(1, 6, out);
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(baseDamage, intelligence, out);
+        int totalDamage = baseDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", baseDamage, sideDamage, totalDamage);
+        return totalDamage;
     }
 
     /**
