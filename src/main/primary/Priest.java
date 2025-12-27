@@ -1,4 +1,4 @@
-package main.normal;
+package main.primary;
 
 import main.Main;
 

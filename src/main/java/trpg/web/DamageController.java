@@ -1,8 +1,8 @@
 package trpg.web;
 
 import main.Main;
-import main.normal.*;
-import main.hidden.*;
+import main.primary.*;
+import main.secondary.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayOutputStream;
