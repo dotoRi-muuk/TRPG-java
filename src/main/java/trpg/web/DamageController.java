@@ -1785,6 +1785,831 @@ public class DamageController {
         return createResponse(damage, baos);
     }
 
+    // ===== 마도사 (Archmage) =====
+    
+    /**
+     * 마도사 - 마력탄
+     */
+    @PostMapping("/archmage/magic-bolt")
+    public Map<String, Object> archmageMagicBolt(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = Archmage.magicBolt(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 마도사 - 에테르 카타스트로피
+     */
+    @PostMapping("/archmage/ether-catastrophe")
+    public Map<String, Object> archmageEtherCatastrophe(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        boolean usedManaCirculation = Boolean.TRUE.equals(request.get("usedManaCirculation"));
+        boolean usedMagicConcentration = Boolean.TRUE.equals(request.get("usedMagicConcentration"));
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = Archmage.etherCatastrophe(intelligence, usedManaCirculation, usedMagicConcentration, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 마도사 - 루멘 컨버전 (광역)
+     */
+    @PostMapping("/archmage/lumen-conversion-aoe")
+    public Map<String, Object> archmageLumenConversionAOE(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        boolean usedManaCirculation = Boolean.TRUE.equals(request.get("usedManaCirculation"));
+        boolean usedMagicConcentration = Boolean.TRUE.equals(request.get("usedMagicConcentration"));
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = Archmage.lumenConversionAOE(intelligence, usedManaCirculation, usedMagicConcentration, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 마도사 - 루멘 컨버전 (단일)
+     */
+    @PostMapping("/archmage/lumen-conversion-single")
+    public Map<String, Object> archmageLumenConversionSingle(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        boolean usedManaCirculation = Boolean.TRUE.equals(request.get("usedManaCirculation"));
+        boolean usedMagicConcentration = Boolean.TRUE.equals(request.get("usedMagicConcentration"));
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = Archmage.lumenConversionSingle(intelligence, usedManaCirculation, usedMagicConcentration, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 마도사 - 폭주오라 (전용수비)
+     */
+    @PostMapping("/archmage/rampage-aura")
+    public Map<String, Object> archmageRampageAura(@RequestBody Map<String, Object> request) {
+        int baseChantTime = ((Number) request.getOrDefault("baseChantTime", 10)).intValue();
+        int remainingChantTime = ((Number) request.getOrDefault("remainingChantTime", 5)).intValue();
+        int damageTaken = ((Number) request.getOrDefault("damageTaken", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int reducedDamage = Archmage.rampageAura(baseChantTime, remainingChantTime, damageTaken, ps);
+        
+        return createResponse(reducedDamage, baos);
+    }
+
+    // ===== 결계술사 (BarrierMage) =====
+    
+    /**
+     * 결계술사 - 역장 결계
+     */
+    @PostMapping("/barriermage/force-field-barrier")
+    public Map<String, Object> barrierMageForceFieldBarrier() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int shield = BarrierMage.forceFieldBarrier(ps);
+        
+        return createResponse(shield, baos);
+    }
+
+    /**
+     * 결계술사 - 결계 잔영
+     */
+    @PostMapping("/barriermage/barrier-afterimage")
+    public Map<String, Object> barrierMageBarrierAfterimage(@RequestBody Map<String, Object> request) {
+        int selectedBarrierCount = ((Number) request.getOrDefault("selectedBarrierCount", 1)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int manaCost = BarrierMage.barrierAfterimage(selectedBarrierCount, ps);
+        
+        return createResponse(manaCost, baos);
+    }
+
+    /**
+     * 결계술사 - 기운 회수
+     */
+    @PostMapping("/barriermage/energy-recovery")
+    public Map<String, Object> barrierMageEnergyRecovery(@RequestBody Map<String, Object> request) {
+        int manaSpentOnBarrier = ((Number) request.getOrDefault("manaSpentOnBarrier", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int manaRecovered = BarrierMage.energyRecovery(manaSpentOnBarrier, ps);
+        
+        return createResponse(manaRecovered, baos);
+    }
+
+    // ===== 마검사 (MagicSwordsman) =====
+    
+    /**
+     * 마검사 - 기본공격
+     */
+    @PostMapping("/magicswordsman/plain")
+    public Map<String, Object> magicSwordsmanPlain(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = MagicSwordsman.plain(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 마검사 - 마나 슬래쉬
+     */
+    @PostMapping("/magicswordsman/mana-slash")
+    public Map<String, Object> magicSwordsmanManaSlash(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = MagicSwordsman.manaSlash(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 마검사 - 마나 스트라이크
+     */
+    @PostMapping("/magicswordsman/mana-strike")
+    public Map<String, Object> magicSwordsmanManaStrike(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = MagicSwordsman.manaStrike(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 마검사 - 마나 스피어
+     */
+    @PostMapping("/magicswordsman/mana-spear")
+    public Map<String, Object> magicSwordsmanManaSpear(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = MagicSwordsman.manaSpear(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 마검사 - 스핀 크라이스트
+     */
+    @PostMapping("/magicswordsman/spin-chryst")
+    public Map<String, Object> magicSwordsmanSpinChryst(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = MagicSwordsman.spinChryst(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 마검사 - 트리플 슬레인
+     */
+    @PostMapping("/magicswordsman/triple-slain")
+    public Map<String, Object> magicSwordsmanTripleSlain(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = MagicSwordsman.tripleSlain(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 마검사 - 에테리얼 임페리오
+     */
+    @PostMapping("/magicswordsman/ethereal-imperio")
+    public Map<String, Object> magicSwordsmanEtherealImperio(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = MagicSwordsman.etherealImperio(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 마검사 - 스피드레인
+     */
+    @PostMapping("/magicswordsman/speed-drain")
+    public Map<String, Object> magicSwordsmanSpeedDrain() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int manaRecovered = MagicSwordsman.speedDrain(ps);
+        
+        return createResponse(manaRecovered, baos);
+    }
+
+    /**
+     * 마검사 - 플로우 오라 (전용 수비)
+     */
+    @PostMapping("/magicswordsman/flow-aura")
+    public Map<String, Object> magicSwordsmanFlowAura(@RequestBody Map<String, Object> request) {
+        int manaSpentInPreviousAction = ((Number) request.getOrDefault("manaSpentInPreviousAction", 5)).intValue();
+        int damageTaken = ((Number) request.getOrDefault("damageTaken", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int reducedDamage = MagicSwordsman.flowAura(manaSpentInPreviousAction, damageTaken, ps);
+        
+        return createResponse(reducedDamage, baos);
+    }
+
+    // ===== 소환술사 (Summoner) =====
+    
+    /**
+     * 소환술사 - 기본공격
+     */
+    @PostMapping("/summoner/plain")
+    public Map<String, Object> summonerPlain(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = Summoner.plain(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 소환술사 - 소환수를 이기는 주먹
+     */
+    @PostMapping("/summoner/punch-to-beat-summon")
+    public Map<String, Object> summonerPunchToBeatSummon(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = Summoner.punchToBeatSummon(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 소환술사 - 말을 잘 듣게 하는 주먹
+     */
+    @PostMapping("/summoner/punch-to-obey")
+    public Map<String, Object> summonerPunchToObey(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = Summoner.punchToObey(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    // ===== 연금술사 (Alchemist) =====
+    
+    /**
+     * 연금술사 - 기본공격
+     */
+    @PostMapping("/alchemist/plain")
+    public Map<String, Object> alchemistPlain(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = Alchemist.plain(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 연금술사 - 독성물약
+     */
+    @PostMapping("/alchemist/toxic-potion")
+    public Map<String, Object> alchemistToxicPotion(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        int unknownPotions = ((Number) request.getOrDefault("unknownPotions", 5)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = Alchemist.toxicPotion(intelligence, unknownPotions, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 연금술사 - 폭발물약
+     */
+    @PostMapping("/alchemist/explosive-potion")
+    public Map<String, Object> alchemistExplosivePotion(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        int unknownPotions = ((Number) request.getOrDefault("unknownPotions", 5)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = Alchemist.explosivePotion(intelligence, unknownPotions, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 연금술사 - 회복물약
+     */
+    @PostMapping("/alchemist/healing-potion")
+    public Map<String, Object> alchemistHealingPotion(@RequestBody Map<String, Object> request) {
+        int unknownPotions = ((Number) request.getOrDefault("unknownPotions", 5)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int healAmount = Alchemist.healingPotion(unknownPotions, ps);
+        
+        return createResponse(healAmount, baos);
+    }
+
+    /**
+     * 연금술사 - 성급한 준비
+     */
+    @PostMapping("/alchemist/hasty-preparation")
+    public Map<String, Object> alchemistHastyPreparation() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int potions = Alchemist.hastyPreparation(ps);
+        
+        return createResponse(potions, baos);
+    }
+
+    /**
+     * 연금술사 - 완벽한 준비
+     */
+    @PostMapping("/alchemist/perfect-preparation")
+    public Map<String, Object> alchemistPerfectPreparation() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int potions = Alchemist.perfectPreparation(ps);
+        
+        return createResponse(potions, baos);
+    }
+
+    // ===== 빛의 사제 (LightPriest) =====
+    
+    /**
+     * 빛의 사제 - 기본공격
+     */
+    @PostMapping("/lightpriest/plain")
+    public Map<String, Object> lightPriestPlain(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = LightPriest.plain(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 빛의 사제 - 힐
+     */
+    @PostMapping("/lightpriest/heal")
+    public Map<String, Object> lightPriestHeal(@RequestBody Map<String, Object> request) {
+        boolean hasAttacked = Boolean.TRUE.equals(request.get("hasAttacked"));
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int heal = LightPriest.heal(hasAttacked, ps);
+        
+        return createResponse(heal, baos);
+    }
+
+    /**
+     * 빛의 사제 - 치유의 바람
+     */
+    @PostMapping("/lightpriest/healing-wind")
+    public Map<String, Object> lightPriestHealingWind(@RequestBody Map<String, Object> request) {
+        boolean hasAttacked = Boolean.TRUE.equals(request.get("hasAttacked"));
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int heal = LightPriest.healingWind(hasAttacked, ps);
+        
+        return createResponse(heal, baos);
+    }
+
+    /**
+     * 빛의 사제 - 빛의 성배
+     */
+    @PostMapping("/lightpriest/chalice-of-light")
+    public Map<String, Object> lightPriestChaliceOfLight(@RequestBody Map<String, Object> request) {
+        boolean hasAttacked = Boolean.TRUE.equals(request.get("hasAttacked"));
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int heal = LightPriest.chaliceOfLight(hasAttacked, ps);
+        
+        return createResponse(heal, baos);
+    }
+
+    /**
+     * 빛의 사제 - 기원
+     */
+    @PostMapping("/lightpriest/prayer")
+    public Map<String, Object> lightPriestPrayer() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int shield = LightPriest.prayer(ps);
+        
+        return createResponse(shield, baos);
+    }
+
+    /**
+     * 빛의 사제 - 헤븐즈 도어
+     */
+    @PostMapping("/lightpriest/heavens-door")
+    public Map<String, Object> lightPriestHeavensDoor() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int hp = LightPriest.heavensDoor(ps);
+        
+        return createResponse(hp, baos);
+    }
+
+    // ===== 어둠의 사제 (DarkPriest) =====
+    
+    /**
+     * 어둠의 사제 - 기본공격
+     */
+    @PostMapping("/darkpriest/plain")
+    public Map<String, Object> darkPriestPlain(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = DarkPriest.plain(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 어둠의 사제 - 어둠의 기운
+     */
+    @PostMapping("/darkpriest/dark-energy")
+    public Map<String, Object> darkPriestDarkEnergy(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = DarkPriest.darkEnergy(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 어둠의 사제 - 손아귀
+     */
+    @PostMapping("/darkpriest/grip")
+    public Map<String, Object> darkPriestGrip(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = DarkPriest.grip(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 어둠의 사제 - 우즈마니아
+     */
+    @PostMapping("/darkpriest/uzumania")
+    public Map<String, Object> darkPriestUzumania(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = DarkPriest.uzumania(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 어둠의 사제 - 엑실리스터
+     */
+    @PostMapping("/darkpriest/exilister")
+    public Map<String, Object> darkPriestExilister(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = DarkPriest.exilister(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 어둠의 사제 - 어나이스필레인
+     */
+    @PostMapping("/darkpriest/annihilation-plain")
+    public Map<String, Object> darkPriestAnnihilationPlain(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = DarkPriest.annihilationPlain(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 어둠의 사제 - 엔시아스티켈리아
+     */
+    @PostMapping("/darkpriest/ensiasticalia")
+    public Map<String, Object> darkPriestEnsiasticalia(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = DarkPriest.ensiasticalia(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    // ===== 번개의 사제 (LightningPriest) =====
+    
+    /**
+     * 번개의 사제 - 기본공격
+     */
+    @PostMapping("/lightningpriest/plain")
+    public Map<String, Object> lightningPriestPlain(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = LightningPriest.plain(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 번개의 사제 - 스파크
+     */
+    @PostMapping("/lightningpriest/spark")
+    public Map<String, Object> lightningPriestSpark(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = LightningPriest.spark(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 번개의 사제 - 체인 라이트닝 (공격)
+     */
+    @PostMapping("/lightningpriest/chain-lightning-damage")
+    public Map<String, Object> lightningPriestChainLightningDamage(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = LightningPriest.chainLightningDamage(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 번개의 사제 - 체인 라이트닝 (보호막)
+     */
+    @PostMapping("/lightningpriest/chain-lightning-shield")
+    public Map<String, Object> lightningPriestChainLightningShield() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int shield = LightningPriest.chainLightningShield(ps);
+        
+        return createResponse(shield, baos);
+    }
+
+    /**
+     * 번개의 사제 - 일렉트릭 필드
+     */
+    @PostMapping("/lightningpriest/electric-field")
+    public Map<String, Object> lightningPriestElectricField(@RequestBody Map<String, Object> request) {
+        int n = ((Number) request.getOrDefault("n", 3)).intValue();
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = LightningPriest.electricField(n, intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 번개의 사제 - 스트라이크
+     */
+    @PostMapping("/lightningpriest/strike")
+    public Map<String, Object> lightningPriestStrike(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = LightningPriest.strike(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 번개의 사제 - 신뇌격
+     */
+    @PostMapping("/lightningpriest/divine-lightning")
+    public Map<String, Object> lightningPriestDivineLightning(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = LightningPriest.divineLightning(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    // ===== 영혼의 사제 (SoulPriest) =====
+    
+    /**
+     * 영혼의 사제 - 기본공격
+     */
+    @PostMapping("/soulpriest/plain")
+    public Map<String, Object> soulPriestPlain(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = SoulPriest.plain(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 영혼의 사제 - 흡수
+     */
+    @PostMapping("/soulpriest/absorb")
+    public Map<String, Object> soulPriestAbsorb() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int heal = SoulPriest.absorb(ps);
+        
+        return createResponse(heal, baos);
+    }
+
+    /**
+     * 영혼의 사제 - 저주
+     */
+    @PostMapping("/soulpriest/curse")
+    public Map<String, Object> soulPriestCurse(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = SoulPriest.curse(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 영혼의 사제 - 흉통
+     */
+    @PostMapping("/soulpriest/chest-pain")
+    public Map<String, Object> soulPriestChestPain(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = SoulPriest.chestPain(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 영혼의 사제 - 원한
+     */
+    @PostMapping("/soulpriest/grudge")
+    public Map<String, Object> soulPriestGrudge(@RequestBody Map<String, Object> request) {
+        int soulsSpent = ((Number) request.getOrDefault("soulsSpent", 5)).intValue();
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = SoulPriest.grudge(soulsSpent, intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 영혼의 사제 - 수거
+     */
+    @PostMapping("/soulpriest/collect")
+    public Map<String, Object> soulPriestCollect() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int souls = SoulPriest.collect(ps);
+        
+        return createResponse(souls, baos);
+    }
+
+    // ===== 시간의 사제 (TimePriest) =====
+    
+    /**
+     * 시간의 사제 - 기본공격
+     */
+    @PostMapping("/timepriest/plain")
+    public Map<String, Object> timePriestPlain(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = TimePriest.plain(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 시간의 사제 - 부식
+     */
+    @PostMapping("/timepriest/corrosion")
+    public Map<String, Object> timePriestCorrosion(@RequestBody Map<String, Object> request) {
+        int intelligence = ((Number) request.getOrDefault("intelligence", 10)).intValue();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = TimePriest.corrosion(intelligence, ps);
+        
+        return createResponse(damage, baos);
+    }
+
     /**
      * Helper method to create response
      */
