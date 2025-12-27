@@ -1,5 +1,9 @@
 package main.secondary;
 
+import main.Main;
+
+import java.io.PrintStream;
+
 /**
  * 마도사 (Archmage)
  * 주 스탯: 지능 (지혜)
@@ -14,16 +18,17 @@ public class Archmage {
      * 피해를 주는 스킬 발동 시 (해당 스킬의 원래 영창 시간) x 10% 확률로 적의 수비 무시
      *
      * @param originalChantTime 원래 영창 시간
-     * @param diceRoll D20 주사위 결과 (1~20)
+     * @param out 출력 스트림
      * @return 수비 무시 성공 여부
      */
-    public static boolean magicScholar(int originalChantTime, int diceRoll) {
+    public static boolean magicScholar(int originalChantTime, PrintStream out) {
         int probability = originalChantTime * 10;
         int threshold = (probability * 20) / 100; // D20 기준으로 변환
+        int diceRoll = Main.dice(1, 20, out);
         boolean success = diceRoll <= threshold;
 
-        System.out.println("마도학: 수비 무시 확률 " + probability + "% (D20 <= " + threshold + "), 결과: " +
-                          (success ? "성공" : "실패"));
+        out.printf("마도학: 수비 무시 확률 %d%% (D20 <= %d), 결과: %s%n",
+                   probability, threshold, success ? "성공" : "실패");
         return success;
     }
 
@@ -32,10 +37,13 @@ public class Archmage {
      * (하나의 스킬 발동에 소모한 총 마나) x 30% 데미지 증가
      *
      * @param totalManaSpent 총 소모 마나
+     * @param out 출력 스트림
      * @return 데미지 배율
      */
-    public static double manaFlood(int totalManaSpent) {
-        return 1.0 + (totalManaSpent * 0.30);
+    public static double manaFlood(int totalManaSpent, PrintStream out) {
+        double multiplier = 1.0 + (totalManaSpent * 0.30);
+        out.printf("마력의 범람: 마나 %d 소모 → x%.2f 데미지%n", totalManaSpent, multiplier);
+        return multiplier;
     }
 
     // ===== 스킬 =====
@@ -45,8 +53,10 @@ public class Archmage {
      * 다음 영창 스킬의 영창 시간 2턴 감소
      * 마나2 쿨타임 4턴
      */
-    public static void manaCirculation() {
-        System.out.println("마력 순환: 다음 영창 스킬의 영창 시간 -2턴");
+    public static void manaCirculation(PrintStream out) {
+        out.println("마도사-마력 순환 사용");
+        out.println("※ 다음 영창 스킬의 영창 시간 -2턴");
+        out.println("※ 마나 2 소모, 쿨타임 4턴");
     }
 
     /**
@@ -56,11 +66,16 @@ public class Archmage {
      * 마나3 쿨타임 5턴
      *
      * @param chantTurns 영창 진행 턴 수
+     * @param out 출력 스트림
      * @return 데미지 배율
      */
-    public static double condensation(int chantTurns) {
-        System.out.println("응집: 영창 " + chantTurns + "턴 진행");
-        return 1.0 + (chantTurns * 0.50);
+    public static double condensation(int chantTurns, PrintStream out) {
+        out.println("마도사-응집 사용");
+        out.printf("영창 %d턴 진행%n", chantTurns);
+        double multiplier = 1.0 + (chantTurns * 0.50);
+        out.printf("다음 스킬 데미지: x%.2f%n", multiplier);
+        out.println("※ 마나 3 소모, 쿨타임 5턴");
+        return multiplier;
     }
 
     /**
@@ -68,16 +83,24 @@ public class Archmage {
      * 5D4
      * 마나2 쿨타임 3턴
      *
-     * @param rolls 5D4 결과
-     * @param usedManaCirculation 마력 순환 사용 여부
-     * @param usedMagicConcentration 마력 집중 사용 여부
+     * @param intelligence 지능 스탯
+     * @param out 출력 스트림
+     * @return 총 데미지
      */
-    public static int[] magicBolt(int[] rolls, boolean usedManaCirculation, boolean usedMagicConcentration) {
-        int total = 0;
-        for (int roll : rolls) {
-            total += roll;
+    public static int magicBolt(int intelligence, PrintStream out) {
+        out.println("마도사-마력탄 사용 (5D4)");
+        int totalDamage = 0;
+
+        for (int i = 1; i <= 5; i++) {
+            int diceResult = Main.dice(1, 4, out);
+            out.printf("%d번째 마력탄: %d%n", i, diceResult);
+            totalDamage += diceResult;
         }
-        return new int[]{total};
+
+        int sideDamage = Main.sideDamage(intelligence, out);
+        out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
+        out.println("※ 마나 2 소모, 쿨타임 3턴");
+        return totalDamage + sideDamage;
     }
 
     /**
@@ -86,8 +109,10 @@ public class Archmage {
      * 영창 시간 감소 효과를 2배로 받음
      * 마나4 쿨타임 6턴
      */
-    public static void magicConcentration() {
-        System.out.println("마력 집중: 다음 스킬 영창 시간 50%, 감소 효과 2배");
+    public static void magicConcentration(PrintStream out) {
+        out.println("마도사-마력 집중 사용");
+        out.println("※ 다음 스킬 영창 시간 50%, 감소 효과 2배");
+        out.println("※ 마나 4 소모, 쿨타임 6턴");
     }
 
     /**
@@ -96,10 +121,15 @@ public class Archmage {
      * (턴 소모X) 마나2 쿨타임 6턴
      *
      * @param staminaToConvert 교환할 스태미나
+     * @param out 출력 스트림
      * @return 얻을 마나
      */
-    public static int mentalExhaustion(int staminaToConvert) {
-        return staminaToConvert * 2;
+    public static int mentalExhaustion(int staminaToConvert, PrintStream out) {
+        out.println("마도사-정신 소모 사용");
+        int manaGained = staminaToConvert * 2;
+        out.printf("스태미나 %d → 마나 %d 획득%n", staminaToConvert, manaGained);
+        out.println("※ 턴 소모X, 마나 2 소모, 쿨타임 6턴");
+        return manaGained;
     }
 
     /**
@@ -107,25 +137,34 @@ public class Archmage {
      * 5D20
      * 영창10턴 마나7 쿨타임10턴
      *
-     * @param rolls 5D20 결과
+     * @param intelligence 지능 스탯
      * @param usedManaCirculation 마력 순환 사용 여부
      * @param usedMagicConcentration 마력 집중 사용 여부
+     * @param out 출력 스트림
+     * @return 총 데미지
      */
-    public static int[] etherCatastrophe(int[] rolls, boolean usedManaCirculation, boolean usedMagicConcentration) {
+    public static int etherCatastrophe(int intelligence, boolean usedManaCirculation, boolean usedMagicConcentration, PrintStream out) {
+        out.println("마도사-에테르 카타스트로피 사용 (5D20)");
+
         int baseChant = 10;
         if (usedManaCirculation) baseChant -= 2;
         if (usedMagicConcentration) {
             baseChant = (int)(baseChant * 0.5);
             if (usedManaCirculation) baseChant -= 2; // 감소 효과 2배
         }
+        out.printf("최종 영창 시간: %d턴%n", baseChant);
 
-        System.out.println("에테르 카타스트로피: 최종 영창 시간 " + baseChant + "턴");
-
-        int total = 0;
-        for (int roll : rolls) {
-            total += roll;
+        int totalDamage = 0;
+        for (int i = 1; i <= 5; i++) {
+            int diceResult = Main.dice(1, 20, out);
+            out.printf("%d번째 에테르: %d%n", i, diceResult);
+            totalDamage += diceResult;
         }
-        return new int[]{total};
+
+        int sideDamage = Main.sideDamage(intelligence, out);
+        out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
+        out.println("※ 영창 10턴, 마나 7 소모, 쿨타임 10턴");
+        return totalDamage + sideDamage;
     }
 
     /**
@@ -134,25 +173,35 @@ public class Archmage {
      * 피격 대상은 다음턴까지 [마나] 사용 봉인
      * 영창18턴 마나15 쿨타임20턴
      *
-     * @param rolls 4D20 결과
+     * @param intelligence 지능 스탯
      * @param usedManaCirculation 마력 순환 사용 여부
      * @param usedMagicConcentration 마력 집중 사용 여부
+     * @param out 출력 스트림
+     * @return 총 데미지
      */
-    public static int[] lumenConversionAOE(int[] rolls, boolean usedManaCirculation, boolean usedMagicConcentration) {
+    public static int lumenConversionAOE(int intelligence, boolean usedManaCirculation, boolean usedMagicConcentration, PrintStream out) {
+        out.println("마도사-루멘 컨버전(광역) 사용 (4D20)");
+
         int baseChant = 18;
         if (usedManaCirculation) baseChant -= 2;
         if (usedMagicConcentration) {
             baseChant = (int)(baseChant * 0.5);
             if (usedManaCirculation) baseChant -= 2; // 감소 효과 2배
         }
+        out.printf("최종 영창 시간: %d턴%n", baseChant);
 
-        System.out.println("루멘 컨버전(광역): 최종 영창 시간 " + baseChant + "턴");
-
-        int total = 0;
-        for (int roll : rolls) {
-            total += roll;
+        int totalDamage = 0;
+        for (int i = 1; i <= 4; i++) {
+            int diceResult = Main.dice(1, 20, out);
+            out.printf("%d번째 루멘: %d%n", i, diceResult);
+            totalDamage += diceResult;
         }
-        return new int[]{total};
+
+        int sideDamage = Main.sideDamage(intelligence, out);
+        out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
+        out.println("※ 피격 대상 다음턴까지 마나 사용 봉인");
+        out.println("※ 영창 18턴, 마나 15 소모, 쿨타임 20턴");
+        return totalDamage + sideDamage;
     }
 
     /**
@@ -161,25 +210,35 @@ public class Archmage {
      * 피격 대상은 다음턴까지 [마나] 사용 봉인
      * 영창18턴 마나15 쿨타임20턴
      *
-     * @param rolls 10D12 결과
+     * @param intelligence 지능 스탯
      * @param usedManaCirculation 마력 순환 사용 여부
      * @param usedMagicConcentration 마력 집중 사용 여부
+     * @param out 출력 스트림
+     * @return 총 데미지
      */
-    public static int[] lumenConversionSingle(int[] rolls, boolean usedManaCirculation, boolean usedMagicConcentration) {
+    public static int lumenConversionSingle(int intelligence, boolean usedManaCirculation, boolean usedMagicConcentration, PrintStream out) {
+        out.println("마도사-루멘 컨버전(단일) 사용 (10D12)");
+
         int baseChant = 18;
         if (usedManaCirculation) baseChant -= 2;
         if (usedMagicConcentration) {
             baseChant = (int)(baseChant * 0.5);
             if (usedManaCirculation) baseChant -= 2; // 감소 효과 2배
         }
+        out.printf("최종 영창 시간: %d턴%n", baseChant);
 
-        System.out.println("루멘 컨버전(단일): 최종 영창 시간 " + baseChant + "턴");
-
-        int total = 0;
-        for (int roll : rolls) {
-            total += roll;
+        int totalDamage = 0;
+        for (int i = 1; i <= 10; i++) {
+            int diceResult = Main.dice(1, 12, out);
+            out.printf("%d번째 루멘: %d%n", i, diceResult);
+            totalDamage += diceResult;
         }
-        return new int[]{total};
+
+        int sideDamage = Main.sideDamage(intelligence, out);
+        out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
+        out.println("※ 피격 대상 다음턴까지 마나 사용 봉인");
+        out.println("※ 영창 18턴, 마나 15 소모, 쿨타임 20턴");
+        return totalDamage + sideDamage;
     }
 
     /**
@@ -188,6 +247,12 @@ public class Archmage {
      * 데미지 300% 마나 소모 200%
      * 마나3 쿨타임10턴
      */
+    public static void annihilator(PrintStream out) {
+        out.println("마도사-어나일레이터 사용");
+        out.println("※ 공격 스킬 2회 사용까지: 데미지 300%, 마나 소모 200%");
+        out.println("※ 마나 3 소모, 쿨타임 10턴");
+    }
+
     public static double annihilatorDamageMultiplier() {
         return 3.0;
     }
@@ -202,10 +267,15 @@ public class Archmage {
      * 마나(사용횟수) x 5 쿨타임5턴
      *
      * @param useCount 사용 횟수
+     * @param out 출력 스트림
      * @return 필요 마나
      */
-    public static int overloadCoreManaCost(int useCount) {
-        return useCount * 5;
+    public static int overloadCore(int useCount, PrintStream out) {
+        out.println("마도사-오버로드 코어 사용");
+        int manaCost = useCount * 5;
+        out.printf("모든 스킬 쿨타임 초기화, 마나 %d 소모%n", manaCost);
+        out.println("※ 쿨타임 5턴");
+        return manaCost;
     }
 
     /**
@@ -217,12 +287,21 @@ public class Archmage {
      *
      * @param baseChantTime 영창 기본 시간
      * @param remainingChantTime 남은 영창 시간
-     * @return 받는 피해 배율 (1.0 = 100%)
+     * @param damageTaken 받는 데미지
+     * @param out 출력 스트림
+     * @return 감소된 데미지
      */
-    public static double rampageAura(int baseChantTime, int remainingChantTime) {
+    public static int rampageAura(int baseChantTime, int remainingChantTime, int damageTaken, PrintStream out) {
+        out.println("마도사-폭주오라 사용 (전용 수비)");
         int elapsed = baseChantTime - remainingChantTime;
         double reduction = elapsed * 0.10;
-        return Math.max(0, 1.0 - reduction);
+        double multiplier = Math.max(0, 1.0 - reduction);
+        int reducedDamage = (int)(damageTaken * multiplier);
+        out.printf("영창 진행 %d턴 → 피해 %.0f%% 감소: %d → %d%n",
+                   elapsed, reduction * 100, damageTaken, reducedDamage);
+        out.println("※ 이번턴 상태이상 1회 무시");
+        out.println("※ 마나 3 소모");
+        return reducedDamage;
     }
 }
 
