@@ -23,9 +23,7 @@ public class Ninja {
      */
     public static int plain(int stat, boolean isIllusionTurn, boolean isCloneActive, boolean isReflexActive, boolean isIdeologySealActive, PrintStream out) {
         out.println("닌자-기본공격 사용");
-        int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(1, 6, out);
 
         double multiplier = 1.0;
 
@@ -57,8 +55,13 @@ public class Ninja {
             out.println("순발력 패시브 적용: x0.75");
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
-        out.printf("패시브 적용 후: %d%n", totalDamage);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+        out.printf("패시브 적용 후: %d%n", damageAfterPassives);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
         out.printf("총 데미지 : %d%n", totalDamage);
         return totalDamage;
     }
@@ -76,9 +79,7 @@ public class Ninja {
      */
     public static int strike(int stat, boolean isIllusionTurn, boolean isCloneActive, boolean isIdeologySealActive, PrintStream out) {
         out.println("닌자-일격 사용 (2D6)");
-        int defaultDamage = Main.dice(2, 6, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(2, 6, out);
 
         double multiplier = 1.0;
 
@@ -99,7 +100,12 @@ public class Ninja {
             }
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 2 소모");
         return totalDamage;
@@ -118,9 +124,7 @@ public class Ninja {
      */
     public static int chaos(int stat, boolean isIllusionTurn, boolean isCloneActive, boolean isIdeologySealActive, PrintStream out) {
         out.println("닌자-난도 사용 (3D8)");
-        int defaultDamage = Main.dice(3, 8, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(3, 8, out);
 
         double multiplier = 1.0;
 
@@ -141,7 +145,12 @@ public class Ninja {
             }
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 4 소모");
         return totalDamage;
@@ -161,9 +170,7 @@ public class Ninja {
     public static int throwShuriken(int stat, boolean isCloneActive, boolean isIdeologySealActive, PrintStream out) {
         out.println("닌자-투척 표창 사용 (D8)");
         out.println("※ 표창 1개 소모, 턴 소모 X");
-        int defaultDamage = Main.dice(1, 8, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(1, 8, out);
 
         double multiplier = 1.0;
 
@@ -177,7 +184,12 @@ public class Ninja {
             }
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
         out.printf("총 데미지 : %d%n", totalDamage);
         return totalDamage;
     }
@@ -204,9 +216,7 @@ public class Ninja {
             out.println("※ 3n+3 턴까지 [분신] 봉인");
         }
 
-        int defaultDamage = Main.dice(8, 6, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(8, 6, out);
 
         double multiplier = 1.0;
 
@@ -221,7 +231,12 @@ public class Ninja {
             out.println("환영 패시브 적용: x1.5");
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 4 소모");
         return totalDamage;
@@ -245,9 +260,7 @@ public class Ninja {
         out.println("※ 모든 표창 소모");
         out.println("※ 마나 3 소모");
 
-        int defaultDamage = Main.dice(shurikenCount, 10, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(shurikenCount, 10, out);
 
         double multiplier = 1.0;
 
@@ -261,7 +274,12 @@ public class Ninja {
             }
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
         out.printf("총 데미지 : %d%n", totalDamage);
         return totalDamage;
     }

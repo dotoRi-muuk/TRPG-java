@@ -10,9 +10,11 @@ public class Warrior {
         out.println("전사-강타 사용");
         int defaultDamage = Main.dice(1, 10, out);
         int frenzyDamage = frenzy(maxHealth, curHealth, out);
-        int sideDamage = Main.sideDamage(power, out);
-        out.printf("총 데미지 : %d + %d + %d = %d%n", defaultDamage, sideDamage, frenzyDamage, defaultDamage+frenzyDamage+sideDamage);
-        return defaultDamage+frenzyDamage+sideDamage;
+        int baseDamage = defaultDamage + frenzyDamage;
+        int sideDamage = Main.sideDamage(baseDamage, power, out);
+        int totalDamage = baseDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d + %d = %d%n", defaultDamage, frenzyDamage, sideDamage, totalDamage);
+        return totalDamage;
     }
 
     private static int frenzy(int maxHealth, int curHealth, PrintStream out) {
@@ -27,18 +29,22 @@ public class Warrior {
         out.println("전사-가로베기 사용");
         int defaultDamage = Main.dice(1, 8, out);
         int frenzyDamage = frenzy(maxHealth, curHealth, out);
-        int sideDamage = Main.sideDamage(power, out);
-        out.printf("총 데미지 : %d + %d + %d = %d%n", defaultDamage, sideDamage, frenzyDamage, defaultDamage+frenzyDamage+sideDamage);
-        return defaultDamage+frenzyDamage+sideDamage;
+        int baseDamage = defaultDamage + frenzyDamage;
+        int sideDamage = Main.sideDamage(baseDamage, power, out);
+        int totalDamage = baseDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d + %d = %d%n", defaultDamage, frenzyDamage, sideDamage, totalDamage);
+        return totalDamage;
     }
 
     public static int plain(int power, int maxHealth, int curHealth, PrintStream out) {
         out.println("전사-기본공격 사용");
         int defaultDamage = Main.dice(1, 6, out);
         int frenzyDamage = frenzy(maxHealth, curHealth, out);
-        int sideDamage = Main.sideDamage(power, out);
-        out.printf("총 데미지 : %d + %d + %d = %d%n", defaultDamage, sideDamage, frenzyDamage, defaultDamage+frenzyDamage+sideDamage);
-        return defaultDamage+frenzyDamage+sideDamage;
+        int baseDamage = defaultDamage + frenzyDamage;
+        int sideDamage = Main.sideDamage(baseDamage, power, out);
+        int totalDamage = baseDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d + %d = %d%n", defaultDamage, frenzyDamage, sideDamage, totalDamage);
+        return totalDamage;
     }
 
     public static int shield(int damageTaken, PrintStream out) {

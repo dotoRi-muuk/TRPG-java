@@ -14,10 +14,11 @@ public class Priest {
     public static int plain(int intelligence, PrintStream out) {
         out.println("사제-기본공격 사용");
         int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(intelligence, out);
-        out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
+        int sideDamage = Main.sideDamage(defaultDamage, intelligence, out);
+        int totalDamage = defaultDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, totalDamage);
         out.println("※ 지정한 아군의 체력 1 회복");
-        return defaultDamage + sideDamage;
+        return totalDamage;
     }
 
     /**
@@ -29,17 +30,18 @@ public class Priest {
         out.println("사제-복수 스킬 사용");
         out.println("※ 공격을 받은 턴까지 해당 아군에게 보호막 10 부여");
 
-        int totalDamage = 0;
+        int baseDamage = 0;
 
         for (int i = 1; i <= 6; i++) {
             int diceResult = Main.dice(1, 4, out);
             out.printf("%d번째 복수: %d%n", i, diceResult);
-            totalDamage += diceResult;
+            baseDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
-        out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
-        return totalDamage + sideDamage;
+        int sideDamage = Main.sideDamage(baseDamage, intelligence, out);
+        int totalDamage = baseDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", baseDamage, sideDamage, totalDamage);
+        return totalDamage;
     }
 
     /**

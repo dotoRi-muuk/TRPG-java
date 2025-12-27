@@ -12,9 +12,10 @@ public class Mage {
     public static int plain(int intelligence, PrintStream out) {
         out.println("마법사-기본공격 사용 (D6)");
         int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(intelligence, out);
-        out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
-        return defaultDamage + sideDamage;
+        int sideDamage = Main.sideDamage(defaultDamage, intelligence, out);
+        int totalDamage = defaultDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, totalDamage);
+        return totalDamage;
     }
 
     /**
@@ -25,9 +26,10 @@ public class Mage {
             out.println("마법사-기본공격 사용 (마나 1 소모, D8)");
             out.println("※ 마나 1 소모");
             int defaultDamage = Main.dice(1, 8, out);
-            int sideDamage = Main.sideDamage(intelligence, out);
-            out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
-            return defaultDamage + sideDamage;
+            int sideDamage = Main.sideDamage(defaultDamage, intelligence, out);
+            int totalDamage = defaultDamage + sideDamage;
+            out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, totalDamage);
+            return totalDamage;
         } else {
             return plain(intelligence, out);
         }
@@ -39,17 +41,18 @@ public class Mage {
      */
     public static int magicBullet(int intelligence, PrintStream out) {
         out.println("마법사-마탄 스킬 사용");
-        int totalDamage = 0;
+        int baseDamage = 0;
 
         for (int i = 1; i <= 3; i++) {
             int diceResult = Main.dice(1, 8, out);
             out.printf("%d번째 마탄: %d%n", i, diceResult);
-            totalDamage += diceResult;
+            baseDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
-        out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
-        return totalDamage + sideDamage;
+        int sideDamage = Main.sideDamage(baseDamage, intelligence, out);
+        int totalDamage = baseDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d = %d%n", baseDamage, sideDamage, totalDamage);
+        return totalDamage;
     }
 
     /**
@@ -60,18 +63,20 @@ public class Mage {
         out.println("마법사-마나 블래스트 스킬 사용");
         out.printf("추가 소모 마나: %d (기본 8 + 추가 %d = 총 %d)%n", additionalMana, additionalMana, 8 + additionalMana);
 
-        int totalDamage = 0;
+        int baseDamage = 0;
 
         for (int i = 1; i <= 6; i++) {
             int diceResult = Main.dice(1, 6, out);
             out.printf("%d번째 블래스트: %d%n", i, diceResult);
-            totalDamage += diceResult;
+            baseDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
-        int finalDamage = totalDamage + sideDamage + additionalMana;
-        out.printf("총 데미지 : %d + %d + %d(추가 마나) = %d%n", totalDamage, sideDamage, additionalMana, finalDamage);
-        return finalDamage;
+        // 추가 마나도 기본 데미지에 포함
+        baseDamage += additionalMana;
+        int sideDamage = Main.sideDamage(baseDamage, intelligence, out);
+        int totalDamage = baseDamage + sideDamage;
+        out.printf("총 데미지 : %d + %d(추가 마나 포함) + %d = %d%n", baseDamage - additionalMana, additionalMana, sideDamage, totalDamage);
+        return totalDamage;
     }
 
     /**
