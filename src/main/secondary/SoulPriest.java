@@ -174,6 +174,11 @@ public class SoulPriest {
      * @return 총 데미지
      */
     public static int grudge(int soulsSpent, int intelligence, PrintStream out) {
+        if (soulsSpent <= 0) {
+            out.println("영혼의 사제-원한: 영혼이 부족합니다.");
+            return 0;
+        }
+
         out.printf("영혼의 사제-원한 사용 (%dD12)%n", soulsSpent);
         int totalDamage = 0;
 

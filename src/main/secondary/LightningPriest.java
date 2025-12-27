@@ -124,6 +124,13 @@ public class LightningPriest {
      * @return 총 데미지
      */
     public static int electricField(int n, int intelligence, PrintStream out) {
+        // 영창 턴 수 검증 (0-6 사이)
+        int validN = Math.max(0, Math.min(n, 6));
+        if (n != validN) {
+            out.printf("※ 영창 턴 수 조정: %d → %d%n", n, validN);
+            n = validN;
+        }
+
         out.println("번개의 사제-일렉트릭 필드 사용");
         out.printf("※ 영창 %d턴 (최대 6턴)%n", n);
 
