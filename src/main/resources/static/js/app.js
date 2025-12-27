@@ -3,15 +3,26 @@
 const API_BASE = '/api';
 let currentJob = null;
 
-// Show job category (normal/hidden/secret)
-function showJobCategory(category, event) {
+// Show category (defense/essence/normal/hidden/secret)
+function showCategory(category, event) {
     document.querySelectorAll('.job-category').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     
-    document.getElementById(category + '-jobs').style.display = 'block';
+    // Handle different category ID patterns
+    if (category === 'defense' || category === 'essence') {
+        document.getElementById(category + '-category').style.display = 'block';
+    } else {
+        document.getElementById(category + '-jobs').style.display = 'block';
+    }
+    
     if (event && event.target) {
         event.target.classList.add('active');
     }
+}
+
+// Legacy function for backward compatibility
+function showJobCategory(category, event) {
+    showCategory(category, event);
 }
 
 // Select a job
