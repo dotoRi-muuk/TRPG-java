@@ -54,7 +54,7 @@ function selectJob(job, event) {
         'ninja': '🥷 닌자',
         'gunslinger': '🔫 건슬링거',
         'sniper': '🎯 저격수',
-        'masterarcher': '🏹 명궁',
+        'masterarcher': '🏹 명사수',
         'crossbowman': '🎯 석궁사수',
         'spearman': '🔱 창술사',
         'trickster': '🃏 트릭스터',

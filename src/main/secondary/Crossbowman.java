@@ -7,14 +7,25 @@ import java.io.PrintStream;
 public class Crossbowman {
 
     /**
+     * 석궁사수 기본공격 (호환성을 위한 오버로드)
+     */
+    public static int plain(int stat, int arrows, boolean focusedAttack, PrintStream out) {
+        return plain(stat, arrows, focusedAttack, false, false, false, 0, out);
+    }
+
+    /**
      * 석궁사수 기본공격 - 장전/발사 패시브 적용
      * 모인 화살의 데미지: (화살 개수)D6
      * @param stat 사용할 스탯
      * @param arrows 장전된 화살 개수
      * @param focusedAttack 집중 공격 패시브 적용 여부 (화살 1개당 30% 증가)
+     * @param isErrorRemoval 오차 제거 활성화 여부 (집중 공격 30% → 50%)
+     * @param isDistanceCalc 비거리 계산 패시브 적용 여부 (2회 판정 성공 시 200%)
+     * @param isExecutionArrow 처형 화살 활성화 여부
+     * @param executionArrows 처형 화살 개수
      * @param out 출력 스트림
      */
-    public static int plain(int stat, int arrows, boolean focusedAttack, PrintStream out) {
+    public static int plain(int stat, int arrows, boolean focusedAttack, boolean isErrorRemoval, boolean isDistanceCalc, boolean isExecutionArrow, int executionArrows, PrintStream out) {
         out.println("석궁사수-기본공격 사용 (장전/발사)");
         out.printf("장전된 화살: %d개%n", arrows);
 
@@ -23,22 +34,67 @@ public class Crossbowman {
             return 0;
         }
 
+        // 비거리 계산 패시브: 2회 판정 성공 시 200%
+        if (isDistanceCalc) {
+            out.println("비거리 계산 패시브: 2회 판정 필요");
+            int check1 = stat - Main.dice(1, 20, out);
+            out.printf("1차 판정: %d - D20 = %d%n", stat, check1);
+            int check2 = stat - Main.dice(1, 20, out);
+            out.printf("2차 판정: %d - D20 = %d%n", stat, check2);
+
+            if (check1 < 1 || check2 < 1) {
+                out.println("비거리 계산 실패! 공격 실패");
+                return 0;
+            }
+            out.println("비거리 계산 성공! 데미지 200%");
+        }
+
         int defaultDamage = Main.dice(arrows, 6, out);
         int sideDamage = Main.sideDamage(stat, out);
         int totalDamage = defaultDamage + sideDamage;
 
-        // 집중 공격 패시브
-        if (focusedAttack) {
-            double multiplier = 1.0 + (arrows * 0.3);
-            totalDamage = (int) (totalDamage * multiplier);
-            out.printf("집중 공격 패시브 적용: 화살 %d개 → x%.1f = %d%n", arrows, multiplier, totalDamage);
+        double multiplier = 1.0;
+
+        // 비거리 계산 성공 시 200%
+        if (isDistanceCalc) {
+            multiplier *= 2.0;
         }
 
+        // 집중 공격 패시브 (오차 제거 시 50%, 그 외 30%)
+        if (focusedAttack) {
+            double focusBonus = isErrorRemoval ? 0.5 : 0.3;
+            double focusMultiplier = 1.0 + (arrows * focusBonus);
+            multiplier *= focusMultiplier;
+            out.printf("집중 공격 패시브 적용: 화살 %d개 → x%.1f%n", arrows, focusMultiplier);
+            if (isErrorRemoval) {
+                out.println("오차 제거 활성화: 집중 공격 30% → 50%");
+            }
+        }
+
+        totalDamage = (int) (totalDamage * multiplier);
         out.printf("총 데미지 : %d%n", totalDamage);
         out.printf("※ 화살 %d개 소모%n", arrows);
 
-        if (arrows >= 4) {
+        if (arrows >= 4 && !isErrorRemoval) {
             out.println("※ 무차별 난사 발동: 기본 공격이 광역으로 변경");
+        } else if (arrows >= 4 && isErrorRemoval) {
+            out.println("※ 오차 제거로 무차별 난사 비활성화");
+        }
+
+        // 처형 화살 판정
+        if (isExecutionArrow && executionArrows > 0) {
+            double execProb = executionArrows * 0.2;
+            // 5% 단위로 내림
+            int execProbFloor = (int) (execProb / 5) * 5;
+            out.printf("처형 화살 판정: %d개 → %.1f%% → %d%% (5%% 단위 내림)%n", executionArrows, execProb, execProbFloor);
+            if (execProbFloor > 0) {
+                int roll = Main.dice(1, 20, out);
+                int threshold = execProbFloor / 5; // 5% = 1, 10% = 2, ...
+                out.printf("D20 판정: %d <= %d (%d%% 확률)?%n", roll, threshold, execProbFloor);
+                if (roll <= threshold) {
+                    out.println("★ 처형 발동! ★");
+                }
+            }
         }
 
         return totalDamage;

@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRPG 위키 - 직업별 스킬 및 데미지 계산</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .wiki-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .wiki-nav {
+            background: #2c3e50;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .wiki-nav a {
+            color: #ecf0f1;
+            text-decoration: none;
+            margin-right: 20px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        .wiki-nav a:hover {
+            background: #34495e;
+        }
+        .wiki-nav a.active {
+            background: #3498db;
+        }
+        .job-section {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 4px solid #3498db;
+        }
+        .job-section h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .job-section h3 {
+            color: #34495e;
+            margin-top: 20px;
+        }
+        .skill-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .skill-table th, .skill-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .skill-table th {
+            background: #3498db;
+            color: white;
+        }
+        .skill-table tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        .formula {
+            background: #ecf0f1;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .passive-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .skill-box {
+            background: #d4edda;
+            border: 1px solid #28a745;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .buff-box {
+            background: #cce5ff;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .note {
+            color: #666;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+        .back-link {
+            display: inline-block;
+            margin: 20px 0;
+            color: #3498db;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .toc {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .toc h3 {
+            margin-top: 0;
+        }
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .toc ul ul {
+            padding-left: 20px;
+        }
+        .toc a {
+            color: #2c3e50;
+            text-decoration: none;
+        }
+        .toc a:hover {
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="wiki-container">
+        <header>
+            <h1>🎲 TRPG 위키</h1>
+            <p>직업별 스킬 및 데미지 계산 방식 정리</p>
+        </header>
+
+        <nav class="wiki-nav">
+            <a href="/">🏠 계산기</a>
+            <a href="/wiki.html" class="active">📖 위키</a>
+        </nav>
+
+        <div class="toc">
+            <h3>📚 목차</h3>
+            <ul>
+                <li><a href="#common">공통 규칙</a></li>
+                <li><a href="#defense">수비 시스템</a></li>
+                <li><a href="#essence">정수 시스템</a></li>
+                <li>2차 직업
+                    <ul>
+                        <li><a href="#samurai">무사</a></li>
+                        <li><a href="#spearman">창술사</a></li>
+                        <li><a href="#crossbowman">석궁사수</a></li>
+                        <li><a href="#gunslinger">건슬링거</a></li>
+                        <li><a href="#sniper">저격수</a></li>
+                        <li><a href="#poacher">밀렵꾼</a></li>
+                        <li><a href="#masterarcher">명사수</a></li>
+                        <li><a href="#assassin">암살자</a></li>
+                        <li><a href="#ninja">닌자</a></li>
+                        <li><a href="#trickster">트릭스터</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 공통 규칙 -->
+        <section id="common" class="job-section">
+            <h2>📌 공통 규칙</h2>
+            
+            <h3>1. 데미지 계산 기본 공식</h3>
+            <div class="formula">
+                총 데미지 = (기본 주사위 데미지 + 데미지 보정) × 패시브 배율
+            </div>
+            <p class="note">데미지 보정 = max(0, 스탯 - D20) / 10</p>
+
+            <h3>2. 곱연산 규칙</h3>
+            <p>모든 데미지 상승은 <strong>곱연산</strong>으로 적용됩니다.</p>
+            <div class="formula">
+                예시: 150% × 200% = 300% (곱연산) ✓<br>
+                예시: 150% + 200% = 350% (합연산) ✗
+            </div>
+
+            <h3>3. 발동 실패 판정</h3>
+            <p>스탯을 필요로 하는 모든 공격 기술/기본 공격에는 발동 실패 판정이 있습니다.</p>
+            <div class="formula">
+                실패 조건: (스탯 - D20) ≤ 0
+            </div>
+            <p class="note">버프 스킬에는 판정이 필요하지 않습니다.</p>
+
+            <h3>4. OO 성공 판정 기준</h3>
+            <div class="formula">
+                성공 조건: (스탯 - D20) ≥ 1
+            </div>
+            <p class="note">복수 스탯 판정 시 모든 스탯이 성공해야 합니다.</p>
+        </section>
+
+        <!-- 수비 시스템 -->
+        <section id="defense" class="job-section">
+            <h2>🛡️ 수비 시스템</h2>
+            <p>각각의 사용 스탯 - D20이 전부 1 이상일 때 성공</p>
+
+            <table class="skill-table">
+                <tr>
+                    <th>수비 종류</th>
+                    <th>사용 스탯</th>
+                    <th>성공 효과</th>
+                    <th>실패 효과</th>
+                    <th>스태미나</th>
+                </tr>
+                <tr>
+                    <td><strong>방어</strong></td>
+                    <td>힘</td>
+                    <td>{30+5(스탯-주사위)}% 데미지 경감, 다음 공격 150%</td>
+                    <td>{20+5(스탯-주사위)} 데미지 경감</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td><strong>회피</strong></td>
+                    <td>민첩</td>
+                    <td>데미지 무효, 기본공격 반격</td>
+                    <td>데미지 그대로</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td><strong>흘리기</strong></td>
+                    <td>힘, 민첩</td>
+                    <td>약한 반격(50%), 다음 공격 200%</td>
+                    <td>-</td>
+                    <td>2/3</td>
+                </tr>
+                <tr>
+                    <td><strong>패링</strong></td>
+                    <td>힘, 민첩, 신속</td>
+                    <td>반격 150%, 상대 수비 불가, 다음 공격 200%</td>
+                    <td>받는 데미지 150%</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td><strong>카운터 패링</strong></td>
+                    <td>힘, 민첩, 신속, 치명타</td>
+                    <td>반격 250%, 상대 2턴 공격/수비 불가, 다음 공격 300%</td>
+                    <td>행동 불가, 받는 데미지 200%</td>
+                    <td>8</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- 정수 시스템 -->
+        <section id="essence" class="job-section">
+            <h2>✨ 정수 시스템</h2>
+            <p>정수 계열: 빛, 어둠, 시간, 영혼, 번개</p>
+
+            <table class="skill-table">
+                <tr>
+                    <th>정수</th>
+                    <th>데미지 관련 효과</th>
+                </tr>
+                <tr>
+                    <td><strong>석양</strong></td>
+                    <td>다음 턴까지 받는 데미지 150%, 가하는 데미지 250%</td>
+                </tr>
+                <tr>
+                    <td><strong>흑염</strong></td>
+                    <td>D6% 데미지 (예: D6=4이면 기본 데미지의 4%)</td>
+                </tr>
+                <tr>
+                    <td><strong>잔향</strong></td>
+                    <td>지난 3턴 동안 적이 입은 피해의 50% 추가 피해</td>
+                </tr>
+                <tr>
+                    <td><strong>천둥</strong></td>
+                    <td>적 공격 불가, 가하는 데미지 200% (턴 소모X)</td>
+                </tr>
+                <tr>
+                    <td><strong>격동</strong></td>
+                    <td>(지속턴×50)% 추가, 첫 피격 시 300%</td>
+                </tr>
+                <tr>
+                    <td><strong>섬광</strong></td>
+                    <td>모든 적 받는 데미지 200%, 수비 불가</td>
+                </tr>
+                <tr>
+                    <td><strong>폭주</strong></td>
+                    <td>D6 < (6-지속턴) 성공 시 데미지 250%</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- 무사 -->
+        <section id="samurai" class="job-section">
+            <h2>⚔️ 무사</h2>
+            <p>주 스탯: 힘 (+체력)</p>
+
+            <h3>패시브</h3>
+            <div class="passive-box">
+                <strong>물아 모드:</strong> 기술 데미지 150%<br>
+                <strong>각오:</strong> 데미지 200%<br>
+                <strong>생사결단:</strong> 데미지 300%<br>
+                <strong>흩날리는 검무:</strong> 공격 판정에 사용된 주사위 개수만큼 D4 추가 데미지<br>
+                <strong>일격필살:</strong> 체력 40% 이하일 때 데미지 200%
+            </div>
+
+            <h3>기술</h3>
+            <table class="skill-table">
+                <tr>
+                    <th>기술명</th>
+                    <th>데미지</th>
+                    <th>스태미나</th>
+                    <th>특수 효과</th>
+                </tr>
+                <tr><td>기본공격</td><td>D6</td><td>-</td><td>-</td></tr>
+                <tr><td>발검</td><td>D8</td><td>1</td><td>-</td></tr>
+                <tr><td>발도</td><td>D12</td><td>2</td><td>-</td></tr>
+                <tr><td>자법</td><td>3D6</td><td>3</td><td>-</td></tr>
+                <tr><td>일섬</td><td>3D6</td><td>3</td><td>-</td></tr>
+                <tr><td>난격</td><td>5D4</td><td>4</td><td>-</td></tr>
+                <tr><td>섬격</td><td>D12 × 200%</td><td>5</td><td>-</td></tr>
+                <tr><td>종점</td><td>3D20 + 소모 스태미나</td><td>전부</td><td>다음 턴 행동불가</td></tr>
+                <tr><td>개화</td><td>8D6</td><td>8</td><td>다음 2턴 공격 불가</td></tr>
+            </table>
+
+            <h3>데미지 계산 예시</h3>
+            <div class="formula">
+                발검 (D8) + 흩날리는 검무 (1D4) + 데미지 보정<br>
+                × 물아 모드 (1.5) × 각오 (2.0) × 일격필살 (2.0)<br>
+                = 기본 데미지 × 6.0
+            </div>
+        </section>
+
+        <!-- 창술사 -->
+        <section id="spearman" class="job-section">
+            <h2>🔱 창술사</h2>
+            <p>주 스탯: 힘 (+민첩)</p>
+
+            <h3>패시브</h3>
+            <div class="passive-box">
+                <strong>약점파악:</strong> 기본 기술 50%, [연계]기술 200%
+            </div>
+
+            <h3>스킬</h3>
+            <div class="skill-box">
+                <strong>적응:</strong> 전투에서 10회 이상 [연계] 성공 시 발동<br>
+                다음 3턴동안 [연계]데미지 400%<br>
+                <span class="note">약점파악과 곱연산: 200% × 400% = 800%</span>
+            </div>
+
+            <h3>기술</h3>
+            <table class="skill-table">
+                <tr>
+                    <th>기술명</th>
+                    <th>데미지</th>
+                    <th>배율</th>
+                    <th>스태미나</th>
+                </tr>
+                <tr><td>기본공격</td><td>D6</td><td>50%</td><td>-</td></tr>
+                <tr><td>돌려 찌르기</td><td>D8</td><td>50%</td><td>1</td></tr>
+                <tr><td>회전 타격</td><td>D10</td><td>50%</td><td>2</td></tr>
+                <tr><td>하단 베기</td><td>D6</td><td>50%</td><td>2</td></tr>
+                <tr><td>[연계]정면 찌르기</td><td>2D10</td><td>200%~800%</td><td>1</td></tr>
+                <tr><td>[연계]일섬창</td><td>4D8</td><td>200%~800%</td><td>3</td></tr>
+                <tr><td>[연계]천뢰격</td><td>5D12</td><td>200%~800%</td><td>5</td></tr>
+            </table>
+        </section>
+
+        <!-- 석궁사수 -->
+        <section id="crossbowman" class="job-section">
+            <h2>🎯 석궁사수</h2>
+            <p>주 스탯: 힘/민첩</p>
+
+            <h3>패시브</h3>
+            <div class="passive-box">
+                <strong>집중 공격:</strong> 화살 1개당 30% 증가 (오차 제거 시 50%)<br>
+                <strong>무차별 난사:</strong> 화살 4개 이상 시 광역 공격 (오차 제거 시 비활성화)<br>
+                <strong>비거리 계산:</strong> 2회 판정 성공 시 데미지 200%
+            </div>
+
+            <h3>스킬</h3>
+            <div class="skill-box">
+                <strong>오차 제거:</strong> 무차별 난사 비활성화, 집중 공격 30%→50%<br>
+                <strong>처형 화살:</strong> (화살개수×0.2)% 확률로 처형 발동 (5% 단위 내림)
+            </div>
+
+            <h3>기술</h3>
+            <table class="skill-table">
+                <tr>
+                    <th>기술명</th>
+                    <th>데미지</th>
+                    <th>스태미나</th>
+                </tr>
+                <tr><td>기본공격 (발사)</td><td>(화살)D6</td><td>-</td></tr>
+                <tr><td>던지기</td><td>D6</td><td>0</td></tr>
+                <tr><td>단일사격</td><td>D10</td><td>2</td></tr>
+                <tr><td>발광 화살</td><td>2D8</td><td>4</td></tr>
+                <tr><td>마비 화살</td><td>2D8</td><td>6</td></tr>
+            </table>
+        </section>
+
+        <!-- 건슬링거 -->
+        <section id="gunslinger" class="job-section">
+            <h2>🔫 건슬링거</h2>
+            <p>주 스탯: 힘/민첩</p>
+
+            <h3>패시브</h3>
+            <div class="passive-box">
+                <strong>신중함:</strong> 첫 공격 300%<br>
+                <strong>노림수:</strong> 지난 턴 회피 시 200%<br>
+                <strong>심판자:</strong> 5n턴마다 D4% 추가
+            </div>
+
+            <h3>스킬</h3>
+            <div class="skill-box">
+                <strong>심판 대상:</strong> 지정한 적에게 데미지 200%<br>
+                <strong>경고:</strong> 다음턴까지 반격 데미지 300% (턴 소모X)<br>
+                <strong>예고장:</strong> 대상에게 반격 데미지 200%<br>
+                <strong>활약 기회:</strong> 신속 성공 시 이번 턴 반격 데미지 150%<br>
+                <strong>백스탭:</strong> 공격 회피 시 150% 반격 (버프 스킬)
+            </div>
+
+            <h3>기술</h3>
+            <table class="skill-table">
+                <tr>
+                    <th>기술명</th>
+                    <th>데미지</th>
+                    <th>스태미나</th>
+                </tr>
+                <tr><td>기본공격</td><td>D6</td><td>-</td></tr>
+                <tr><td>더블샷</td><td>2D6</td><td>2</td></tr>
+                <tr><td>헤드샷</td><td>D20</td><td>3</td></tr>
+                <tr><td>퀵드로우</td><td>D8 (신중함: 4D8)</td><td>1</td></tr>
+                <tr><td>일점사</td><td>6D6</td><td>4</td></tr>
+            </table>
+
+            <p class="note">퀵드로우에 신중함 발동 시: 4D8 주사위 + 300% 배율 모두 적용</p>
+        </section>
+
+        <!-- 저격수 -->
+        <section id="sniper" class="job-section">
+            <h2>🎯 저격수</h2>
+            <p>주 스탯: 힘/민첩</p>
+
+            <h3>패시브</h3>
+            <div class="passive-box">
+                <strong>정조준:</strong> 버프 1개당 25% 증가<br>
+                <strong>급소조준:</strong> 5턴 이상 미공격 시 200%<br>
+                <strong>죽음의 탄환:</strong> 기본 공격 미사용 시 150%
+            </div>
+
+            <h3>버프 스킬</h3>
+            <div class="buff-box">
+                <strong>확보:</strong> 광역 공격 면역<br>
+                <strong>조립:</strong> 다음 공격 150%<br>
+                <strong>장전:</strong> 탄환 획득<br>
+                <strong>조준:</strong> 수비 무시<br>
+                <strong>안정화:</strong> 다음 공격 75%, 주사위 복제 (결과 2배)<br>
+                <strong>몰입:</strong> 다음 공격 200%, 수비 불가<br>
+                <strong>확신:</strong> 2턴 공격 불가, 다음 공격 250%<br>
+                <strong>신경 극대화:</strong> 받는 데미지 200%, 다음 공격 400%
+            </div>
+
+            <h3>데미지 계산 (최대)</h3>
+            <div class="formula">
+                발사 (4D20) × 2 (안정화 복제)<br>
+                × 정조준 × 죽음의탄환(1.5) × 조립(1.5) × 안정화(0.75)<br>
+                × 몰입(2.0) × 확신(2.5) × 신경극대화(4.0)
+            </div>
+        </section>
+
+        <!-- 밀렵꾼 -->
+        <section id="poacher" class="job-section">
+            <h2>🦌 밀렵꾼</h2>
+            <p>주 스탯: 힘/민첩</p>
+
+            <h3>패시브</h3>
+            <div class="passive-box">
+                <strong>산탄:</strong> (스탯-D20) ≥ 10이면 2D4→2D8<br>
+                <strong>사냥:</strong> 디버프 대상에게 150%<br>
+                <strong>약자멸시:</strong> (자신 체력% - 적 체력%) ≥ 10% 시 다음 턴 200%
+            </div>
+
+            <h3>기술</h3>
+            <table class="skill-table">
+                <tr>
+                    <th>기술명</th>
+                    <th>데미지</th>
+                    <th>스태미나</th>
+                </tr>
+                <tr><td>기본공격</td><td>2D4/2D8 (장전: 2D6/2D12)</td><td>-</td></tr>
+                <tr><td>머리찍기</td><td>D8</td><td>1</td></tr>
+                <tr><td>덫 깔기</td><td>D10</td><td>3</td></tr>
+                <tr><td>올가미 탄</td><td>D8</td><td>8</td></tr>
+                <tr><td>헤드샷</td><td>2D12</td><td>4</td></tr>
+            </table>
+        </section>
+
+        <!-- 명사수 -->
+        <section id="masterarcher" class="job-section">
+            <h2>🏹 명사수</h2>
+            <p>주 스탯: 힘, 민첩</p>
+
+            <h3>패시브</h3>
+            <div class="passive-box">
+                <strong>오차 제거:</strong> 스탯 +3<br>
+                <strong>무거운 시위:</strong> D6→2D8 (스태미나 1)<br>
+                <strong>포착:</strong> 첫 대상 200%, 그 외 50%
+            </div>
+
+            <h3>스킬</h3>
+            <div class="skill-box">
+                <strong>긴급사격:</strong> 무거운 시위 비활성화, 기본공격 2회
+            </div>
+
+            <h3>기술</h3>
+            <table class="skill-table">
+                <tr>
+                    <th>기술명</th>
+                    <th>데미지</th>
+                    <th>스태미나</th>
+                    <th>비고</th>
+                </tr>
+                <tr><td>기본공격</td><td>D6/2D8</td><td>0/1</td><td>-</td></tr>
+                <tr><td>파워샷</td><td>D8/2D12</td><td>1</td><td>-</td></tr>
+                <tr><td>폭탄 화살</td><td>200%</td><td>2</td><td>-</td></tr>
+                <tr><td>분열 화살</td><td>2D4/2D8</td><td>1</td><td>무거운 시위와 독립</td></tr>
+                <tr><td>관통 화살</td><td>2D12</td><td>0</td><td>무거운 시위 미적용</td></tr>
+                <tr><td>더블 샷</td><td>2회 공격</td><td>3</td><td>-</td></tr>
+            </table>
+
+            <p class="note">관통 화살: 파워샷(D8) → 분열화살(2D6) → 관통화살(2D12) 흐름</p>
+        </section>
+
+        <!-- 암살자 -->
+        <section id="assassin" class="job-section">
+            <h2>🗡️ 암살자</h2>
+            <p>주 스탯: 힘/민첩</p>
+
+            <h3>패시브</h3>
+            <div class="passive-box">
+                <strong>암살 대상:</strong> 전장 복귀 턴 400%<br>
+                <strong>생사여탈:</strong> 전투 시작 암살 200%
+            </div>
+
+            <h3>스킬</h3>
+            <div class="skill-box">
+                <strong>확인사살:</strong> [암살] 적중 후 적 체력 30% 이하 시 다음 [암살] 200%
+            </div>
+
+            <h3>기술</h3>
+            <table class="skill-table">
+                <tr>
+                    <th>기술명</th>
+                    <th>데미지</th>
+                    <th>스태미나</th>
+                </tr>
+                <tr><td>기본공격</td><td>D6</td><td>-</td></tr>
+                <tr><td>암살</td><td>4D20</td><td>44</td></tr>
+                <tr><td>급소 찌르기</td><td>2D10</td><td>5</td></tr>
+                <tr><td>목 긋기</td><td>D20</td><td>4</td></tr>
+                <tr><td>손목 긋기</td><td>4D4</td><td>3</td></tr>
+                <tr><td>후방 공격</td><td>3D6</td><td>3</td></tr>
+            </table>
+        </section>
+
+        <!-- 닌자 -->
+        <section id="ninja" class="job-section">
+            <h2>🥷 닌자</h2>
+            <p>주 스탯: 민첩, 신속</p>
+
+            <h3>패시브</h3>
+            <div class="passive-box">
+                <strong>환영:</strong> 3n턴 데미지 150%<br>
+                <strong>분신:</strong> 데미지 75%<br>
+                <strong>순발력:</strong> 데미지 75%
+            </div>
+
+            <h3>스킬</h3>
+            <div class="skill-box">
+                <strong>이념 봉인:</strong> (3턴 지속)<br>
+                - 3n턴 제약 없이 환영 발동<br>
+                - 분신 효과 무시<br>
+                - 받는 데미지 50%, 가하는 데미지 300%<br>
+                - 환영난무 분신 제거 무시<br>
+                <span class="note">이념 봉인 시: 환영(150%) × 이념봉인(300%) = 450%</span>
+            </div>
+
+            <h3>기술</h3>
+            <table class="skill-table">
+                <tr>
+                    <th>기술명</th>
+                    <th>데미지</th>
+                    <th>스태미나</th>
+                </tr>
+                <tr><td>기본공격</td><td>D6</td><td>-</td></tr>
+                <tr><td>일격</td><td>2D6</td><td>2</td></tr>
+                <tr><td>난도</td><td>3D8</td><td>4</td></tr>
+                <tr><td>투척 표창</td><td>D8</td><td>-</td></tr>
+                <tr><td>환영난무</td><td>8D6</td><td>4</td></tr>
+                <tr><td>일점투척</td><td>(표창)D10</td><td>마나 3</td></tr>
+            </table>
+        </section>
+
+        <!-- 트릭스터 -->
+        <section id="trickster" class="job-section">
+            <h2>🃏 트릭스터</h2>
+            <p>주 스탯: 힘/민첩</p>
+
+            <h3>패시브</h3>
+            <div class="passive-box">
+                <strong>난사:</strong> (스탯-D20) ≥ 3×(공격횟수)면 추가 공격 (최대 10회)<br>
+                <strong>돌발 이벤트:</strong> (기술 횟수)×50% 기본공격 데미지 증가<br>
+                <strong>일점사:</strong> 5회 이상 공격 시 200%<br>
+                <strong>단골 손님:</strong> 지난 턴 일점사 발동 시 150%
+            </div>
+
+            <h3>스킬</h3>
+            <div class="skill-box">
+                <strong>파티 타임:</strong> 최초 공격 대상에게 다음턴까지 200%<br>
+                <strong>이벤트 준비:</strong> 돌발 이벤트 50%→100%<br>
+                <strong>거대한 상흔:</strong> 특대형 단검 적중 시 이후 데미지 200%<br>
+                <strong>메인 이벤트:</strong> 난사 조건 완화 (3x→1x), 최대 10회 제한 제거
+            </div>
+
+            <h3>기술</h3>
+            <table class="skill-table">
+                <tr>
+                    <th>기술명</th>
+                    <th>데미지</th>
+                    <th>스태미나</th>
+                </tr>
+                <tr><td>기본공격</td><td>D6 (난사)</td><td>-</td></tr>
+                <tr><td>페이크 단검</td><td>D4</td><td>2</td></tr>
+                <tr><td>콩알탄</td><td>2D6</td><td>2</td></tr>
+                <tr><td>기름통 투척</td><td>D4</td><td>2</td></tr>
+                <tr><td>라이터 투척</td><td>D8 (+3D6)</td><td>2</td></tr>
+                <tr><td>특대형 단검</td><td>D20</td><td>3</td></tr>
+            </table>
+
+            <h3>데미지 계산 예시</h3>
+            <div class="formula">
+                기술 3회 사용 후 기본공격<br>
+                돌발 이벤트: 100% + (3 × 50%) = 250%<br>
+                이벤트 준비 시: 100% + (3 × 100%) = 400%
+            </div>
+        </section>
+
+        <footer style="text-align: center; padding: 30px; color: #888;">
+            <p>TRPG 위키 v1.0 | <a href="/" class="back-link">계산기로 돌아가기</a></p>
+        </footer>
+    </div>
+</body>
+</html>
