@@ -1,3 +1,10 @@
+===========================
+IMPORTANT
+this file is deprecated.
+see docs/secondary/
+for updated version.
+===========================
+
 무사 힘 (+체력)
 유려하고도 깔끔한 공격으로 적을 베어낸다
 
