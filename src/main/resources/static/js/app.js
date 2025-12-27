@@ -3,7 +3,7 @@
 const API_BASE = '/api';
 let currentJob = null;
 
-// Show job category (normal/hidden)
+// Show job category (normal/hidden/secret)
 function showJobCategory(category, event) {
     document.querySelectorAll('.job-category').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -58,7 +58,17 @@ function selectJob(job, event) {
         'crossbowman': '🎯 석궁사수',
         'spearman': '🔱 창술사',
         'trickster': '🃏 트릭스터',
-        'poacher': '🦌 밀렵꾼'
+        'poacher': '🦌 밀렵꾼',
+        'archmage': '🧙 마도사',
+        'barriermage': '🛡️ 결계술사',
+        'magicswordsman': '⚔️ 마검사',
+        'summoner': '🐉 소환술사',
+        'alchemist': '⚗️ 연금술사',
+        'lightpriest': '✨ 빛의 사제',
+        'darkpriest': '🌑 어둠의 사제',
+        'lightningpriest': '⚡ 번개의 사제',
+        'soulpriest': '👻 영혼의 사제',
+        'timepriest': '⏰ 시간의 사제'
     };
     document.getElementById('selected-job-title').textContent = jobNames[job] + ' 기술';
     

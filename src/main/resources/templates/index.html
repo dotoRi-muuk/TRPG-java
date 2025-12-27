@@ -42,6 +42,7 @@
                 <div class="job-tabs">
                     <button class="tab-btn active" onclick="showJobCategory('normal', event)">1차 직업</button>
                     <button class="tab-btn" onclick="showJobCategory('hidden', event)">2차 직업</button>
+                    <button class="tab-btn" onclick="showJobCategory('secret', event)">히든직업</button>
                 </div>
 
                 <!-- 기본 직업 -->
@@ -124,6 +125,57 @@
                         <div class="job-card" onclick="selectJob('poacher', event)">
                             <h3>🦌 밀렵꾼</h3>
                             <p>힘/민첩</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('archmage', event)">
+                            <h3>🧙 마도사</h3>
+                            <p>지능 (+지혜)</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('barriermage', event)">
+                            <h3>🛡️ 결계술사</h3>
+                            <p>지능 (+지혜)</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('magicswordsman', event)">
+                            <h3>⚔️ 마검사</h3>
+                            <p>지능 (+지혜, 마나)</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('summoner', event)">
+                            <h3>🐉 소환술사</h3>
+                            <p>지능 (+지혜)</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('alchemist', event)">
+                            <h3>⚗️ 연금술사</h3>
+                            <p>지능 (+지혜)</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('lightpriest', event)">
+                            <h3>✨ 빛의 사제</h3>
+                            <p>지능 (+지혜)</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('darkpriest', event)">
+                            <h3>🌑 어둠의 사제</h3>
+                            <p>지능 (+지혜)</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('lightningpriest', event)">
+                            <h3>⚡ 번개의 사제</h3>
+                            <p>지능 (+지혜)</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('soulpriest', event)">
+                            <h3>👻 영혼의 사제</h3>
+                            <p>지능 (+지혜)</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('timepriest', event)">
+                            <h3>⏰ 시간의 사제</h3>
+                            <p>지능 (+지혜)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 히든 직업 -->
+                <div id="secret-jobs" class="job-category" style="display: none;">
+                    <div class="job-cards">
+                        <div class="placeholder-message" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #888;">
+                            <h3>🔒 히든직업</h3>
+                            <p>현재 사용 가능한 히든직업이 없습니다.</p>
+                            <p>추후 업데이트를 기다려주세요!</p>
                         </div>
                     </div>
                 </div>
