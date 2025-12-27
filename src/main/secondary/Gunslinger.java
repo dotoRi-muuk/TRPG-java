@@ -27,34 +27,8 @@ public class Gunslinger {
         int sideDamage = Main.sideDamage(stat, out);
         int totalDamage = defaultDamage + sideDamage;
 
-        double multiplier = 1.0;
+        totalDamage = applyPassives(totalDamage, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget, out);
 
-        // 심판자 패시브 - D4% 추가 데미지
-        if (isJudgeTurn) {
-            int judgeBonus = Main.dice(1, 4, out);
-            multiplier *= (1.0 + judgeBonus / 100.0);
-            out.printf("심판자 패시브 적용: +%d%% → x%.2f%n", judgeBonus, 1.0 + judgeBonus / 100.0);
-        }
-
-        // 신중함 패시브
-        if (isFirstShot) {
-            multiplier *= 3.0;
-            out.println("신중함 패시브 적용: x3.0");
-        }
-
-        // 노림수 패시브
-        if (dodgedLastTurn) {
-            multiplier *= 2.0;
-            out.println("노림수 패시브 적용: x2.0");
-        }
-
-        // 심판 대상
-        if (isJudgementTarget) {
-            multiplier *= 2.0;
-            out.println("심판 대상 적용: x2.0");
-        }
-
-        totalDamage = (int) (totalDamage * multiplier);
         out.printf("총 데미지 : %d%n", totalDamage);
         return totalDamage;
     }
