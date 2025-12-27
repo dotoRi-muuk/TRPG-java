@@ -28,7 +28,7 @@ public class MasterArcher {
             defaultDamage = Main.dice(1, 6, out);
         }
 
-        int sideDamage = Main.sideDamage(effectiveStat, out);
+        int sideDamage = Main.sideDamage(defaultDamage, effectiveStat, out);
         int totalDamage = defaultDamage + sideDamage;
 
         // 포착 패시브
@@ -61,7 +61,7 @@ public class MasterArcher {
         for (int i = 1; i <= 2; i++) {
             out.printf("--- %d번째 공격 (D6) ---%n", i);
             int defaultDamage = Main.dice(1, 6, out);
-            int sideDamage = Main.sideDamage(effectiveStat, out);
+            int sideDamage = Main.sideDamage(defaultDamage, effectiveStat, out);
             int attackDamage = defaultDamage + sideDamage;
 
             if (isFirstTarget) {
@@ -100,7 +100,7 @@ public class MasterArcher {
             defaultDamage = Main.dice(1, 8, out);
         }
 
-        int sideDamage = Main.sideDamage(effectiveStat, out);
+        int sideDamage = Main.sideDamage(defaultDamage, effectiveStat, out);
         int totalDamage = defaultDamage + sideDamage;
 
         if (isFirstTarget) {
@@ -136,7 +136,7 @@ public class MasterArcher {
             defaultDamage = Main.dice(1, 6, out);
         }
 
-        int sideDamage = Main.sideDamage(effectiveStat, out);
+        int sideDamage = Main.sideDamage(defaultDamage, effectiveStat, out);
         int totalDamage = (defaultDamage + sideDamage) * 2;
         out.printf("폭탄 화살 200%%: %d%n", totalDamage);
 
@@ -176,7 +176,7 @@ public class MasterArcher {
             defaultDamage = Main.dice(2, 4, out);
         }
 
-        int sideDamage = Main.sideDamage(effectiveStat, out);
+        int sideDamage = Main.sideDamage(defaultDamage, effectiveStat, out);
         int totalDamage = defaultDamage + sideDamage;
 
         if (isFirstTarget) {
@@ -206,7 +206,7 @@ public class MasterArcher {
         out.printf("오차 제거 패시브: 스탯 %d → %d%n", stat, effectiveStat);
 
         int defaultDamage = Main.dice(2, 12, out);
-        int sideDamage = Main.sideDamage(effectiveStat, out);
+        int sideDamage = Main.sideDamage(defaultDamage, effectiveStat, out);
         int totalDamage = defaultDamage + sideDamage;
 
         if (isFirstTarget) {
@@ -244,7 +244,7 @@ public class MasterArcher {
                 defaultDamage = Main.dice(1, 6, out);
             }
 
-            int sideDamage = Main.sideDamage(effectiveStat, out);
+            int sideDamage = Main.sideDamage(defaultDamage, effectiveStat, out);
             int attackDamage = defaultDamage + sideDamage;
 
             if (isFirstTarget) {
@@ -263,4 +263,5 @@ public class MasterArcher {
     }
 
 }
+
 

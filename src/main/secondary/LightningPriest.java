@@ -33,7 +33,7 @@ public class LightningPriest {
     public static int plain(int intelligence, PrintStream out) {
         out.println("번개의 사제-기본공격 사용");
         int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(defaultDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
         return defaultDamage + sideDamage;
     }
@@ -57,7 +57,7 @@ public class LightningPriest {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
         out.println("※ 마나 1 소모");
         return totalDamage + sideDamage;
@@ -84,7 +84,7 @@ public class LightningPriest {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
         out.println("※ 마나 3 소모, 쿨타임 3턴");
         return totalDamage + sideDamage;
@@ -153,7 +153,7 @@ public class LightningPriest {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
         out.println("※ 광역");
         out.println("※ 마나 8 소모, 쿨타임 7턴");
@@ -189,7 +189,7 @@ public class LightningPriest {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
         out.println("※ 마나 2 소모, 쿨타임 5턴");
         return totalDamage + sideDamage;
@@ -230,7 +230,7 @@ public class LightningPriest {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
         out.println("※ 마나 7 소모");
         return totalDamage + sideDamage;
@@ -296,4 +296,5 @@ public class LightningPriest {
         return 1.5;
     }
 }
+
 

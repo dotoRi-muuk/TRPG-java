@@ -83,7 +83,7 @@ public class MagicSwordsman {
     public static int plain(int intelligence, PrintStream out) {
         out.println("마검사-기본공격 사용");
         int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(defaultDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
         return defaultDamage + sideDamage;
     }
@@ -107,7 +107,7 @@ public class MagicSwordsman {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
         out.println("※ 마나 3 소모, 쿨타임 2턴");
         return totalDamage + sideDamage;
@@ -132,7 +132,7 @@ public class MagicSwordsman {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
         out.println("※ 마나 3 소모, 쿨타임 3턴");
         return totalDamage + sideDamage;
@@ -150,7 +150,7 @@ public class MagicSwordsman {
     public static int manaSpear(int intelligence, PrintStream out) {
         out.println("마검사-마나 스피어 사용 (D20)");
         int defaultDamage = Main.dice(1, 20, out);
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(defaultDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
         out.println("※ 마나 3 소모, 쿨타임 3턴");
         return defaultDamage + sideDamage;
@@ -175,7 +175,7 @@ public class MagicSwordsman {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
         out.println("※ 마나 4 소모, 쿨타임 4턴");
         return totalDamage + sideDamage;
@@ -200,7 +200,7 @@ public class MagicSwordsman {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
         out.println("※ 마나 4 소모, 쿨타임 4턴");
         return totalDamage + sideDamage;
@@ -226,7 +226,7 @@ public class MagicSwordsman {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
         out.println("※ 마나 6 소모, 쿨타임 7턴");
         return totalDamage + sideDamage;
@@ -349,4 +349,5 @@ public class MagicSwordsman {
         return reducedDamage;
     }
 }
+
 

@@ -47,14 +47,4 @@
 - **이유**: 기존 로직 유지 및 플레이어에게 유리한 방향으로 해석
 
 ## 미완료 작업
-아래 클래스들은 아직 업데이트가 필요합니다:
-- [ ] MagicSwordsman
-- [ ] Alchemist  
-- [ ] LightningPriest
-- [ ] DarkPriest
-- [ ] Summoner
-- [ ] Archmage
-- [ ] LightPriest
-- [ ] SoulPriest
-- [ ] TimePriest
-- [ ] MasterArcher
+모든 클래스 업데이트 완료!

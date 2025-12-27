@@ -61,7 +61,7 @@ public class Alchemist {
     public static int plain(int intelligence, PrintStream out) {
         out.println("연금술사-기본공격 사용");
         int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(defaultDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
         return defaultDamage + sideDamage;
     }
@@ -90,7 +90,7 @@ public class Alchemist {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         int baseDamage = totalDamage + sideDamage;
         int finalDamage = (int)(baseDamage * multiplier);
         out.printf("총 데미지 : (%d + %d) x %.2f = %d%n", totalDamage, sideDamage, multiplier, finalDamage);
@@ -123,7 +123,7 @@ public class Alchemist {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         int baseDamage = totalDamage + sideDamage;
         int finalDamage = (int)(baseDamage * multiplier);
         out.printf("총 데미지 : (%d + %d) x %.2f = %d%n", totalDamage, sideDamage, multiplier, finalDamage);
@@ -187,4 +187,5 @@ public class Alchemist {
         return potions;
     }
 }
+
 

@@ -71,7 +71,7 @@ public class SoulPriest {
     public static int plain(int intelligence, PrintStream out) {
         out.println("영혼의 사제-기본공격 사용");
         int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(defaultDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, defaultDamage + sideDamage);
         return defaultDamage + sideDamage;
     }
@@ -120,7 +120,7 @@ public class SoulPriest {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
         out.println("※ 다음 턴까지 대상 피해 50%");
         out.println("※ 영혼 2개 소모, 쿨타임 4턴");
@@ -152,7 +152,7 @@ public class SoulPriest {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
         out.println("※ 다음 턴까지 대상 받는 피해 150%");
         out.println("※ 영혼 3개 소모, 쿨타임 6턴");
@@ -188,7 +188,7 @@ public class SoulPriest {
             totalDamage += diceResult;
         }
 
-        int sideDamage = Main.sideDamage(intelligence, out);
+        int sideDamage = Main.sideDamage(totalDamage, intelligence, out);
         out.printf("총 데미지 : %d + %d = %d%n", totalDamage, sideDamage, totalDamage + sideDamage);
         out.printf("※ 영혼 %d개 소모, 쿨타임 8턴%n", soulsSpent);
         return totalDamage + sideDamage;
@@ -336,4 +336,5 @@ public class SoulPriest {
         return hpPercent;
     }
 }
+
 
