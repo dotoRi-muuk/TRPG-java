@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRPG 데미지 계산기</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎲 TRPG 데미지 계산기</h1>
+            <p class="subtitle">직업별 기술 데미지를 계산합니다</p>
+        </header>
+
+        <main>
+            <!-- 주사위 굴리기 섹션 -->
+            <section class="section dice-section">
+                <h2>🎲 주사위 굴리기</h2>
+                <div class="form-group">
+                    <label for="diceCount">주사위 개수</label>
+                    <input type="number" id="diceCount" value="1" min="1" max="20">
+                </div>
+                <div class="form-group">
+                    <label for="diceSides">주사위 면 수</label>
+                    <select id="diceSides">
+                        <option value="4">D4</option>
+                        <option value="6" selected>D6</option>
+                        <option value="8">D8</option>
+                        <option value="10">D10</option>
+                        <option value="12">D12</option>
+                        <option value="20">D20</option>
+                    </select>
+                </div>
+                <button onclick="rollDice()" class="btn btn-primary">주사위 굴리기</button>
+                <div id="diceResult" class="result"></div>
+            </section>
+
+            <!-- 직업 선택 섹션 -->
+            <section class="section job-section">
+                <h2>⚔️ 직업 선택</h2>
+                <div class="job-tabs">
+                    <button class="tab-btn active" onclick="showJobCategory('normal', event)">1차 직업</button>
+                    <button class="tab-btn" onclick="showJobCategory('hidden', event)">2차 직업</button>
+                </div>
+
+                <!-- 기본 직업 -->
+                <div id="normal-jobs" class="job-category">
+                    <div class="job-cards">
+                        <div class="job-card" onclick="selectJob('warrior', event)">
+                            <h3>⚔️ 전사</h3>
+                            <p>힘, 체력</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('archer', event)">
+                            <h3>🏹 궁수</h3>
+                            <p>힘, 민첩</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('rogue', event)">
+                            <h3>🗡️ 도적</h3>
+                            <p>힘, 민첩, 신속</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('mage', event)">
+                            <h3>🔮 마법사</h3>
+                            <p>지능, 지혜</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('priest', event)">
+                            <h3>✝️ 사제</h3>
+                            <p>지능, 지혜</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 히든 직업 -->
+                <div id="hidden-jobs" class="job-category" style="display: none;">
+                    <div class="job-cards">
+                        <div class="job-card" onclick="selectJob('samurai', event)">
+                            <h3>⚔️ 무사</h3>
+                            <p>힘 (+체력)</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('berserker', event)">
+                            <h3>💢 버서커</h3>
+                            <p>힘, 체력 (+민첩)</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('gambler', event)">
+                            <h3>🎰 겜블러</h3>
+                            <p>힘, 민첩 (운)</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('assassin', event)">
+                            <h3>🗡️ 암살자</h3>
+                            <p>힘/민첩</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('knight', event)">
+                            <h3>🛡️ 기사</h3>
+                            <p>힘, 체력</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('ninja', event)">
+                            <h3>🥷 닌자</h3>
+                            <p>민첩, 신속</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('gunslinger', event)">
+                            <h3>🔫 건슬링거</h3>
+                            <p>힘/민첩</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('sniper', event)">
+                            <h3>🎯 저격수</h3>
+                            <p>힘/민첩</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('masterarcher', event)">
+                            <h3>🏹 명궁</h3>
+                            <p>힘, 민첩</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('crossbowman', event)">
+                            <h3>🎯 석궁사수</h3>
+                            <p>힘/민첩</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('spearman', event)">
+                            <h3>🔱 창술사</h3>
+                            <p>힘 (+민첩)</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('trickster', event)">
+                            <h3>🃏 트릭스터</h3>
+                            <p>힘/민첩</p>
+                        </div>
+                        <div class="job-card" onclick="selectJob('poacher', event)">
+                            <h3>🦌 밀렵꾼</h3>
+                            <p>힘/민첩</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 기술 선택 및 데미지 계산 섹션 -->
+            <section id="skill-section" class="section" style="display: none;">
+                <h2 id="selected-job-title">기술 선택</h2>
+                
+                <!-- 전사 스킬 -->
+                <div id="warrior-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="warrior-power">힘</label>
+                            <input type="number" id="warrior-power" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="warrior-maxHealth">최대 체력</label>
+                            <input type="number" id="warrior-maxHealth" value="100" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="warrior-curHealth">현재 체력</label>
+                            <input type="number" id="warrior-curHealth" value="100" min="0">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateWarrior('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateWarrior('strike')" class="btn btn-skill">강타 (D10)</button>
+                        <button onclick="calculateWarrior('side')" class="btn btn-skill">가로베기 (D8)</button>
+                    </div>
+                    <div class="skill-buttons">
+                        <h4>전용 수비</h4>
+                        <div class="form-group">
+                            <label for="warrior-damageTaken">받은 데미지</label>
+                            <input type="number" id="warrior-damageTaken" value="10" min="0">
+                        </div>
+                        <button onclick="calculateWarriorShield()" class="btn btn-skill">육참골단</button>
+                    </div>
+                </div>
+
+                <!-- 궁수 스킬 -->
+                <div id="archer-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="archer-stat">스탯 (힘 또는 민첩)</label>
+                            <input type="number" id="archer-stat" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="archer-strength">힘 (동시 사용)</label>
+                            <input type="number" id="archer-strength" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="archer-dexterity">민첩 (동시 사용)</label>
+                            <input type="number" id="archer-dexterity" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="archer-consecutiveHits">연속 공격 횟수 (사냥감)</label>
+                            <input type="number" id="archer-consecutiveHits" value="1" min="1">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateArcher('plain')" class="btn btn-skill">기본공격 - 단일 (D4)</button>
+                        <button onclick="calculateArcher('plain-dual')" class="btn btn-skill">기본공격 - 동시 (D6)</button>
+                        <button onclick="calculateArcher('quickshot')" class="btn btn-skill">퀵샷 (3xD4)</button>
+                        <button onclick="calculateArcher('dash')" class="btn btn-skill">대쉬 - 단일 (D4)</button>
+                        <button onclick="calculateArcher('dash-dual')" class="btn btn-skill">대쉬 - 동시 (D6)</button>
+                        <button onclick="calculateArcher('hunt')" class="btn btn-skill">사냥감</button>
+                    </div>
+                </div>
+
+                <!-- 도적 스킬 -->
+                <div id="rogue-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="rogue-stat">스탯 (힘/민첩)</label>
+                            <input type="number" id="rogue-stat" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="rogue-dexterity">민첩 (투척용)</label>
+                            <input type="number" id="rogue-dexterity" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="rogue-swiftness">신속</label>
+                            <input type="number" id="rogue-swiftness" value="10" min="1">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="rogue-useTwoDice">
+                                D4 x 2 사용 (기본공격)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateRogue('plain')" class="btn btn-skill">기본공격</button>
+                        <button onclick="calculateRogue('stab')" class="btn btn-skill">쑤시기 (D6)</button>
+                        <button onclick="calculateRogue('throw')" class="btn btn-skill">투척/속공 (D6)</button>
+                    </div>
+                </div>
+
+                <!-- 마법사 스킬 -->
+                <div id="mage-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="mage-intelligence">지능</label>
+                            <input type="number" id="mage-intelligence" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="mage-additionalMana">추가 마나 (마나 블래스트)</label>
+                            <input type="number" id="mage-additionalMana" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="mage-damageTaken">받은 데미지 (매직가드)</label>
+                            <input type="number" id="mage-damageTaken" value="10" min="0">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="mage-useMana">
+                                마나 소모 (기본공격 D8)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateMage('plain')" class="btn btn-skill">기본공격</button>
+                        <button onclick="calculateMage('magic-bullet')" class="btn btn-skill">마탄 (D8x3)</button>
+                        <button onclick="calculateMage('mana-blast')" class="btn btn-skill">마나 블래스트 (D6x6)</button>
+                        <button onclick="calculateMage('magic-guard')" class="btn btn-skill">매직가드 (수비)</button>
+                    </div>
+                </div>
+
+                <!-- 사제 스킬 -->
+                <div id="priest-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="priest-intelligence">지능</label>
+                            <input type="number" id="priest-intelligence" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="priest-damageTaken">받은 데미지 (희생)</label>
+                            <input type="number" id="priest-damageTaken" value="10" min="0">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculatePriest('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculatePriest('revenge')" class="btn btn-skill">복수 (D4x6)</button>
+                        <button onclick="calculatePriest('sacrifice')" class="btn btn-skill">희생 (수비)</button>
+                    </div>
+                </div>
+
+                <!-- 무사 스킬 -->
+                <div id="samurai-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="samurai-stat">힘</label>
+                            <input type="number" id="samurai-stat" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="samurai-consumedStamina">소모 스태미나 (종점)</label>
+                            <input type="number" id="samurai-consumedStamina" value="0" min="0">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="samurai-isMula">
+                                물아 모드 (데미지 150%)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="samurai-kakugo">
+                                각오 (데미지 200%)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="samurai-seishaKetsudan">
+                                생사결단 (데미지 300%)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateSamurai('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateSamurai('quick-draw')" class="btn btn-skill">발검 (D8)</button>
+                        <button onclick="calculateSamurai('battou')" class="btn btn-skill">발도 (D12)</button>
+                        <button onclick="calculateSamurai('jabeop')" class="btn btn-skill">자법 (3D6)</button>
+                        <button onclick="calculateSamurai('il-seom')" class="btn btn-skill">일섬 (3D6)</button>
+                        <button onclick="calculateSamurai('ranged-attack')" class="btn btn-skill">난격 (5D4)</button>
+                        <button onclick="calculateSamurai('flash-strike')" class="btn btn-skill">섬격 (D12 200%)</button>
+                        <button onclick="calculateSamurai('final-point')" class="btn btn-skill">종점 (3D20)</button>
+                        <button onclick="calculateSamurai('bloom')" class="btn btn-skill">개화 (8D6)</button>
+                    </div>
+                </div>
+
+                <!-- 버서커 스킬 -->
+                <div id="berserker-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="berserker-stat">힘</label>
+                            <input type="number" id="berserker-stat" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="berserker-maxHealth">최대 체력</label>
+                            <input type="number" id="berserker-maxHealth" value="100" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="berserker-currentHealth">현재 체력</label>
+                            <input type="number" id="berserker-currentHealth" value="100" min="0">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateBerserker('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateBerserker('chop-down')" class="btn btn-skill">찍어내리기 (D8)</button>
+                        <button onclick="calculateBerserker('smash')" class="btn btn-skill">부수기 (2D6)</button>
+                        <button onclick="calculateBerserker('strike')" class="btn btn-skill">일격 (D20)</button>
+                        <button onclick="calculateBerserker('mindless-barrage')" class="btn btn-skill">무지성 난타 (4D8)</button>
+                        <button onclick="calculateBerserker('savage-assault')" class="btn btn-skill">흉폭한 맹공 (5D12)</button>
+                        <button onclick="calculateBerserker('last-strike')" class="btn btn-skill">최후의 일격 (4D20)</button>
+                    </div>
+                </div>
+
+                <!-- 겜블러 스킬 -->
+                <div id="gambler-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="gambler-stat">힘/민첩</label>
+                            <input type="number" id="gambler-stat" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="gambler-luck">운</label>
+                            <input type="number" id="gambler-luck" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="gambler-reducedLuck">감소한 운 (일확천금)</label>
+                            <input type="number" id="gambler-reducedLuck" value="0" min="0">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="gambler-jackpotActive">
+                                일확천금 패시브 활성화
+                            </label>
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateGambler('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateGambler('coin-toss')" class="btn btn-skill">코인 토스</button>
+                        <button onclick="calculateGambler('joker-card')" class="btn btn-skill">조커 카드</button>
+                        <button onclick="calculateGambler('blackjack')" class="btn btn-skill">블랙잭</button>
+                        <button onclick="calculateGambler('yatzy-dice')" class="btn btn-skill">야추 다이스</button>
+                        <button onclick="calculateGambler('royal-flush')" class="btn btn-skill">로얄 플러쉬</button>
+                    </div>
+                </div>
+
+                <!-- 암살자 스킬 -->
+                <div id="assassin-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="assassin-stat">스탯 (힘/민첩)</label>
+                            <input type="number" id="assassin-stat" value="10" min="1">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="assassin-isReturnTurn">
+                                전장 복귀 턴 (암살 대상 400%)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="assassin-isFirstAssault">
+                                생사여탈 (전투 시작 암살 200%)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateAssassin('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateAssassin('assassinate')" class="btn btn-skill">암살 (4D20)</button>
+                        <button onclick="calculateAssassin('critical-stab')" class="btn btn-skill">급소 찌르기 (2D10)</button>
+                        <button onclick="calculateAssassin('throat-slit')" class="btn btn-skill">목 긋기 (D20)</button>
+                        <button onclick="calculateAssassin('wrist-slit')" class="btn btn-skill">손목 긋기 (4D4)</button>
+                        <button onclick="calculateAssassin('rear-attack')" class="btn btn-skill">후방 공격 (3D6)</button>
+                    </div>
+                </div>
+
+                <!-- 기사 스킬 -->
+                <div id="knight-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="knight-stat">스탯 (힘)</label>
+                            <input type="number" id="knight-stat" value="10" min="1">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateKnight('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateKnight('smash-down')" class="btn btn-skill">내려치기 (D8)</button>
+                        <button onclick="calculateKnight('sweep')" class="btn btn-skill">후려치기 (2D4)</button>
+                        <button onclick="calculateKnight('head-strike')" class="btn btn-skill">머리치기 (D6)</button>
+                        <button onclick="calculateKnight('defense-break')" class="btn btn-skill">수비파괴 (D6)</button>
+                        <button onclick="calculateKnight('stun')" class="btn btn-skill">기절시키기 (D8)</button>
+                        <button onclick="calculateKnight('critical-strike')" class="btn btn-skill">일격 (3D12)</button>
+                    </div>
+                </div>
+
+                <!-- 닌자 스킬 -->
+                <div id="ninja-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="ninja-stat">스탯 (민첩)</label>
+                            <input type="number" id="ninja-stat" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="ninja-shurikenCount">보유 표창 (일점투척)</label>
+                            <input type="number" id="ninja-shurikenCount" value="3" min="1">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="ninja-isIllusionTurn">
+                                환영 (3n턴, 150%)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="ninja-isCloneActive">
+                                분신 (75%)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="ninja-isReflexActive">
+                                순발력 (75%)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateNinja('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateNinja('strike')" class="btn btn-skill">일격 (2D6)</button>
+                        <button onclick="calculateNinja('chaos')" class="btn btn-skill">난도 (3D8)</button>
+                        <button onclick="calculateNinja('throw-shuriken')" class="btn btn-skill">투척 표창 (D8)</button>
+                        <button onclick="calculateNinja('illusion-barrage')" class="btn btn-skill">환영난무 (8D6)</button>
+                        <button onclick="calculateNinja('focus-throw')" class="btn btn-skill">일점투척 (표창D10)</button>
+                    </div>
+                </div>
+
+                <!-- 건슬링거 스킬 -->
+                <div id="gunslinger-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="gunslinger-stat">스탯 (힘/민첩)</label>
+                            <input type="number" id="gunslinger-stat" value="10" min="1">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="gunslinger-isFirstShot">
+                                신중함 (첫 공격 300%)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="gunslinger-dodgedLastTurn">
+                                노림수 (지난 턴 회피 200%)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="gunslinger-isJudgeTurn">
+                                심판자 (5n턴, D4% 추가)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateGunslinger('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateGunslinger('double-shot')" class="btn btn-skill">더블샷 (2D6)</button>
+                        <button onclick="calculateGunslinger('headshot')" class="btn btn-skill">헤드샷 (D20)</button>
+                        <button onclick="calculateGunslinger('quick-draw')" class="btn btn-skill">퀵드로우 (D8/4D8)</button>
+                        <button onclick="calculateGunslinger('focus-fire')" class="btn btn-skill">일점사 (6D6)</button>
+                        <button onclick="calculateGunslinger('backstab')" class="btn btn-skill">백스탭 (수비)</button>
+                    </div>
+                </div>
+
+                <!-- 저격수 스킬 -->
+                <div id="sniper-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="sniper-stat">스탯 (힘/민첩)</label>
+                            <input type="number" id="sniper-stat" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="sniper-numBuffs">버프 개수 (정조준 25%/개)</label>
+                            <input type="number" id="sniper-numBuffs" value="0" min="0">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="sniper-notAttackedFor5Turns">
+                                급소조준 (5턴 미공격 200%)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="sniper-noBasicAttackUsed">
+                                죽음의 탄환 (기본공격 미사용 150%)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateSniper('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateSniper('secure')" class="btn btn-skill">확보 (버프)</button>
+                        <button onclick="calculateSniper('assemble')" class="btn btn-skill">조립 (버프)</button>
+                        <button onclick="calculateSniper('load')" class="btn btn-skill">장전 (탄환)</button>
+                        <button onclick="calculateSniper('aim')" class="btn btn-skill">조준 (버프)</button>
+                        <button onclick="calculateSniper('fire')" class="btn btn-skill">발사 (4D20)</button>
+                    </div>
+                </div>
+
+                <!-- 명궁 스킬 -->
+                <div id="masterarcher-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="masterarcher-stat">스탯 (힘/민첩)</label>
+                            <input type="number" id="masterarcher-stat" value="10" min="1">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="masterarcher-isHeavyString">
+                                무거운 시위 (2D8, 스태미나1)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="masterarcher-isFirstTarget" checked>
+                                첫 대상 (포착 200%)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateMasterArcher('plain')" class="btn btn-skill">기본공격 (D6/2D8)</button>
+                        <button onclick="calculateMasterArcher('power-shot')" class="btn btn-skill">파위샷 (D8/2D12)</button>
+                        <button onclick="calculateMasterArcher('explosive-arrow')" class="btn btn-skill">폭탄 화살 (200%)</button>
+                        <button onclick="calculateMasterArcher('split-arrow')" class="btn btn-skill">분열 화살</button>
+                        <button onclick="calculateMasterArcher('piercing-arrow')" class="btn btn-skill">관통 화살 (D20)</button>
+                        <button onclick="calculateMasterArcher('double-shot')" class="btn btn-skill">더블 샷 (2회)</button>
+                    </div>
+                </div>
+
+                <!-- 석궁사수 스킬 -->
+                <div id="crossbowman-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="crossbowman-stat">스탯 (힘/민첩)</label>
+                            <input type="number" id="crossbowman-stat" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="crossbowman-arrows">장전된 화살</label>
+                            <input type="number" id="crossbowman-arrows" value="3" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="crossbowman-arrowsToBreak">꺾을 화살 (전용수비)</label>
+                            <input type="number" id="crossbowman-arrowsToBreak" value="1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="crossbowman-damageTaken">받은 데미지 (전용수비)</label>
+                            <input type="number" id="crossbowman-damageTaken" value="10" min="0">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="crossbowman-focusedAttack">
+                                집중 공격 (화살당 30%)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateCrossbowman('plain')" class="btn btn-skill">기본공격 (화살D6)</button>
+                        <button onclick="calculateCrossbowman('throw')" class="btn btn-skill">던지기 (D6)</button>
+                        <button onclick="calculateCrossbowman('quick-load')" class="btn btn-skill">빠른 장전</button>
+                        <button onclick="calculateCrossbowman('single-shot')" class="btn btn-skill">단일사격 (D10)</button>
+                        <button onclick="calculateCrossbowman('rage-arrow')" class="btn btn-skill">발광 화살 (2D8)</button>
+                        <button onclick="calculateCrossbowman('paralyze-arrow')" class="btn btn-skill">마비 화살 (2D8)</button>
+                        <button onclick="calculateCrossbowman('break-arrows')" class="btn btn-skill">화살 꺾기 (수비)</button>
+                        <button onclick="calculateCrossbowman('desperate-load')" class="btn btn-skill">이럴 때 일수록! (수비)</button>
+                    </div>
+                </div>
+
+                <!-- 창술사 스킬 -->
+                <div id="spearman-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="spearman-stat">스탯 (힘)</label>
+                            <input type="number" id="spearman-stat" value="10" min="1">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <h4>기본 기술 (50%)</h4>
+                        <button onclick="calculateSpearman('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateSpearman('spin-thrust')" class="btn btn-skill">돌려 찌르기 (D8)</button>
+                        <button onclick="calculateSpearman('spin-strike')" class="btn btn-skill">회전 타격 (D10, 연계)</button>
+                        <button onclick="calculateSpearman('low-slash')" class="btn btn-skill">하단 베기 (D6, 연계)</button>
+                    </div>
+                    <div class="skill-buttons">
+                        <h4>[연계] 기술 (200%)</h4>
+                        <button onclick="calculateSpearman('combo-front-thrust')" class="btn btn-skill">[연계]정면 찌르기 (2D10)</button>
+                        <button onclick="calculateSpearman('combo-flash-spear')" class="btn btn-skill">[연계]일섬창 (4D8)</button>
+                        <button onclick="calculateSpearman('combo-thunder-strike')" class="btn btn-skill">[연계]천뢰격 (5D12)</button>
+                    </div>
+                </div>
+
+                <!-- 트릭스터 스킬 -->
+                <div id="trickster-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="trickster-stat">스탯 (힘/민첩)</label>
+                            <input type="number" id="trickster-stat" value="10" min="1">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="trickster-isFocusedFire">
+                                일점사 (5회 이상 공격 200%)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="trickster-isRepeatCustomer">
+                                단골 손님 (일점사 발동 150%)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="trickster-hasEventBonus">
+                                돌발 이벤트 (기술 후 기본공격 150%)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="trickster-oilHit">
+                                기름통 적중 (라이터 3D6 추가)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateTrickster('plain')" class="btn btn-skill">기본공격 (난사)</button>
+                        <button onclick="calculateTrickster('fake-dagger')" class="btn btn-skill">페이크 단검 (D4)</button>
+                        <button onclick="calculateTrickster('bean-shot')" class="btn btn-skill">콩알탄 (2D6)</button>
+                        <button onclick="calculateTrickster('oil-barrel')" class="btn btn-skill">기름통 투척 (D4)</button>
+                        <button onclick="calculateTrickster('lighter-throw')" class="btn btn-skill">라이터 투척 (D8)</button>
+                        <button onclick="calculateTrickster('huge-dagger')" class="btn btn-skill">특대형 단검 (D20)</button>
+                    </div>
+                </div>
+
+                <!-- 밀렵꾼 스킬 -->
+                <div id="poacher-skills" class="skill-form" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="poacher-stat">스탯 (힘/민첩)</label>
+                            <input type="number" id="poacher-stat" value="10" min="1">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="poacher-hasDebuff">
+                                사냥 (디버프 대상 150%)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="poacher-isLoaded">
+                                장전 (기본공격 주사위 업그레이드)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculatePoacher('plain')" class="btn btn-skill">기본공격 (2D4/2D8)</button>
+                        <button onclick="calculatePoacher('head-chop')" class="btn btn-skill">머리찍기 (D8)</button>
+                        <button onclick="calculatePoacher('set-trap')" class="btn btn-skill">덫 깔기 (D10)</button>
+                        <button onclick="calculatePoacher('snare-shot')" class="btn btn-skill">올가미 탄 (D8)</button>
+                        <button onclick="calculatePoacher('headshot')" class="btn btn-skill">헤드샷 (2D12)</button>
+                    </div>
+                </div>
+
+                <!-- 결과 출력 -->
+                <div id="damageResult" class="result"></div>
+            </section>
+
+            <!-- 계산 로그 -->
+            <section id="log-section" class="section">
+                <h2>📜 계산 로그</h2>
+                <div id="calculationLog" class="log-area"></div>
+            </section>
+        </main>
+
+        <footer>
+            <p>TRPG 데미지 계산기 v1.0</p>
+        </footer>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
