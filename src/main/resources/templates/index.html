@@ -40,102 +40,102 @@
                 <div id="diceResult" class="result"></div>
             </section>
 
-            <!-- 수비 섹션 -->
-            <section class="section defense-section">
-                <h2>🛡️ 수비</h2>
-                <div class="stat-inputs">
-                    <div class="form-group">
-                        <label for="defense-damageTaken">받는 데미지</label>
-                        <input type="number" id="defense-damageTaken" value="50" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="defense-strength">힘</label>
-                        <input type="number" id="defense-strength" value="10" min="1">
-                    </div>
-                    <div class="form-group">
-                        <label for="defense-dexterity">민첩</label>
-                        <input type="number" id="defense-dexterity" value="10" min="1">
-                    </div>
-                    <div class="form-group">
-                        <label for="defense-swiftness">신속</label>
-                        <input type="number" id="defense-swiftness" value="10" min="1">
-                    </div>
-                    <div class="form-group">
-                        <label for="defense-critical">치명타</label>
-                        <input type="number" id="defense-critical" value="10" min="1">
-                    </div>
-                </div>
-                <div class="skill-buttons">
-                    <button onclick="calculateDefense('defend')" class="btn btn-skill">방어 (힘)</button>
-                    <button onclick="calculateDefense('evade')" class="btn btn-skill">회피 (민첩)</button>
-                    <button onclick="calculateDefense('deflect')" class="btn btn-skill">흘리기 (힘, 민첩)</button>
-                    <button onclick="calculateDefense('parry')" class="btn btn-skill">패링 (힘, 민첩, 신속)</button>
-                    <button onclick="calculateDefense('counter-parry')" class="btn btn-skill">카운터 패링 (힘, 민첩, 신속, 치명타)</button>
-                </div>
-                <div id="defenseResult" class="result"></div>
-            </section>
-
-            <!-- 정수 섹션 -->
-            <section class="section essence-section">
-                <h2>✨ 정수</h2>
-                <div class="stat-inputs">
-                    <div class="form-group">
-                        <label for="essence-baseDamage">기본 데미지</label>
-                        <input type="number" id="essence-baseDamage" value="100" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="essence-durationTurns">효과 지속 턴 수</label>
-                        <input type="number" id="essence-durationTurns" value="3" min="1" max="8">
-                    </div>
-                    <div class="form-group">
-                        <label for="essence-last3TurnsDamage">지난 3턴 피해 (잔향)</label>
-                        <input type="number" id="essence-last3TurnsDamage" value="150" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="essence-allyDamage">아군 기준 피해 (어둠 대리자)</label>
-                        <input type="number" id="essence-allyDamage" value="50" min="0">
-                    </div>
-                </div>
-                <div class="skill-buttons">
-                    <h4>빛 계열</h4>
-                    <button onclick="calculateEssence('sunset')" class="btn btn-skill">석양 (데미지 250%)</button>
-                </div>
-                <div class="skill-buttons">
-                    <h4>어둠 계열</h4>
-                    <button onclick="calculateEssence('black-flame')" class="btn btn-skill">흑염 (D6% 데미지)</button>
-                </div>
-                <div class="skill-buttons">
-                    <h4>영혼 계열</h4>
-                    <button onclick="calculateEssence('afterglow')" class="btn btn-skill">잔향 (지난 3턴 피해 50%)</button>
-                </div>
-                <div class="skill-buttons">
-                    <h4>번개 계열</h4>
-                    <button onclick="calculateEssence('thunder')" class="btn btn-skill">천둥 (데미지 200%)</button>
-                    <button onclick="calculateEssence('surge')" class="btn btn-skill">격동 (지속턴*50% 추가)</button>
-                    <button onclick="calculateEssence('flash')" class="btn btn-skill">섬광 (데미지 200%)</button>
-                    <button onclick="calculateEssence('rampage')" class="btn btn-skill">폭주 (판정 성공시 250%)</button>
-                </div>
-                <div class="skill-buttons">
-                    <h4>대리자 계열</h4>
-                    <button onclick="calculateEssence('light-proxy')" class="btn btn-skill">빛(대리자) (200%)</button>
-                    <button onclick="calculateEssence('dark-proxy')" class="btn btn-skill">어둠(대리자) (200%)</button>
-                    <button onclick="calculateEssence('soul-proxy')" class="btn btn-skill">영혼(대리자) (50% 추가)</button>
-                    <button onclick="calculateEssence('lightning-proxy')" class="btn btn-skill">번개(대리자) (판정)</button>
-                </div>
-                <div id="essenceResult" class="result"></div>
-            </section>
-
-            <!-- 직업 선택 섹션 -->
+            <!-- 통합 직업/수비/정수 선택 섹션 -->
             <section class="section job-section">
-                <h2>⚔️ 직업 선택</h2>
+                <h2>⚔️ 능력 선택</h2>
                 <div class="job-tabs">
-                    <button class="tab-btn active" onclick="showJobCategory('normal', event)">1차 직업</button>
-                    <button class="tab-btn" onclick="showJobCategory('hidden', event)">2차 직업</button>
-                    <button class="tab-btn" onclick="showJobCategory('secret', event)">히든직업</button>
+                    <button class="tab-btn active" onclick="showCategory('defense', event)">🛡️ 수비</button>
+                    <button class="tab-btn" onclick="showCategory('essence', event)">✨ 정수</button>
+                    <button class="tab-btn" onclick="showCategory('normal', event)">1차 직업</button>
+                    <button class="tab-btn" onclick="showCategory('hidden', event)">2차 직업</button>
+                    <button class="tab-btn" onclick="showCategory('secret', event)">히든직업</button>
+                </div>
+
+                <!-- 수비 탭 -->
+                <div id="defense-category" class="job-category">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="defense-damageTaken">받는 데미지</label>
+                            <input type="number" id="defense-damageTaken" value="50" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="defense-strength">힘</label>
+                            <input type="number" id="defense-strength" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="defense-dexterity">민첩</label>
+                            <input type="number" id="defense-dexterity" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="defense-swiftness">신속</label>
+                            <input type="number" id="defense-swiftness" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="defense-critical">치명타</label>
+                            <input type="number" id="defense-critical" value="10" min="1">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <button onclick="calculateDefense('defend')" class="btn btn-skill">방어 (힘)</button>
+                        <button onclick="calculateDefense('evade')" class="btn btn-skill">회피 (민첩)</button>
+                        <button onclick="calculateDefense('deflect')" class="btn btn-skill">흘리기 (힘, 민첩)</button>
+                        <button onclick="calculateDefense('parry')" class="btn btn-skill">패링 (힘, 민첩, 신속)</button>
+                        <button onclick="calculateDefense('counter-parry')" class="btn btn-skill">카운터 패링 (힘, 민첩, 신속, 치명타)</button>
+                    </div>
+                    <div id="defenseResult" class="result"></div>
+                </div>
+
+                <!-- 정수 탭 -->
+                <div id="essence-category" class="job-category" style="display: none;">
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="essence-baseDamage">기본 데미지</label>
+                            <input type="number" id="essence-baseDamage" value="100" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="essence-durationTurns">효과 지속 턴 수</label>
+                            <input type="number" id="essence-durationTurns" value="3" min="1" max="8">
+                        </div>
+                        <div class="form-group">
+                            <label for="essence-last3TurnsDamage">지난 3턴 피해 (잔향)</label>
+                            <input type="number" id="essence-last3TurnsDamage" value="150" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="essence-allyDamage">아군 기준 피해 (어둠 대리자)</label>
+                            <input type="number" id="essence-allyDamage" value="50" min="0">
+                        </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <h4>빛 계열</h4>
+                        <button onclick="calculateEssence('sunset')" class="btn btn-skill">석양 (데미지 250%)</button>
+                    </div>
+                    <div class="skill-buttons">
+                        <h4>어둠 계열</h4>
+                        <button onclick="calculateEssence('black-flame')" class="btn btn-skill">흑염 (D6% 데미지)</button>
+                    </div>
+                    <div class="skill-buttons">
+                        <h4>영혼 계열</h4>
+                        <button onclick="calculateEssence('afterglow')" class="btn btn-skill">잔향 (지난 3턴 피해 50%)</button>
+                    </div>
+                    <div class="skill-buttons">
+                        <h4>번개 계열</h4>
+                        <button onclick="calculateEssence('thunder')" class="btn btn-skill">천둥 (데미지 200%)</button>
+                        <button onclick="calculateEssence('surge')" class="btn btn-skill">격동 (지속턴*50% 추가)</button>
+                        <button onclick="calculateEssence('flash')" class="btn btn-skill">섬광 (데미지 200%)</button>
+                        <button onclick="calculateEssence('rampage')" class="btn btn-skill">폭주 (판정 성공시 250%)</button>
+                    </div>
+                    <div class="skill-buttons">
+                        <h4>대리자 계열</h4>
+                        <button onclick="calculateEssence('light-proxy')" class="btn btn-skill">빛(대리자) (200%)</button>
+                        <button onclick="calculateEssence('dark-proxy')" class="btn btn-skill">어둠(대리자) (200%)</button>
+                        <button onclick="calculateEssence('soul-proxy')" class="btn btn-skill">영혼(대리자) (50% 추가)</button>
+                        <button onclick="calculateEssence('lightning-proxy')" class="btn btn-skill">번개(대리자) (판정)</button>
+                    </div>
+                    <div id="essenceResult" class="result"></div>
                 </div>
 
                 <!-- 기본 직업 -->
-                <div id="normal-jobs" class="job-category">
+                <div id="normal-jobs" class="job-category" style="display: none;">
                     <div class="job-cards">
                         <div class="job-card" onclick="selectJob('warrior', event)">
                             <h3>⚔️ 전사</h3>
@@ -160,7 +160,7 @@
                     </div>
                 </div>
 
-                <!-- 히든 직업 -->
+                <!-- 2차 직업 -->
                 <div id="hidden-jobs" class="job-category" style="display: none;">
                     <div class="job-cards">
                         <div class="job-card" onclick="selectJob('samurai', event)">
