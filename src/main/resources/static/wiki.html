@@ -130,6 +130,114 @@
         .toc a:hover {
             color: #3498db;
         }
+        
+        /* Improved contrast for light theme */
+        .passive-box {
+            color: #744210;
+        }
+        
+        .skill-box {
+            color: #1e4620;
+        }
+        
+        .buff-box {
+            color: #1e4d8b;
+        }
+        
+        /* Dark theme support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a1a1a;
+                color: #e0e0e0;
+            }
+            
+            .wiki-container {
+                background-color: #1a1a1a;
+            }
+            
+            .wiki-nav {
+                background: #2d3748;
+            }
+            
+            .wiki-nav a {
+                color: #f7fafc;
+            }
+            
+            .wiki-nav a:hover {
+                background: #4a5568;
+            }
+            
+            .job-section {
+                background: #2d3748;
+                border-left-color: #4299e1;
+            }
+            
+            .job-section h2 {
+                color: #e0e0e0;
+                border-bottom-color: #4299e1;
+            }
+            
+            .job-section h3 {
+                color: #cbd5e0;
+            }
+            
+            .job-section p {
+                color: #e0e0e0;
+            }
+            
+            .skill-table th, .skill-table td {
+                border-color: #4a5568;
+                color: #e0e0e0;
+            }
+            
+            .skill-table th {
+                background: #2c5282;
+            }
+            
+            .skill-table tr:nth-child(even) {
+                background: #374151;
+            }
+            
+            .formula {
+                background: #374151;
+                color: #e0e0e0;
+            }
+            
+            .passive-box {
+                background: #744210;
+                border-color: #d69e2e;
+                color: #fefcbf;
+            }
+            
+            .skill-box {
+                background: #22543d;
+                border-color: #38a169;
+                color: #c6f6d5;
+            }
+            
+            .buff-box {
+                background: #2c5282;
+                border-color: #4299e1;
+                color: #bee3f8;
+            }
+            
+            .note {
+                color: #a0aec0;
+            }
+            
+            .toc {
+                background: #2d3748;
+                color: #e0e0e0;
+            }
+            
+            .toc a {
+                color: #cbd5e0;
+            }
+            
+            .toc a:hover {
+                color: #4299e1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -150,9 +258,19 @@
                 <li><a href="#common">공통 규칙</a></li>
                 <li><a href="#defense">수비 시스템</a></li>
                 <li><a href="#essence">정수 시스템</a></li>
+                <li>1차 직업
+                    <ul>
+                        <li><a href="#warrior">전사</a></li>
+                        <li><a href="#archer">궁수</a></li>
+                        <li><a href="#rogue">도적</a></li>
+                        <li><a href="#mage">마법사</a></li>
+                        <li><a href="#priest">사제</a></li>
+                    </ul>
+                </li>
                 <li>2차 직업
                     <ul>
                         <li><a href="#samurai">무사</a></li>
+                        <li><a href="#weaponmaster">웨폰마스터</a></li>
                         <li><a href="#spearman">창술사</a></li>
                         <li><a href="#crossbowman">석궁사수</a></li>
                         <li><a href="#gunslinger">건슬링거</a></li>
@@ -196,6 +314,218 @@
                 성공 조건: (스탯 - D20) ≥ 1
             </div>
             <p class="note">복수 스탯 판정 시 모든 스탯이 성공해야 합니다.</p>
+        </section>
+
+        <!-- 1차 직업 섹션 -->
+        <section id="primary-jobs" class="job-section">
+            <h2>⚔️ 1차 직업</h2>
+        </section>
+
+        <!-- 전사 -->
+        <section id="warrior" class="job-section">
+            <h2>⚔️ 전사</h2>
+            <p>주 스탯: 힘, 체력</p>
+
+            <h3>패시브</h3>
+            <div class="passive-box">
+                <strong>광란:</strong> (시작 체력 - 현재 체력) / 5만큼 공격 시 추가 데미지
+            </div>
+
+            <h3>기술</h3>
+            <table class="skill-table">
+                <tr>
+                    <th>기술명</th>
+                    <th>주사위</th>
+                    <th>효과</th>
+                    <th>스태미나</th>
+                </tr>
+                <tr>
+                    <td><strong>강타</strong></td>
+                    <td>D10</td>
+                    <td>-</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td><strong>가로베기</strong></td>
+                    <td>D8</td>
+                    <td>최대 3명 타겟</td>
+                    <td>5</td>
+                </tr>
+            </table>
+
+            <h3>스킬</h3>
+            <div class="skill-box">
+                <strong>도발</strong> (마나 3, 쿨타임 15턴)<br>
+                2턴 동안 적 도발, 상대에게 1턴 수비 불가, 받는 데미지 2 감소
+            </div>
+
+            <h3>전용 수비</h3>
+            <div class="buff-box">
+                <strong>육참골단:</strong> 받는 피해 150%, 반격(평타/기술) 200%
+            </div>
+        </section>
+
+        <!-- 궁수 -->
+        <section id="archer" class="job-section">
+            <h2>🏹 궁수</h2>
+            <p>주 스탯: 힘, 민첩</p>
+
+            <h3>패시브</h3>
+            <div class="passive-box">
+                <strong>명사수:</strong> 자신과 상대의 수비 효과 발동 X<br>
+                기본 공격이 원거리로 적용 [힘 또는 민첩으로 D4] / [힘과 민첩 동시 사용 D6]
+            </div>
+
+            <h3>기술</h3>
+            <table class="skill-table">
+                <tr>
+                    <th>기술명</th>
+                    <th>주사위</th>
+                    <th>효과</th>
+                    <th>스태미나</th>
+                </tr>
+                <tr>
+                    <td><strong>퀵샷</strong></td>
+                    <td>3xD4</td>
+                    <td>주사위당 데미지 -1</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td><strong>대쉬</strong></td>
+                    <td>기본 공격</td>
+                    <td>데미지 150%, 명사수 1번 효과 제거</td>
+                    <td>3</td>
+                </tr>
+            </table>
+
+            <h3>스킬</h3>
+            <div class="skill-box">
+                <strong>사냥감</strong> (마나 5, 쿨타임 15턴)<br>
+                회피 불가, 한 명 지목해 연속 공격 시 데미지 증가<br>
+                1회: 100% / 2-3회: 125% / 4-6회: 150% / 7회 이후: 200%
+            </div>
+            <div class="skill-box">
+                <strong>기회</strong> (마나 7, 쿨타임 25턴)<br>
+                원하는 순간을 자신의 턴으로 만들 수 있다<br>
+                다음 턴까지 받는 피해 150%
+            </div>
+        </section>
+
+        <!-- 도적 -->
+        <section id="rogue" class="job-section">
+            <h2>🗡️ 도적</h2>
+            <p>주 스탯: 힘, 민첩, 신속</p>
+
+            <h3>패시브</h3>
+            <div class="passive-box">
+                <strong>직업병:</strong> 전투 시작 시 자동으로 스킬 "은신" 발동 (확정 성공)<br>
+                기본 공격 사용 시 D4 x 2 또는 D6
+            </div>
+
+            <h3>기술</h3>
+            <table class="skill-table">
+                <tr>
+                    <th>기술명</th>
+                    <th>주사위</th>
+                    <th>효과</th>
+                    <th>스태미나</th>
+                </tr>
+                <tr>
+                    <td><strong>쑤시기</strong></td>
+                    <td>D6</td>
+                    <td>다음 턴 상대 추가 3 데미지</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td><strong>투척/속공</strong></td>
+                    <td>D6</td>
+                    <td>신속 판정 성공 시 기본 공격 1회 추가</td>
+                    <td>4</td>
+                </tr>
+            </table>
+
+            <h3>스킬</h3>
+            <div class="skill-box">
+                <strong>은신</strong> (마나 8, 쿨타임 턴)<br>
+                다음 턴까지 모습을 감춰 전투에서 이탈 (민첩)<br>
+                최대 3턴 지속, 신속 판정 성공 시 기습 사용 가능
+            </div>
+
+            <h3>전용 수비</h3>
+            <div class="buff-box">
+                <strong>긴급탈출:</strong> 확정적으로 공격 회피 (스태미나 3, 전투당 1회)
+            </div>
+        </section>
+
+        <!-- 마법사 -->
+        <section id="mage" class="job-section">
+            <h2>🔮 마법사</h2>
+            <p>주 스탯: 지능, 지혜</p>
+
+            <h3>패시브</h3>
+            <div class="passive-box">
+                <strong>매지션:</strong> 기본 공격을 지능으로 사용 가능<br>
+                마나 1 소모해 D8로 판정 가능<br>
+                쿨타임인 스킬 존재 시 영창을 행동하지 않고 영창 발동 가능<br>
+                (지혜-주사위값) 만큼 모든 기본 스킬 쿨타임 감소
+            </div>
+
+            <h3>스킬</h3>
+            <div class="skill-box">
+                <strong>집중</strong> (마나 3, 쿨타임 5턴)<br>
+                다음 스킬의 지혜 판정으로 감소하는 영창시간 2배<br>
+                영창 후 발동 시 해당 스킬 쿨타임 50% 감소<br>
+                영창 중 디버프 2회 무시
+            </div>
+            <div class="skill-box">
+                <strong>마탄</strong> (마나 4, 쿨타임 10턴, 영창 3턴)<br>
+                D8 × 3
+            </div>
+            <div class="skill-box">
+                <strong>마나 블래스트</strong> (마나 8+@, 쿨타임 16턴, 영창 5턴)<br>
+                모든 적에게 공격: D6 × 6 + 소모한 마나
+            </div>
+
+            <h3>전용 수비</h3>
+            <div class="buff-box">
+                <strong>매직가드:</strong> 영창 중에도 발동 가능, 받는 데미지 50%<br>
+                발동한 영창이 끝나기 전 다음 공격 30% 경감<br>
+                영창 중 연속 사용 가능 (마나 3)
+            </div>
+        </section>
+
+        <!-- 사제 -->
+        <section id="priest" class="job-section">
+            <h2>✝️ 사제</h2>
+            <p>주 스탯: 지능, 지혜</p>
+
+            <h3>패시브</h3>
+            <div class="passive-box">
+                <strong>축복:</strong> 자신의 턴에 행동하지 않을 경우 지정한 아군에게 다음 턴까지 보호막 5 부여<br>
+                기본 공격을 지능으로 사용 가능<br>
+                기본 공격 사용 시 지정한 아군의 체력 1 회복
+            </div>
+
+            <h3>스킬</h3>
+            <div class="skill-box">
+                <strong>믿음</strong> (마나 8, 쿨타임 10턴)<br>
+                아군 1명의 모든 스탯 2 상승 (중첩 불가)
+            </div>
+            <div class="skill-box">
+                <strong>모독</strong> (마나 4, 쿨타임 20턴, 영창 1턴)<br>
+                다음 턴 적 1명 행동 불가
+            </div>
+            <div class="skill-box">
+                <strong>복수</strong> (전투당 1회, 신속 사용 불가)<br>
+                자신 또는 아군의 체력이 5 이하가 되는 피해를 받았을 때 즉시 발동<br>
+                공격 받은 턴까지 해당 아군에게 보호막 10 부여<br>
+                D4 × 6
+            </div>
+
+            <h3>전용 수비</h3>
+            <div class="buff-box">
+                <strong>희생:</strong> 받는 데미지 50% 감소 (스태미나 5, 쿨타임 15턴)
+            </div>
         </section>
 
         <!-- 수비 시스템 -->
@@ -329,6 +659,65 @@
                 × 물아 모드 (1.5) × 각오 (2.0) × 일격필살 (2.0)<br>
                 = 기본 데미지 × 6.0
             </div>
+        </section>
+
+        <!-- 웨폰마스터 -->
+        <section id="weaponmaster" class="job-section">
+            <h2>⚔️ 웨폰마스터</h2>
+            <p>주 스탯: 힘 (+민첩)</p>
+
+            <h3>패시브</h3>
+            <div class="passive-box">
+                <strong>선택:</strong> 여러 가지 무기를 사용할 수 있다. 그 중 1개의 무기를 선택해 공격 가능<br>
+                기본적으로 무기는 휴식을 진행하여 교체 가능<br>
+                (전사/도적 직업군의 기술을 배울 수 있다)
+            </div>
+            <div class="passive-box">
+                <strong>연계:</strong> 무기를 교체하였을 때 그 다음 턴 공격의 데미지 100% 증가
+            </div>
+            <div class="passive-box">
+                <strong>다양성:</strong> 소지한 무기 하나당 데미지 10% 감소<br>
+                대신 정수를 부여한 무기 하나당 데미지 30% 증가
+            </div>
+            <div class="passive-box">
+                <strong>대리인:</strong> 정수 스킬 사용 시 해당 무기로 1회 더 공격 가능<br>
+                해당 패시브를 사용하여 1회 더 공격 시 정수 스킬이 다시 사용 가능할 때까지 해당 무기를 사용할 수 없음
+            </div>
+            <div class="passive-box">
+                <strong>과감함:</strong> 무기가 사용 불가 상태가 되었을 때 다음 턴 가하는 데미지 150% 증가
+            </div>
+
+            <h3>스킬</h3>
+            <div class="skill-box">
+                <strong>기회 포착</strong> (마나 5, 쿨타임 8턴)<br>
+                다음 턴까지 현재 사용 불가 상태인 무기당 데미지 50% 증가<br>
+                이 효과가 지속될 때 사용한 무기는 해당 무기의 정수 스킬의 쿨타임만큼 사용 불가능
+            </div>
+            <div class="skill-box">
+                <strong>순환</strong> (마나 2, 쿨타임 2턴)<br>
+                모든 사용 불가 상태의 무기를 사용 가능으로 변경<br>
+                이때 효과를 부여한 무기 하나당 다음 턴까지 데미지 30% 감소
+            </div>
+            <div class="skill-box">
+                <strong>순간 교체</strong> (마나 4, 쿨타임 5턴, 민첩)<br>
+                턴 사용 후 휴식 없이 무기를 교체할 수 있다<br>
+                이후 1회 더 턴을 사용할 수 있다<br>
+                해당 스킬은 턴을 소모하지 않는다
+            </div>
+            <div class="skill-box">
+                <strong>숙련도</strong> (마나 5, 쿨타임 15턴)<br>
+                현재 사용 가능 무기 개수가 2개 이하일 때 사용 가능<br>
+                사용 가능 무기 개수가 3개 이상이 되기 전까지 지속<br>
+                1개의 무기를 선택해 해당 무기의 피해량이 사용 불가능 무기 개수당 50% 증가
+            </div>
+
+            <h3>전용 수비</h3>
+            <div class="buff-box">
+                <strong>이별:</strong> 적의 공격을 확정적으로 막음<br>
+                이때 사용한 무기는 전투 중 영구적으로 사용할 수 없음 (순환으로 소생 불가)
+            </div>
+
+            <p class="note">※ 웨폰마스터는 다양한 무기와 정수를 활용하는 전략적 직업입니다</p>
         </section>
 
         <!-- 창술사 -->
