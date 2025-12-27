@@ -1056,6 +1056,127 @@ function getSkillName(job, skill) {
     return skill;
 }
 
+// Defense calculations
+async function calculateDefense(defenseType) {
+    const damageTaken = parseInt(document.getElementById('defense-damageTaken').value) || 50;
+    const strength = parseInt(document.getElementById('defense-strength').value) || 10;
+    const dexterity = parseInt(document.getElementById('defense-dexterity').value) || 10;
+    const swiftness = parseInt(document.getElementById('defense-swiftness').value) || 10;
+    const critical = parseInt(document.getElementById('defense-critical').value) || 10;
+    
+    let requestBody = { damageTaken };
+    
+    switch(defenseType) {
+        case 'defend':
+            requestBody.strength = strength;
+            break;
+        case 'evade':
+            requestBody.dexterity = dexterity;
+            break;
+        case 'deflect':
+            requestBody.strength = strength;
+            requestBody.dexterity = dexterity;
+            break;
+        case 'parry':
+            requestBody.strength = strength;
+            requestBody.dexterity = dexterity;
+            requestBody.swiftness = swiftness;
+            break;
+        case 'counter-parry':
+            requestBody.strength = strength;
+            requestBody.dexterity = dexterity;
+            requestBody.swiftness = swiftness;
+            requestBody.critical = critical;
+            break;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}/defense/${defenseType}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestBody)
+        });
+        
+        const data = await response.json();
+        
+        const defenseNames = {
+            'defend': '방어',
+            'evade': '회피',
+            'deflect': '흘리기',
+            'parry': '패링',
+            'counter-parry': '카운터 패링'
+        };
+        
+        document.getElementById('defenseResult').innerHTML = `
+            <div class="damage-label">🛡️ ${defenseNames[defenseType]} - 최종 받는 데미지</div>
+            <div class="damage-value">${data.damage}</div>
+        `;
+        
+        addLog(`🛡️ 수비-${defenseNames[defenseType]} (받은 데미지: ${damageTaken})`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        alert('수비 계산 중 오류가 발생했습니다.');
+    }
+}
+
+// Essence calculations
+async function calculateEssence(essenceType) {
+    const baseDamage = parseInt(document.getElementById('essence-baseDamage').value) || 100;
+    const durationTurns = parseInt(document.getElementById('essence-durationTurns').value) || 3;
+    const last3TurnsDamage = parseInt(document.getElementById('essence-last3TurnsDamage').value) || 150;
+    const allyDamage = parseInt(document.getElementById('essence-allyDamage').value) || 50;
+    
+    let requestBody = { baseDamage };
+    
+    switch(essenceType) {
+        case 'surge':
+        case 'rampage':
+        case 'lightning-proxy':
+            requestBody.durationTurns = durationTurns;
+            break;
+        case 'afterglow':
+            requestBody = { last3TurnsDamage };
+            break;
+        case 'dark-proxy':
+            requestBody.allyDamage = allyDamage;
+            break;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}/essence/${essenceType}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestBody)
+        });
+        
+        const data = await response.json();
+        
+        const essenceNames = {
+            'sunset': '석양',
+            'black-flame': '흑염',
+            'afterglow': '잔향',
+            'thunder': '천둥',
+            'surge': '격동',
+            'flash': '섬광',
+            'rampage': '폭주',
+            'light-proxy': '빛(대리자)',
+            'dark-proxy': '어둠(대리자)',
+            'soul-proxy': '영혼(대리자)',
+            'lightning-proxy': '번개(대리자)'
+        };
+        
+        document.getElementById('essenceResult').innerHTML = `
+            <div class="damage-label">✨ 정수-${essenceNames[essenceType]} - 최종 데미지</div>
+            <div class="damage-value">${data.damage}</div>
+        `;
+        
+        addLog(`✨ 정수-${essenceNames[essenceType]} (기본: ${baseDamage})`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        alert('정수 계산 중 오류가 발생했습니다.');
+    }
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     addLog('🎮 TRPG 데미지 계산기가 시작되었습니다!');

@@ -2610,6 +2610,265 @@ public class DamageController {
         return createResponse(damage, baos);
     }
 
+    // ===== 수비 (Defense) =====
+    
+    /**
+     * 방어 (Defense - Defend)
+     */
+    @PostMapping("/defense/defend")
+    public Map<String, Object> defenseDefend(@RequestBody Map<String, Integer> request) {
+        int damageTaken = request.getOrDefault("damageTaken", 10);
+        int strength = request.getOrDefault("strength", 10);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int finalDamage = Defense.defend(damageTaken, strength, ps);
+        
+        return createResponse(finalDamage, baos);
+    }
+    
+    /**
+     * 회피 (Defense - Evade)
+     */
+    @PostMapping("/defense/evade")
+    public Map<String, Object> defenseEvade(@RequestBody Map<String, Integer> request) {
+        int damageTaken = request.getOrDefault("damageTaken", 10);
+        int dexterity = request.getOrDefault("dexterity", 10);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int finalDamage = Defense.evade(damageTaken, dexterity, ps);
+        
+        return createResponse(finalDamage, baos);
+    }
+    
+    /**
+     * 흘리기 (Defense - Deflect)
+     */
+    @PostMapping("/defense/deflect")
+    public Map<String, Object> defenseDeflect(@RequestBody Map<String, Integer> request) {
+        int damageTaken = request.getOrDefault("damageTaken", 10);
+        int strength = request.getOrDefault("strength", 10);
+        int dexterity = request.getOrDefault("dexterity", 10);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int finalDamage = Defense.deflect(damageTaken, strength, dexterity, ps);
+        
+        return createResponse(finalDamage, baos);
+    }
+    
+    /**
+     * 패링 (Defense - Parry)
+     */
+    @PostMapping("/defense/parry")
+    public Map<String, Object> defenseParry(@RequestBody Map<String, Integer> request) {
+        int damageTaken = request.getOrDefault("damageTaken", 10);
+        int strength = request.getOrDefault("strength", 10);
+        int dexterity = request.getOrDefault("dexterity", 10);
+        int swiftness = request.getOrDefault("swiftness", 10);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int finalDamage = Defense.parry(damageTaken, strength, dexterity, swiftness, ps);
+        
+        return createResponse(finalDamage, baos);
+    }
+    
+    /**
+     * 카운터 패링 (Defense - Counter Parry)
+     */
+    @PostMapping("/defense/counter-parry")
+    public Map<String, Object> defenseCounterParry(@RequestBody Map<String, Integer> request) {
+        int damageTaken = request.getOrDefault("damageTaken", 10);
+        int strength = request.getOrDefault("strength", 10);
+        int dexterity = request.getOrDefault("dexterity", 10);
+        int swiftness = request.getOrDefault("swiftness", 10);
+        int critical = request.getOrDefault("critical", 10);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int finalDamage = Defense.counterParry(damageTaken, strength, dexterity, swiftness, critical, ps);
+        
+        return createResponse(finalDamage, baos);
+    }
+    
+    // ===== 정수 (Essence) =====
+    
+    /**
+     * 석양 (Essence - Sunset)
+     */
+    @PostMapping("/essence/sunset")
+    public Map<String, Object> essenceSunset(@RequestBody Map<String, Integer> request) {
+        int baseDamage = request.getOrDefault("baseDamage", 10);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int finalDamage = Essence.sunset(baseDamage, ps);
+        
+        return createResponse(finalDamage, baos);
+    }
+    
+    /**
+     * 흑염 (Essence - Black Flame)
+     */
+    @PostMapping("/essence/black-flame")
+    public Map<String, Object> essenceBlackFlame(@RequestBody Map<String, Integer> request) {
+        int baseDamage = request.getOrDefault("baseDamage", 10);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int finalDamage = Essence.blackFlame(baseDamage, ps);
+        
+        return createResponse(finalDamage, baos);
+    }
+    
+    /**
+     * 잔향 (Essence - Afterglow)
+     */
+    @PostMapping("/essence/afterglow")
+    public Map<String, Object> essenceAfterglow(@RequestBody Map<String, Integer> request) {
+        int last3TurnsDamage = request.getOrDefault("last3TurnsDamage", 30);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int additionalDamage = Essence.afterglow(last3TurnsDamage, ps);
+        
+        return createResponse(additionalDamage, baos);
+    }
+    
+    /**
+     * 천둥 (Essence - Thunder)
+     */
+    @PostMapping("/essence/thunder")
+    public Map<String, Object> essenceThunder(@RequestBody Map<String, Integer> request) {
+        int baseDamage = request.getOrDefault("baseDamage", 10);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int finalDamage = Essence.thunder(baseDamage, ps);
+        
+        return createResponse(finalDamage, baos);
+    }
+    
+    /**
+     * 격동 (Essence - Surge)
+     */
+    @PostMapping("/essence/surge")
+    public Map<String, Object> essenceSurge(@RequestBody Map<String, Integer> request) {
+        int baseDamage = request.getOrDefault("baseDamage", 10);
+        int durationTurns = request.getOrDefault("durationTurns", 3);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int finalDamage = Essence.surge(baseDamage, durationTurns, ps);
+        
+        return createResponse(finalDamage, baos);
+    }
+    
+    /**
+     * 섬광 (Essence - Flash)
+     */
+    @PostMapping("/essence/flash")
+    public Map<String, Object> essenceFlash(@RequestBody Map<String, Integer> request) {
+        int baseDamage = request.getOrDefault("baseDamage", 10);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int finalDamage = Essence.flash(baseDamage, ps);
+        
+        return createResponse(finalDamage, baos);
+    }
+    
+    /**
+     * 폭주 (Essence - Rampage)
+     */
+    @PostMapping("/essence/rampage")
+    public Map<String, Object> essenceRampage(@RequestBody Map<String, Integer> request) {
+        int baseDamage = request.getOrDefault("baseDamage", 10);
+        int durationTurns = request.getOrDefault("durationTurns", 3);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int finalDamage = Essence.rampage(baseDamage, durationTurns, ps);
+        
+        return createResponse(finalDamage, baos);
+    }
+    
+    /**
+     * 빛(대리자) (Essence - Light Proxy)
+     */
+    @PostMapping("/essence/light-proxy")
+    public Map<String, Object> essenceLightProxy(@RequestBody Map<String, Integer> request) {
+        int baseDamage = request.getOrDefault("baseDamage", 10);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int finalDamage = Essence.lightProxy(baseDamage, ps);
+        
+        return createResponse(finalDamage, baos);
+    }
+    
+    /**
+     * 어둠(대리자) (Essence - Dark Proxy)
+     */
+    @PostMapping("/essence/dark-proxy")
+    public Map<String, Object> essenceDarkProxy(@RequestBody Map<String, Integer> request) {
+        int baseDamage = request.getOrDefault("baseDamage", 10);
+        int allyDamage = request.getOrDefault("allyDamage", 10);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int finalDamage = Essence.darkProxy(baseDamage, allyDamage, ps);
+        
+        return createResponse(finalDamage, baos);
+    }
+    
+    /**
+     * 영혼(대리자) (Essence - Soul Proxy)
+     */
+    @PostMapping("/essence/soul-proxy")
+    public Map<String, Object> essenceSoulProxy(@RequestBody Map<String, Integer> request) {
+        int baseDamage = request.getOrDefault("baseDamage", 10);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int finalDamage = Essence.soulProxy(baseDamage, ps);
+        
+        return createResponse(finalDamage, baos);
+    }
+    
+    /**
+     * 번개(대리자) (Essence - Lightning Proxy)
+     */
+    @PostMapping("/essence/lightning-proxy")
+    public Map<String, Object> essenceLightningProxy(@RequestBody Map<String, Integer> request) {
+        int baseDamage = request.getOrDefault("baseDamage", 10);
+        int durationTurns = request.getOrDefault("durationTurns", 3);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int finalDamage = Essence.lightningProxy(baseDamage, durationTurns, ps);
+        
+        return createResponse(finalDamage, baos);
+    }
+
     /**
      * Helper method to create response
      */
