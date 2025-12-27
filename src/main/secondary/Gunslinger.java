@@ -23,14 +23,12 @@ public class Gunslinger {
      */
     public static int plain(int stat, boolean isFirstShot, boolean dodgedLastTurn, boolean isJudgeTurn, boolean isJudgementTarget, PrintStream out) {
         out.println("건슬링거-기본공격 사용");
-        int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(1, 6, out);
 
-        totalDamage = applyPassives(totalDamage, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget, out);
+        int damageAfterPassives = applyPassives(baseDamage, stat, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget, out);
 
-        out.printf("총 데미지 : %d%n", totalDamage);
-        return totalDamage;
+        out.printf("총 데미지 : %d%n", damageAfterPassives);
+        return damageAfterPassives;
     }
 
     /**
@@ -46,15 +44,13 @@ public class Gunslinger {
      */
     public static int doubleShot(int stat, boolean isFirstShot, boolean dodgedLastTurn, boolean isJudgeTurn, boolean isJudgementTarget, PrintStream out) {
         out.println("건슬링거-더블샷 사용 (2D6)");
-        int defaultDamage = Main.dice(2, 6, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(2, 6, out);
 
-        totalDamage = applyPassives(totalDamage, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget, out);
+        int damageAfterPassives = applyPassives(baseDamage, stat, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget, out);
 
-        out.printf("총 데미지 : %d%n", totalDamage);
+        out.printf("총 데미지 : %d%n", damageAfterPassives);
         out.println("※ 스태미나 2 소모");
-        return totalDamage;
+        return damageAfterPassives;
     }
 
     /**
@@ -70,15 +66,13 @@ public class Gunslinger {
      */
     public static int headshot(int stat, boolean isFirstShot, boolean dodgedLastTurn, boolean isJudgeTurn, boolean isJudgementTarget, PrintStream out) {
         out.println("건슬링거-헤드샷 사용 (D20)");
-        int defaultDamage = Main.dice(1, 20, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(1, 20, out);
 
-        totalDamage = applyPassives(totalDamage, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget, out);
+        int damageAfterPassives = applyPassives(baseDamage, stat, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget, out);
 
-        out.printf("총 데미지 : %d%n", totalDamage);
+        out.printf("총 데미지 : %d%n", damageAfterPassives);
         out.println("※ 스태미나 3 소모");
-        return totalDamage;
+        return damageAfterPassives;
     }
 
     /**
@@ -94,25 +88,22 @@ public class Gunslinger {
      */
     public static int quickDraw(int stat, boolean isFirstShot, boolean dodgedLastTurn, boolean isJudgeTurn, boolean isJudgementTarget, PrintStream out) {
         out.println("건슬링거-퀵드로우 사용");
-        int defaultDamage;
+        int baseDamage;
 
         if (isFirstShot) {
             out.println("신중함 발동! (4D8)");
-            defaultDamage = Main.dice(4, 8, out);
+            baseDamage = Main.dice(4, 8, out);
         } else {
             out.println("(D8)");
-            defaultDamage = Main.dice(1, 8, out);
+            baseDamage = Main.dice(1, 8, out);
         }
 
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
-
         // 퀵드로우에도 신중함 300% 배율 적용 (버그 수정)
-        totalDamage = applyPassives(totalDamage, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget, out);
+        int damageAfterPassives = applyPassives(baseDamage, stat, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget, out);
 
-        out.printf("총 데미지 : %d%n", totalDamage);
+        out.printf("총 데미지 : %d%n", damageAfterPassives);
         out.println("※ 스태미나 1 소모");
-        return totalDamage;
+        return damageAfterPassives;
     }
 
     /**
@@ -128,15 +119,13 @@ public class Gunslinger {
      */
     public static int focusFire(int stat, boolean isFirstShot, boolean dodgedLastTurn, boolean isJudgeTurn, boolean isJudgementTarget, PrintStream out) {
         out.println("건슬링거-일점사 사용 (6D6)");
-        int defaultDamage = Main.dice(6, 6, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(6, 6, out);
 
-        totalDamage = applyPassives(totalDamage, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget, out);
+        int damageAfterPassives = applyPassives(baseDamage, stat, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget, out);
 
-        out.printf("총 데미지 : %d%n", totalDamage);
+        out.printf("총 데미지 : %d%n", damageAfterPassives);
         out.println("※ 스태미나 4 소모");
-        return totalDamage;
+        return damageAfterPassives;
     }
 
     /**
@@ -148,11 +137,14 @@ public class Gunslinger {
         out.println("건슬링거-백스탭 사용 (버프 스킬)");
         out.println("※ 공격 회피 성공 시 발동");
 
-        int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = (int) ((defaultDamage + sideDamage) * 1.5);
+        int baseDamage = Main.dice(1, 6, out);
+        int damageAfterMultiplier = (int) (baseDamage * 1.5);
 
-        out.printf("반격 데미지 150%%: (%d + %d) x 1.5 = %d%n", defaultDamage, sideDamage, totalDamage);
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterMultiplier, stat, out);
+        int totalDamage = damageAfterMultiplier + sideDamage;
+
+        out.printf("반격 데미지 150%%: %d x 1.5 + %d = %d%n", baseDamage, sideDamage, totalDamage);
         out.println("※ 스태미나 3 소모");
         return totalDamage;
     }
@@ -180,11 +172,14 @@ public class Gunslinger {
      */
     public static int notice(int stat, PrintStream out) {
         out.println("건슬링거-예고장 사용");
-        int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = (int) ((defaultDamage + sideDamage) * 2.0);
+        int baseDamage = Main.dice(1, 6, out);
+        int damageAfterMultiplier = (int) (baseDamage * 2.0);
 
-        out.printf("반격 데미지 200%%: (%d + %d) x 2.0 = %d%n", defaultDamage, sideDamage, totalDamage);
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterMultiplier, stat, out);
+        int totalDamage = damageAfterMultiplier + sideDamage;
+
+        out.printf("반격 데미지 200%%: %d x 2.0 + %d = %d%n", baseDamage, sideDamage, totalDamage);
         out.println("※ 마나 6 소모, 쿨타임 15턴");
         return totalDamage;
     }
@@ -210,9 +205,10 @@ public class Gunslinger {
     }
 
     /**
-     * 패시브 적용 (곱연산)
+     * 패시브 적용 (곱연산) 후 sideDamage 적용
+     * sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
      */
-    private static int applyPassives(int damage, boolean isFirstShot, boolean dodgedLastTurn, boolean isJudgeTurn, boolean isJudgementTarget, PrintStream out) {
+    private static int applyPassives(int baseDamage, int stat, boolean isFirstShot, boolean dodgedLastTurn, boolean isJudgeTurn, boolean isJudgementTarget, PrintStream out) {
         double multiplier = 1.0;
 
         // 심판자 패시브
@@ -240,7 +236,11 @@ public class Gunslinger {
             out.println("심판 대상 적용: x2.0");
         }
 
-        return (int) (damage * multiplier);
+        int damageAfterMultiplier = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterMultiplier, stat, out);
+        return damageAfterMultiplier + sideDamage;
     }
 
 }

@@ -14,9 +14,7 @@ public class Sniper {
      */
     public static int plain(int stat, int numBuffs, boolean notAttackedFor5Turns, PrintStream out) {
         out.println("저격수-기본공격 사용");
-        int defaultDamage = Main.dice(1, 6, out);
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
+        int baseDamage = Main.dice(1, 6, out);
 
         double multiplier = 1.0;
 
@@ -32,7 +30,12 @@ public class Sniper {
             out.println("급소조준 패시브 적용: x2.0");
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
         out.printf("총 데미지 : %d%n", totalDamage);
         return totalDamage;
     }
@@ -155,16 +158,13 @@ public class Sniper {
         out.println("※ 탄환 소모");
         out.println("※ 스태미나 10 소모");
 
-        int defaultDamage = Main.dice(4, 20, out);
+        int baseDamage = Main.dice(4, 20, out);
 
         // 안정화 버프: 주사위 복제 (결과 2배)
         if (isStabilized) {
-            defaultDamage *= 2;
-            out.printf("안정화 버프 적용 (주사위 복제): x2 = %d%n", defaultDamage);
+            baseDamage *= 2;
+            out.printf("안정화 버프 적용 (주사위 복제): x2 = %d%n", baseDamage);
         }
-
-        int sideDamage = Main.sideDamage(stat, out);
-        int totalDamage = defaultDamage + sideDamage;
 
         double multiplier = 1.0;
 
@@ -210,8 +210,13 @@ public class Sniper {
             out.println("신경 극대화 버프 적용: x4.0");
         }
 
-        totalDamage = (int) (totalDamage * multiplier);
+        int damageAfterPassives = (int) (baseDamage * multiplier);
         out.printf("최종 배율: x%.2f%n", multiplier);
+
+        // sideDamage는 패시브와 배율 적용 후 맨 뒤에 적용
+        int sideDamage = Main.sideDamage(damageAfterPassives, stat, out);
+        int totalDamage = damageAfterPassives + sideDamage;
+
         out.printf("총 데미지 : %d%n", totalDamage);
         return totalDamage;
     }
