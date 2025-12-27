@@ -1135,7 +1135,7 @@ async function calculateEssence(essenceType) {
             requestBody.durationTurns = durationTurns;
             break;
         case 'afterglow':
-            requestBody = { last3TurnsDamage };
+            requestBody.last3TurnsDamage = last3TurnsDamage;
             break;
         case 'dark-proxy':
             requestBody.allyDamage = allyDamage;
