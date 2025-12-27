@@ -35,25 +35,45 @@ public class Assassin {
     }
 
     /**
-     * 암살 기술
-     * 4D20, 스태미나 44 소모
+     * 암살 기술 (호환성을 위한 오버로드)
      */
     public static int assassinate(int stat, boolean isReturnTurn, boolean isFirstAssault, PrintStream out) {
+        return assassinate(stat, isReturnTurn, isFirstAssault, false, out);
+    }
+
+    /**
+     * 암살 기술
+     * 4D20, 스태미나 44 소모
+     * @param stat 사용할 스탯
+     * @param isReturnTurn 전장 복귀 턴 여부 (암살 대상 패시브 400%)
+     * @param isFirstAssault 생사여탈 패시브 (전투 시작 암살 200%)
+     * @param isConfirmKillActive 확인사살 활성화 여부 (200%)
+     */
+    public static int assassinate(int stat, boolean isReturnTurn, boolean isFirstAssault, boolean isConfirmKillActive, PrintStream out) {
         out.println("암살자-암살 사용 (4D20)");
         int defaultDamage = Main.dice(4, 20, out);
         int sideDamage = Main.sideDamage(stat, out);
         int totalDamage = defaultDamage + sideDamage;
 
+        double multiplier = 1.0;
+
         if (isReturnTurn) {
-            totalDamage *= 4;
-            out.printf("암살 대상 패시브 적용: x4.0 → %d%n", totalDamage);
+            multiplier *= 4.0;
+            out.println("암살 대상 패시브 적용: x4.0");
         }
 
         if (isFirstAssault) {
-            totalDamage *= 2;
-            out.printf("생사여탈 패시브 적용: x2.0 → %d%n", totalDamage);
+            multiplier *= 2.0;
+            out.println("생사여탈 패시브 적용: x2.0");
         }
 
+        // 확인사살: 이전 암살 적중 후 적 체력 30% 이하일 때 다음 암살 200%
+        if (isConfirmKillActive) {
+            multiplier *= 2.0;
+            out.println("확인사살 적용 (적 체력 30%% 이하): x2.0");
+        }
+
+        totalDamage = (int) (totalDamage * multiplier);
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 44 소모");
         return totalDamage;

@@ -7,13 +7,21 @@ import java.io.PrintStream;
 public class Poacher {
 
     /**
+     * 밀렵꾼 기본공격 (호환성을 위한 오버로드)
+     */
+    public static int plain(int stat, boolean hasDebuff, boolean isLoaded, PrintStream out) {
+        return plain(stat, hasDebuff, isLoaded, false, out);
+    }
+
+    /**
      * 밀렵꾼 기본공격 - 산탄 패시브 적용
      * 기본 2D4, (스탯-주사위) ≥ 10이면 2D8
      * @param stat 사용할 스탯
      * @param hasDebuff 사냥 패시브 (디버프 적용 시 150%)
      * @param isLoaded 장전 사용 여부 (2D4→2D6 / 2D8→2D12)
+     * @param isWeaknessActive 약자멸시 패시브 (체력 차이 10% 이상 시 200%)
      */
-    public static int plain(int stat, boolean hasDebuff, boolean isLoaded, PrintStream out) {
+    public static int plain(int stat, boolean hasDebuff, boolean isLoaded, boolean isWeaknessActive, PrintStream out) {
         out.println("밀렵꾼-기본공격 사용 (산탄 패시브)");
 
         // 스탯 판정
@@ -42,93 +50,162 @@ public class Poacher {
         int sideDamage = Main.sideDamage(stat, out);
         int totalDamage = defaultDamage + sideDamage;
 
+        double multiplier = 1.0;
+
         // 사냥 패시브
         if (hasDebuff) {
-            totalDamage = (int) (totalDamage * 1.5);
-            out.printf("사냥 패시브 적용 (디버프 대상): x1.5 → %d%n", totalDamage);
+            multiplier *= 1.5;
+            out.println("사냥 패시브 적용 (디버프 대상): x1.5");
         }
 
+        // 약자멸시 패시브
+        if (isWeaknessActive) {
+            multiplier *= 2.0;
+            out.println("약자멸시 패시브 적용 (체력 차이 10% 이상): x2.0");
+        }
+
+        totalDamage = (int) (totalDamage * multiplier);
         out.printf("총 데미지 : %d%n", totalDamage);
         return totalDamage;
+    }
+
+    /**
+     * 머리찍기 기술 (호환성을 위한 오버로드)
+     */
+    public static int headChop(int stat, boolean hasDebuff, PrintStream out) {
+        return headChop(stat, hasDebuff, false, out);
     }
 
     /**
      * 머리찍기 기술
      * D8, 스태미나 1 소모
      */
-    public static int headChop(int stat, boolean hasDebuff, PrintStream out) {
+    public static int headChop(int stat, boolean hasDebuff, boolean isWeaknessActive, PrintStream out) {
         out.println("밀렵꾼-머리찍기 사용 (D8)");
         int defaultDamage = Main.dice(1, 8, out);
         int sideDamage = Main.sideDamage(stat, out);
         int totalDamage = defaultDamage + sideDamage;
 
+        double multiplier = 1.0;
+
         if (hasDebuff) {
-            totalDamage = (int) (totalDamage * 1.5);
-            out.printf("사냥 패시브 적용: x1.5 → %d%n", totalDamage);
+            multiplier *= 1.5;
+            out.println("사냥 패시브 적용: x1.5");
         }
 
+        if (isWeaknessActive) {
+            multiplier *= 2.0;
+            out.println("약자멸시 패시브 적용: x2.0");
+        }
+
+        totalDamage = (int) (totalDamage * multiplier);
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 1 소모");
         return totalDamage;
     }
 
     /**
+     * 덫 깔기 기술 (호환성을 위한 오버로드)
+     */
+    public static int setTrap(int stat, boolean hasDebuff, PrintStream out) {
+        return setTrap(stat, hasDebuff, false, out);
+    }
+
+    /**
      * 덫 깔기 기술
      * D10, 이번 턴 적의 공격 데미지 75%, 스태미나 3 소모
      */
-    public static int setTrap(int stat, boolean hasDebuff, PrintStream out) {
+    public static int setTrap(int stat, boolean hasDebuff, boolean isWeaknessActive, PrintStream out) {
         out.println("밀렵꾼-덫 깔기 사용 (D10)");
         out.println("※ 이번 턴 적의 공격 데미지 75%%");
         int defaultDamage = Main.dice(1, 10, out);
         int sideDamage = Main.sideDamage(stat, out);
         int totalDamage = defaultDamage + sideDamage;
 
+        double multiplier = 1.0;
+
         if (hasDebuff) {
-            totalDamage = (int) (totalDamage * 1.5);
-            out.printf("사냥 패시브 적용: x1.5 → %d%n", totalDamage);
+            multiplier *= 1.5;
+            out.println("사냥 패시브 적용: x1.5");
         }
 
+        if (isWeaknessActive) {
+            multiplier *= 2.0;
+            out.println("약자멸시 패시브 적용: x2.0");
+        }
+
+        totalDamage = (int) (totalDamage * multiplier);
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 3 소모");
         return totalDamage;
     }
 
     /**
+     * 올가미 탄 기술 (호환성을 위한 오버로드)
+     */
+    public static int snareShot(int stat, boolean hasDebuff, PrintStream out) {
+        return snareShot(stat, hasDebuff, false, out);
+    }
+
+    /**
      * 올가미 탄 기술
      * D8, 다음턴까지 적 행동불가 부여, 스태미나 8 소모
      */
-    public static int snareShot(int stat, boolean hasDebuff, PrintStream out) {
+    public static int snareShot(int stat, boolean hasDebuff, boolean isWeaknessActive, PrintStream out) {
         out.println("밀렵꾼-올가미 탄 사용 (D8)");
         out.println("※ 다음턴까지 적 행동불가 부여");
         int defaultDamage = Main.dice(1, 8, out);
         int sideDamage = Main.sideDamage(stat, out);
         int totalDamage = defaultDamage + sideDamage;
 
+        double multiplier = 1.0;
+
         if (hasDebuff) {
-            totalDamage = (int) (totalDamage * 1.5);
-            out.printf("사냥 패시브 적용: x1.5 → %d%n", totalDamage);
+            multiplier *= 1.5;
+            out.println("사냥 패시브 적용: x1.5");
         }
 
+        if (isWeaknessActive) {
+            multiplier *= 2.0;
+            out.println("약자멸시 패시브 적용: x2.0");
+        }
+
+        totalDamage = (int) (totalDamage * multiplier);
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 8 소모");
         return totalDamage;
     }
 
     /**
+     * 헤드샷 기술 (호환성을 위한 오버로드)
+     */
+    public static int headshot(int stat, boolean hasDebuff, PrintStream out) {
+        return headshot(stat, hasDebuff, false, out);
+    }
+
+    /**
      * 헤드샷 기술
      * 2D12, 스태미나 4 소모
      */
-    public static int headshot(int stat, boolean hasDebuff, PrintStream out) {
+    public static int headshot(int stat, boolean hasDebuff, boolean isWeaknessActive, PrintStream out) {
         out.println("밀렵꾼-헤드샷 사용 (2D12)");
         int defaultDamage = Main.dice(2, 12, out);
         int sideDamage = Main.sideDamage(stat, out);
         int totalDamage = defaultDamage + sideDamage;
 
+        double multiplier = 1.0;
+
         if (hasDebuff) {
-            totalDamage = (int) (totalDamage * 1.5);
-            out.printf("사냥 패시브 적용: x1.5 → %d%n", totalDamage);
+            multiplier *= 1.5;
+            out.println("사냥 패시브 적용: x1.5");
         }
 
+        if (isWeaknessActive) {
+            multiplier *= 2.0;
+            out.println("약자멸시 패시브 적용: x2.0");
+        }
+
+        totalDamage = (int) (totalDamage * multiplier);
         out.printf("총 데미지 : %d%n", totalDamage);
         out.println("※ 스태미나 4 소모");
         return totalDamage;
