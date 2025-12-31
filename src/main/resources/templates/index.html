@@ -667,6 +667,12 @@
                                 심판 대상 (지정 적 200%)
                             </label>
                         </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="gunslinger-isBackstabActive">
+                                백스탭 (회피 성공 시 150% 반격)
+                            </label>
+                        </div>
                     </div>
                     <div class="skill-buttons">
                         <button onclick="calculateGunslinger('plain')" class="btn btn-skill">기본공격 (D6)</button>
@@ -674,10 +680,10 @@
                         <button onclick="calculateGunslinger('headshot')" class="btn btn-skill">헤드샷 (D20)</button>
                         <button onclick="calculateGunslinger('quick-draw')" class="btn btn-skill">퀵드로우 (D8/4D8)</button>
                         <button onclick="calculateGunslinger('focus-fire')" class="btn btn-skill">일점사 (6D6)</button>
-                        <button onclick="calculateGunslinger('backstab')" class="btn btn-skill">백스탭 (버프)</button>
                     </div>
                     <div class="skill-buttons">
                         <h4>스킬</h4>
+                        <button onclick="calculateGunslinger('backstab')" class="btn btn-skill">백스탭 반격 데미지</button>
                         <button onclick="calculateGunslinger('warning')" class="btn btn-skill">경고 (반격 300%)</button>
                         <button onclick="calculateGunslinger('notice')" class="btn btn-skill">예고장 (반격 200%)</button>
                         <button onclick="calculateGunslinger('active-opportunity')" class="btn btn-skill">활약 기회 (신속 판정)</button>
@@ -708,29 +714,19 @@
                             </label>
                         </div>
                     </div>
-                    <div class="skill-buttons">
-                        <h4>기본</h4>
-                        <button onclick="calculateSniper('plain')" class="btn btn-skill">기본공격 (D6)</button>
-                        <button onclick="calculateSniper('fire')" class="btn btn-skill">발사 (4D20)</button>
-                    </div>
-                    <div class="skill-buttons">
-                        <h4>버프 스킬 (중첩 가능)</h4>
-                        <button onclick="calculateSniper('secure')" class="btn btn-skill">확보 (광역 면역)</button>
-                        <button onclick="calculateSniper('assemble')" class="btn btn-skill">조립 (150%)</button>
-                        <button onclick="calculateSniper('load')" class="btn btn-skill">장전 (탄환)</button>
-                        <button onclick="calculateSniper('aim')" class="btn btn-skill">조준 (수비 무시)</button>
-                    </div>
-                    <div class="skill-buttons">
-                        <h4>고급 버프 스킬</h4>
-                        <button onclick="calculateSniper('stabilize')" class="btn btn-skill">안정화 (75%, 주사위 복제)</button>
-                        <button onclick="calculateSniper('immerse')" class="btn btn-skill">몰입 (200%)</button>
-                        <button onclick="calculateSniper('confidence')" class="btn btn-skill">확신 (250%)</button>
-                        <button onclick="calculateSniper('nerve-max')" class="btn btn-skill">신경 극대화 (400%)</button>
-                    </div>
                     <div style="margin-top: 10px; padding: 10px; background: #f0f0f0; border-radius: 4px;">
-                        <h4>발사 버프 옵션</h4>
+                        <h4>버프 옵션 (발사 시 적용)</h4>
+                        <div class="form-group checkbox-group">
+                            <label><input type="checkbox" id="sniper-isSecured"> 확보 (광역 면역)</label>
+                        </div>
                         <div class="form-group checkbox-group">
                             <label><input type="checkbox" id="sniper-isAssembled"> 조립 버프 (150%)</label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label><input type="checkbox" id="sniper-isLoaded"> 장전 (탄환)</label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label><input type="checkbox" id="sniper-isAimed"> 조준 (수비 무시)</label>
                         </div>
                         <div class="form-group checkbox-group">
                             <label><input type="checkbox" id="sniper-isStabilized"> 안정화 버프 (75%, 주사위 복제)</label>
@@ -744,6 +740,11 @@
                         <div class="form-group checkbox-group">
                             <label><input type="checkbox" id="sniper-isNerveMax"> 신경 극대화 버프 (400%)</label>
                         </div>
+                    </div>
+                    <div class="skill-buttons">
+                        <h4>공격</h4>
+                        <button onclick="calculateSniper('plain')" class="btn btn-skill">기본공격 (D6)</button>
+                        <button onclick="calculateSniper('fire')" class="btn btn-skill">발사 (4D20)</button>
                     </div>
                 </div>
 
@@ -762,6 +763,12 @@
                         </div>
                         <div class="form-group checkbox-group">
                             <label>
+                                <input type="checkbox" id="masterarcher-isEmergencyShot">
+                                긴급사격 (무거운 시위 비활성화, 기본공격 2회)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
                                 <input type="checkbox" id="masterarcher-isFirstTarget" checked>
                                 첫 대상 (포착 200%)
                             </label>
@@ -770,7 +777,6 @@
                     <p class="note" style="font-size: 0.9em; color: #666;">※ 오차 제거 패시브: 스탯 +3 자동 적용</p>
                     <div class="skill-buttons">
                         <button onclick="calculateMasterArcher('plain')" class="btn btn-skill">기본공격 (D6/2D8)</button>
-                        <button onclick="calculateMasterArcher('emergency-shot')" class="btn btn-skill">긴급사격 (기본공격 2회)</button>
                         <button onclick="calculateMasterArcher('power-shot')" class="btn btn-skill">파워샷 (D8/2D12)</button>
                         <button onclick="calculateMasterArcher('explosive-arrow')" class="btn btn-skill">폭탄 화살 (200%)</button>
                         <button onclick="calculateMasterArcher('split-arrow')" class="btn btn-skill">분열 화살</button>
@@ -926,13 +932,7 @@
                         <button onclick="calculateTrickster('oil-barrel')" class="btn btn-skill">기름통 투척 (D4)</button>
                         <button onclick="calculateTrickster('lighter-throw')" class="btn btn-skill">라이터 투척 (D8)</button>
                         <button onclick="calculateTrickster('huge-dagger')" class="btn btn-skill">특대형 단검 (D20)</button>
-                    </div>
-                    <div class="skill-buttons">
-                        <h4>스킬</h4>
                         <button onclick="calculateTrickster('party-time')" class="btn btn-skill">파티 타임 (200%)</button>
-                        <button onclick="calculateTrickster('event-preparation')" class="btn btn-skill">이벤트 준비</button>
-                        <button onclick="calculateTrickster('giant-scar')" class="btn btn-skill">거대한 상흔</button>
-                        <button onclick="calculateTrickster('main-event')" class="btn btn-skill">메인 이벤트</button>
                     </div>
                 </div>
 

@@ -373,11 +373,14 @@ public class DamageController {
     public Map<String, Object> samuraiPlain(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
         boolean isMula = (Boolean) request.getOrDefault("isMula", false);
+        int currentHP = (Integer) request.getOrDefault("currentHP", 100);
+        int maxHP = (Integer) request.getOrDefault("maxHP", 100);
+        boolean scatteringSwordDance = (Boolean) request.getOrDefault("scatteringSwordDance", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Samurai.plain(stat, isMula, ps);
+        int damage = Samurai.plain(stat, isMula, currentHP, maxHP, scatteringSwordDance, ps);
         
         return createResponse(damage, baos);
     }
@@ -391,11 +394,14 @@ public class DamageController {
         boolean isMula = (Boolean) request.getOrDefault("isMula", false);
         boolean kakugo = (Boolean) request.getOrDefault("kakugo", false);
         boolean seishaKetsudan = (Boolean) request.getOrDefault("seishaKetsudan", false);
+        int currentHP = (Integer) request.getOrDefault("currentHP", 100);
+        int maxHP = (Integer) request.getOrDefault("maxHP", 100);
+        boolean scatteringSwordDance = (Boolean) request.getOrDefault("scatteringSwordDance", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Samurai.quickDraw(stat, isMula, kakugo, seishaKetsudan, ps);
+        int damage = Samurai.quickDraw(stat, isMula, kakugo, seishaKetsudan, currentHP, maxHP, scatteringSwordDance, ps);
         
         return createResponse(damage, baos);
     }
@@ -409,11 +415,14 @@ public class DamageController {
         boolean isMula = (Boolean) request.getOrDefault("isMula", false);
         boolean kakugo = (Boolean) request.getOrDefault("kakugo", false);
         boolean seishaKetsudan = (Boolean) request.getOrDefault("seishaKetsudan", false);
+        int currentHP = (Integer) request.getOrDefault("currentHP", 100);
+        int maxHP = (Integer) request.getOrDefault("maxHP", 100);
+        boolean scatteringSwordDance = (Boolean) request.getOrDefault("scatteringSwordDance", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Samurai.battou(stat, isMula, kakugo, seishaKetsudan, ps);
+        int damage = Samurai.battou(stat, isMula, kakugo, seishaKetsudan, currentHP, maxHP, scatteringSwordDance, ps);
         
         return createResponse(damage, baos);
     }
@@ -427,11 +436,14 @@ public class DamageController {
         boolean isMula = (Boolean) request.getOrDefault("isMula", false);
         boolean kakugo = (Boolean) request.getOrDefault("kakugo", false);
         boolean seishaKetsudan = (Boolean) request.getOrDefault("seishaKetsudan", false);
+        int currentHP = (Integer) request.getOrDefault("currentHP", 100);
+        int maxHP = (Integer) request.getOrDefault("maxHP", 100);
+        boolean scatteringSwordDance = (Boolean) request.getOrDefault("scatteringSwordDance", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Samurai.jabeop(stat, isMula, kakugo, seishaKetsudan, ps);
+        int damage = Samurai.jabeop(stat, isMula, kakugo, seishaKetsudan, currentHP, maxHP, scatteringSwordDance, ps);
         
         return createResponse(damage, baos);
     }
@@ -445,11 +457,14 @@ public class DamageController {
         boolean isMula = (Boolean) request.getOrDefault("isMula", false);
         boolean kakugo = (Boolean) request.getOrDefault("kakugo", false);
         boolean seishaKetsudan = (Boolean) request.getOrDefault("seishaKetsudan", false);
+        int currentHP = (Integer) request.getOrDefault("currentHP", 100);
+        int maxHP = (Integer) request.getOrDefault("maxHP", 100);
+        boolean scatteringSwordDance = (Boolean) request.getOrDefault("scatteringSwordDance", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Samurai.ilSeom(stat, isMula, kakugo, seishaKetsudan, ps);
+        int damage = Samurai.ilSeom(stat, isMula, kakugo, seishaKetsudan, currentHP, maxHP, scatteringSwordDance, ps);
         
         return createResponse(damage, baos);
     }
@@ -463,11 +478,14 @@ public class DamageController {
         boolean isMula = (Boolean) request.getOrDefault("isMula", false);
         boolean kakugo = (Boolean) request.getOrDefault("kakugo", false);
         boolean seishaKetsudan = (Boolean) request.getOrDefault("seishaKetsudan", false);
+        int currentHP = (Integer) request.getOrDefault("currentHP", 100);
+        int maxHP = (Integer) request.getOrDefault("maxHP", 100);
+        boolean scatteringSwordDance = (Boolean) request.getOrDefault("scatteringSwordDance", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Samurai.rangedAttack(stat, isMula, kakugo, seishaKetsudan, ps);
+        int damage = Samurai.rangedAttack(stat, isMula, kakugo, seishaKetsudan, currentHP, maxHP, scatteringSwordDance, ps);
         
         return createResponse(damage, baos);
     }
@@ -481,11 +499,14 @@ public class DamageController {
         boolean isMula = (Boolean) request.getOrDefault("isMula", false);
         boolean kakugo = (Boolean) request.getOrDefault("kakugo", false);
         boolean seishaKetsudan = (Boolean) request.getOrDefault("seishaKetsudan", false);
+        int currentHP = (Integer) request.getOrDefault("currentHP", 100);
+        int maxHP = (Integer) request.getOrDefault("maxHP", 100);
+        boolean scatteringSwordDance = (Boolean) request.getOrDefault("scatteringSwordDance", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Samurai.flashStrike(stat, isMula, kakugo, seishaKetsudan, ps);
+        int damage = Samurai.flashStrike(stat, isMula, kakugo, seishaKetsudan, currentHP, maxHP, scatteringSwordDance, ps);
         
         return createResponse(damage, baos);
     }
@@ -500,11 +521,14 @@ public class DamageController {
         boolean isMula = (Boolean) request.getOrDefault("isMula", false);
         boolean kakugo = (Boolean) request.getOrDefault("kakugo", false);
         boolean seishaKetsudan = (Boolean) request.getOrDefault("seishaKetsudan", false);
+        int currentHP = (Integer) request.getOrDefault("currentHP", 100);
+        int maxHP = (Integer) request.getOrDefault("maxHP", 100);
+        boolean scatteringSwordDance = (Boolean) request.getOrDefault("scatteringSwordDance", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Samurai.finalPoint(stat, consumedStamina, isMula, kakugo, seishaKetsudan, ps);
+        int damage = Samurai.finalPoint(stat, consumedStamina, isMula, kakugo, seishaKetsudan, currentHP, maxHP, scatteringSwordDance, ps);
         
         return createResponse(damage, baos);
     }
@@ -518,11 +542,14 @@ public class DamageController {
         boolean isMula = (Boolean) request.getOrDefault("isMula", false);
         boolean kakugo = (Boolean) request.getOrDefault("kakugo", false);
         boolean seishaKetsudan = (Boolean) request.getOrDefault("seishaKetsudan", false);
+        int currentHP = (Integer) request.getOrDefault("currentHP", 100);
+        int maxHP = (Integer) request.getOrDefault("maxHP", 100);
+        boolean scatteringSwordDance = (Boolean) request.getOrDefault("scatteringSwordDance", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Samurai.bloom(stat, isMula, kakugo, seishaKetsudan, ps);
+        int damage = Samurai.bloom(stat, isMula, kakugo, seishaKetsudan, currentHP, maxHP, scatteringSwordDance, ps);
         
         return createResponse(damage, baos);
     }
@@ -784,11 +811,12 @@ public class DamageController {
         int stat = (Integer) request.getOrDefault("stat", 10);
         boolean isReturnTurn = (Boolean) request.getOrDefault("isReturnTurn", false);
         boolean isFirstAssault = (Boolean) request.getOrDefault("isFirstAssault", false);
+        boolean isConfirmKillActive = (Boolean) request.getOrDefault("isConfirmKillActive", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Assassin.assassinate(stat, isReturnTurn, isFirstAssault, ps);
+        int damage = Assassin.assassinate(stat, isReturnTurn, isFirstAssault, isConfirmKillActive, ps);
         
         return createResponse(damage, baos);
     }
@@ -975,11 +1003,12 @@ public class DamageController {
         boolean isIllusionTurn = (Boolean) request.getOrDefault("isIllusionTurn", false);
         boolean isCloneActive = (Boolean) request.getOrDefault("isCloneActive", false);
         boolean isReflexActive = (Boolean) request.getOrDefault("isReflexActive", false);
+        boolean isIdeologySealActive = (Boolean) request.getOrDefault("isIdeologySealActive", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Ninja.plain(stat, isIllusionTurn, isCloneActive, isReflexActive, ps);
+        int damage = Ninja.plain(stat, isIllusionTurn, isCloneActive, isReflexActive, isIdeologySealActive, ps);
         
         return createResponse(damage, baos);
     }
@@ -992,11 +1021,12 @@ public class DamageController {
         int stat = (Integer) request.getOrDefault("stat", 10);
         boolean isIllusionTurn = (Boolean) request.getOrDefault("isIllusionTurn", false);
         boolean isCloneActive = (Boolean) request.getOrDefault("isCloneActive", false);
+        boolean isIdeologySealActive = (Boolean) request.getOrDefault("isIdeologySealActive", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Ninja.strike(stat, isIllusionTurn, isCloneActive, ps);
+        int damage = Ninja.strike(stat, isIllusionTurn, isCloneActive, isIdeologySealActive, ps);
         
         return createResponse(damage, baos);
     }
@@ -1009,11 +1039,12 @@ public class DamageController {
         int stat = (Integer) request.getOrDefault("stat", 10);
         boolean isIllusionTurn = (Boolean) request.getOrDefault("isIllusionTurn", false);
         boolean isCloneActive = (Boolean) request.getOrDefault("isCloneActive", false);
+        boolean isIdeologySealActive = (Boolean) request.getOrDefault("isIdeologySealActive", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Ninja.chaos(stat, isIllusionTurn, isCloneActive, ps);
+        int damage = Ninja.chaos(stat, isIllusionTurn, isCloneActive, isIdeologySealActive, ps);
         
         return createResponse(damage, baos);
     }
@@ -1025,11 +1056,12 @@ public class DamageController {
     public Map<String, Object> ninjaThrowShuriken(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
         boolean isCloneActive = (Boolean) request.getOrDefault("isCloneActive", false);
+        boolean isIdeologySealActive = (Boolean) request.getOrDefault("isIdeologySealActive", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Ninja.throwShuriken(stat, isCloneActive, ps);
+        int damage = Ninja.throwShuriken(stat, isCloneActive, isIdeologySealActive, ps);
         
         return createResponse(damage, baos);
     }
@@ -1041,11 +1073,12 @@ public class DamageController {
     public Map<String, Object> ninjaIllusionBarrage(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
         boolean isIllusionTurn = (Boolean) request.getOrDefault("isIllusionTurn", false);
+        boolean isIdeologySealActive = (Boolean) request.getOrDefault("isIdeologySealActive", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Ninja.illusionBarrage(stat, isIllusionTurn, ps);
+        int damage = Ninja.illusionBarrage(stat, isIllusionTurn, isIdeologySealActive, ps);
         
         return createResponse(damage, baos);
     }
@@ -1058,11 +1091,12 @@ public class DamageController {
         int stat = (Integer) request.getOrDefault("stat", 10);
         int shurikenCount = (Integer) request.getOrDefault("shurikenCount", 1);
         boolean isCloneActive = (Boolean) request.getOrDefault("isCloneActive", false);
+        boolean isIdeologySealActive = (Boolean) request.getOrDefault("isIdeologySealActive", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Ninja.focusThrow(stat, shurikenCount, isCloneActive, ps);
+        int damage = Ninja.focusThrow(stat, shurikenCount, isCloneActive, isIdeologySealActive, ps);
         
         return createResponse(damage, baos);
     }
@@ -1078,11 +1112,12 @@ public class DamageController {
         boolean isFirstShot = (Boolean) request.getOrDefault("isFirstShot", false);
         boolean dodgedLastTurn = (Boolean) request.getOrDefault("dodgedLastTurn", false);
         boolean isJudgeTurn = (Boolean) request.getOrDefault("isJudgeTurn", false);
+        boolean isJudgementTarget = (Boolean) request.getOrDefault("isJudgementTarget", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Gunslinger.plain(stat, isFirstShot, dodgedLastTurn, isJudgeTurn, ps);
+        int damage = Gunslinger.plain(stat, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget, ps);
         
         return createResponse(damage, baos);
     }
@@ -1091,13 +1126,17 @@ public class DamageController {
      * 건슬링거 - 더블샷
      */
     @PostMapping("/gunslinger/double-shot")
-    public Map<String, Object> gunslingerDoubleShot(@RequestBody Map<String, Integer> request) {
-        int stat = request.getOrDefault("stat", 10);
+    public Map<String, Object> gunslingerDoubleShot(@RequestBody Map<String, Object> request) {
+        int stat = (Integer) request.getOrDefault("stat", 10);
+        boolean isFirstShot = (Boolean) request.getOrDefault("isFirstShot", false);
+        boolean dodgedLastTurn = (Boolean) request.getOrDefault("dodgedLastTurn", false);
+        boolean isJudgeTurn = (Boolean) request.getOrDefault("isJudgeTurn", false);
+        boolean isJudgementTarget = (Boolean) request.getOrDefault("isJudgementTarget", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Gunslinger.doubleShot(stat, ps);
+        int damage = Gunslinger.doubleShot(stat, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget, ps);
         
         return createResponse(damage, baos);
     }
@@ -1106,13 +1145,17 @@ public class DamageController {
      * 건슬링거 - 헤드샷
      */
     @PostMapping("/gunslinger/headshot")
-    public Map<String, Object> gunslingerHeadshot(@RequestBody Map<String, Integer> request) {
-        int stat = request.getOrDefault("stat", 10);
+    public Map<String, Object> gunslingerHeadshot(@RequestBody Map<String, Object> request) {
+        int stat = (Integer) request.getOrDefault("stat", 10);
+        boolean isFirstShot = (Boolean) request.getOrDefault("isFirstShot", false);
+        boolean dodgedLastTurn = (Boolean) request.getOrDefault("dodgedLastTurn", false);
+        boolean isJudgeTurn = (Boolean) request.getOrDefault("isJudgeTurn", false);
+        boolean isJudgementTarget = (Boolean) request.getOrDefault("isJudgementTarget", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Gunslinger.headshot(stat, ps);
+        int damage = Gunslinger.headshot(stat, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget, ps);
         
         return createResponse(damage, baos);
     }
@@ -1124,11 +1167,14 @@ public class DamageController {
     public Map<String, Object> gunslingerQuickDraw(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
         boolean isFirstShot = (Boolean) request.getOrDefault("isFirstShot", false);
+        boolean dodgedLastTurn = (Boolean) request.getOrDefault("dodgedLastTurn", false);
+        boolean isJudgeTurn = (Boolean) request.getOrDefault("isJudgeTurn", false);
+        boolean isJudgementTarget = (Boolean) request.getOrDefault("isJudgementTarget", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Gunslinger.quickDraw(stat, isFirstShot, ps);
+        int damage = Gunslinger.quickDraw(stat, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget, ps);
         
         return createResponse(damage, baos);
     }
@@ -1137,13 +1183,17 @@ public class DamageController {
      * 건슬링거 - 일점사
      */
     @PostMapping("/gunslinger/focus-fire")
-    public Map<String, Object> gunslingerFocusFire(@RequestBody Map<String, Integer> request) {
-        int stat = request.getOrDefault("stat", 10);
+    public Map<String, Object> gunslingerFocusFire(@RequestBody Map<String, Object> request) {
+        int stat = (Integer) request.getOrDefault("stat", 10);
+        boolean isFirstShot = (Boolean) request.getOrDefault("isFirstShot", false);
+        boolean dodgedLastTurn = (Boolean) request.getOrDefault("dodgedLastTurn", false);
+        boolean isJudgeTurn = (Boolean) request.getOrDefault("isJudgeTurn", false);
+        boolean isJudgementTarget = (Boolean) request.getOrDefault("isJudgementTarget", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Gunslinger.focusFire(stat, ps);
+        int damage = Gunslinger.focusFire(stat, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget, ps);
         
         return createResponse(damage, baos);
     }
@@ -1161,6 +1211,55 @@ public class DamageController {
         int damage = Gunslinger.backstab(stat, ps);
         
         return createResponse(damage, baos);
+    }
+
+    /**
+     * 건슬링거 - 경고
+     */
+    @PostMapping("/gunslinger/warning")
+    public Map<String, Object> gunslingerWarning() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        Gunslinger.warning(ps);
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("damage", 0);
+        response.put("log", baos.toString(StandardCharsets.UTF_8));
+        return response;
+    }
+
+    /**
+     * 건슬링거 - 예고장
+     */
+    @PostMapping("/gunslinger/notice")
+    public Map<String, Object> gunslingerNotice(@RequestBody Map<String, Object> request) {
+        int stat = (Integer) request.getOrDefault("stat", 10);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = Gunslinger.notice(stat, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
+     * 건슬링거 - 활약 기회
+     */
+    @PostMapping("/gunslinger/active-opportunity")
+    public Map<String, Object> gunslingerActiveOpportunity(@RequestBody Map<String, Object> request) {
+        int swiftness = (Integer) request.getOrDefault("swiftness", 10);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        boolean success = Gunslinger.activeOpportunity(swiftness, ps);
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("damage", success ? 1 : 0); // 1 = success, 0 = failure
+        response.put("log", baos.toString(StandardCharsets.UTF_8));
+        return response;
     }
 
     // ===== 히든 직업 - 저격수 (Sniper) =====
@@ -1375,12 +1474,16 @@ public class DamageController {
     public Map<String, Object> crossbowmanPlain(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
         int arrows = (Integer) request.getOrDefault("arrows", 1);
+        int executionArrows = (Integer) request.getOrDefault("executionArrows", 0);
         boolean focusedAttack = (Boolean) request.getOrDefault("focusedAttack", false);
+        boolean isErrorRemoval = (Boolean) request.getOrDefault("isErrorRemoval", false);
+        boolean isDistanceCalc = (Boolean) request.getOrDefault("isDistanceCalc", false);
+        boolean isExecutionArrow = (Boolean) request.getOrDefault("isExecutionArrow", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Crossbowman.plain(stat, arrows, focusedAttack, ps);
+        int damage = Crossbowman.plain(stat, arrows, focusedAttack, isErrorRemoval, isDistanceCalc, isExecutionArrow, executionArrows, ps);
         
         return createResponse(damage, baos);
     }
@@ -1561,13 +1664,14 @@ public class DamageController {
      * 창술사 - [연계]정면 찌르기
      */
     @PostMapping("/spearman/combo-front-thrust")
-    public Map<String, Object> spearmanComboFrontThrust(@RequestBody Map<String, Integer> request) {
-        int stat = request.getOrDefault("stat", 10);
+    public Map<String, Object> spearmanComboFrontThrust(@RequestBody Map<String, Object> request) {
+        int stat = ((Number) request.getOrDefault("stat", 10)).intValue();
+        boolean isAdaptationActive = Boolean.TRUE.equals(request.get("isAdaptationActive"));
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Spearman.comboFrontThrust(stat, ps);
+        int damage = Spearman.comboFrontThrust(stat, isAdaptationActive, ps);
         
         return createResponse(damage, baos);
     }
@@ -1576,13 +1680,14 @@ public class DamageController {
      * 창술사 - [연계]일섬창
      */
     @PostMapping("/spearman/combo-flash-spear")
-    public Map<String, Object> spearmanComboFlashSpear(@RequestBody Map<String, Integer> request) {
-        int stat = request.getOrDefault("stat", 10);
+    public Map<String, Object> spearmanComboFlashSpear(@RequestBody Map<String, Object> request) {
+        int stat = ((Number) request.getOrDefault("stat", 10)).intValue();
+        boolean isAdaptationActive = Boolean.TRUE.equals(request.get("isAdaptationActive"));
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Spearman.comboFlashSpear(stat, ps);
+        int damage = Spearman.comboFlashSpear(stat, isAdaptationActive, ps);
         
         return createResponse(damage, baos);
     }
@@ -1591,13 +1696,14 @@ public class DamageController {
      * 창술사 - [연계]천뢰격
      */
     @PostMapping("/spearman/combo-thunder-strike")
-    public Map<String, Object> spearmanComboThunderStrike(@RequestBody Map<String, Integer> request) {
-        int stat = request.getOrDefault("stat", 10);
+    public Map<String, Object> spearmanComboThunderStrike(@RequestBody Map<String, Object> request) {
+        int stat = ((Number) request.getOrDefault("stat", 10)).intValue();
+        boolean isAdaptationActive = Boolean.TRUE.equals(request.get("isAdaptationActive"));
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Spearman.comboThunderStrike(stat, ps);
+        int damage = Spearman.comboThunderStrike(stat, isAdaptationActive, ps);
         
         return createResponse(damage, baos);
     }
@@ -1610,13 +1716,16 @@ public class DamageController {
     @PostMapping("/trickster/plain")
     public Map<String, Object> tricksterPlain(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
+        int skillUsedCount = (Integer) request.getOrDefault("skillUsedCount", 0);
         boolean isFocusedFire = (Boolean) request.getOrDefault("isFocusedFire", false);
         boolean isRepeatCustomer = (Boolean) request.getOrDefault("isRepeatCustomer", false);
+        boolean isEventPrepared = (Boolean) request.getOrDefault("isEventPrepared", false);
+        boolean isMainEvent = (Boolean) request.getOrDefault("isMainEvent", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Trickster.plain(stat, isFocusedFire, isRepeatCustomer, ps);
+        int damage = Trickster.plain(stat, skillUsedCount, isFocusedFire, isRepeatCustomer, isEventPrepared, isMainEvent, ps);
         
         return createResponse(damage, baos);
     }
@@ -1627,12 +1736,13 @@ public class DamageController {
     @PostMapping("/trickster/fake-dagger")
     public Map<String, Object> tricksterFakeDagger(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
-        boolean hasEventBonus = (Boolean) request.getOrDefault("hasEventBonus", false);
+        int skillUsedCount = (Integer) request.getOrDefault("skillUsedCount", 0);
+        boolean isEventPrepared = (Boolean) request.getOrDefault("isEventPrepared", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Trickster.fakeDagger(stat, hasEventBonus, ps);
+        int damage = Trickster.fakeDagger(stat, skillUsedCount, isEventPrepared, ps);
         
         return createResponse(damage, baos);
     }
@@ -1643,12 +1753,13 @@ public class DamageController {
     @PostMapping("/trickster/bean-shot")
     public Map<String, Object> tricksterBeanShot(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
-        boolean hasEventBonus = (Boolean) request.getOrDefault("hasEventBonus", false);
+        int skillUsedCount = (Integer) request.getOrDefault("skillUsedCount", 0);
+        boolean isEventPrepared = (Boolean) request.getOrDefault("isEventPrepared", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Trickster.beanShot(stat, hasEventBonus, ps);
+        int damage = Trickster.beanShot(stat, skillUsedCount, isEventPrepared, ps);
         
         return createResponse(damage, baos);
     }
@@ -1659,12 +1770,13 @@ public class DamageController {
     @PostMapping("/trickster/oil-barrel")
     public Map<String, Object> tricksterOilBarrel(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
-        boolean hasEventBonus = (Boolean) request.getOrDefault("hasEventBonus", false);
+        int skillUsedCount = (Integer) request.getOrDefault("skillUsedCount", 0);
+        boolean isEventPrepared = (Boolean) request.getOrDefault("isEventPrepared", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Trickster.oilBarrel(stat, hasEventBonus, ps);
+        int damage = Trickster.oilBarrel(stat, skillUsedCount, isEventPrepared, ps);
         
         return createResponse(damage, baos);
     }
@@ -1675,13 +1787,14 @@ public class DamageController {
     @PostMapping("/trickster/lighter-throw")
     public Map<String, Object> tricksterLighterThrow(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
-        boolean hasEventBonus = (Boolean) request.getOrDefault("hasEventBonus", false);
+        int skillUsedCount = (Integer) request.getOrDefault("skillUsedCount", 0);
+        boolean isEventPrepared = (Boolean) request.getOrDefault("isEventPrepared", false);
         boolean oilHit = (Boolean) request.getOrDefault("oilHit", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Trickster.lighterThrow(stat, hasEventBonus, oilHit, ps);
+        int damage = Trickster.lighterThrow(stat, skillUsedCount, isEventPrepared, oilHit, ps);
         
         return createResponse(damage, baos);
     }
@@ -1692,14 +1805,80 @@ public class DamageController {
     @PostMapping("/trickster/huge-dagger")
     public Map<String, Object> tricksterHugeDagger(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
-        boolean hasEventBonus = (Boolean) request.getOrDefault("hasEventBonus", false);
+        int skillUsedCount = (Integer) request.getOrDefault("skillUsedCount", 0);
+        boolean isEventPrepared = (Boolean) request.getOrDefault("isEventPrepared", false);
+        boolean isGiantScarActive = (Boolean) request.getOrDefault("isGiantScarActive", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Trickster.hugeDagger(stat, hasEventBonus, ps);
+        int damage = Trickster.hugeDagger(stat, skillUsedCount, isEventPrepared, isGiantScarActive, ps);
         
         return createResponse(damage, baos);
+    }
+
+    /**
+     * 트릭스터 - 파티 타임
+     */
+    @PostMapping("/trickster/party-time")
+    public Map<String, Object> tricksterPartyTime() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        Trickster.partyTime(ps);
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("damage", 0);
+        response.put("log", baos.toString(StandardCharsets.UTF_8));
+        return response;
+    }
+
+    /**
+     * 트릭스터 - 이벤트 준비
+     */
+    @PostMapping("/trickster/event-preparation")
+    public Map<String, Object> tricksterEventPreparation() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        Trickster.eventPreparation(ps);
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("damage", 0);
+        response.put("log", baos.toString(StandardCharsets.UTF_8));
+        return response;
+    }
+
+    /**
+     * 트릭스터 - 거대한 상흔
+     */
+    @PostMapping("/trickster/giant-scar")
+    public Map<String, Object> tricksterGiantScar() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        Trickster.giantScar(ps);
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("damage", 0);
+        response.put("log", baos.toString(StandardCharsets.UTF_8));
+        return response;
+    }
+
+    /**
+     * 트릭스터 - 메인 이벤트
+     */
+    @PostMapping("/trickster/main-event")
+    public Map<String, Object> tricksterMainEvent() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        Trickster.mainEvent(ps);
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("damage", 0);
+        response.put("log", baos.toString(StandardCharsets.UTF_8));
+        return response;
     }
 
     // ===== 히든 직업 - 밀렵꾼 (Poacher) =====
@@ -1712,11 +1891,12 @@ public class DamageController {
         int stat = (Integer) request.getOrDefault("stat", 10);
         boolean hasDebuff = (Boolean) request.getOrDefault("hasDebuff", false);
         boolean isLoaded = (Boolean) request.getOrDefault("isLoaded", false);
+        boolean isWeaknessActive = (Boolean) request.getOrDefault("isWeaknessActive", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Poacher.plain(stat, hasDebuff, isLoaded, ps);
+        int damage = Poacher.plain(stat, hasDebuff, isLoaded, isWeaknessActive, ps);
         
         return createResponse(damage, baos);
     }
@@ -1728,11 +1908,12 @@ public class DamageController {
     public Map<String, Object> poacherHeadChop(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
         boolean hasDebuff = (Boolean) request.getOrDefault("hasDebuff", false);
+        boolean isWeaknessActive = (Boolean) request.getOrDefault("isWeaknessActive", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Poacher.headChop(stat, hasDebuff, ps);
+        int damage = Poacher.headChop(stat, hasDebuff, isWeaknessActive, ps);
         
         return createResponse(damage, baos);
     }
@@ -1744,11 +1925,12 @@ public class DamageController {
     public Map<String, Object> poacherSetTrap(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
         boolean hasDebuff = (Boolean) request.getOrDefault("hasDebuff", false);
+        boolean isWeaknessActive = (Boolean) request.getOrDefault("isWeaknessActive", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Poacher.setTrap(stat, hasDebuff, ps);
+        int damage = Poacher.setTrap(stat, hasDebuff, isWeaknessActive, ps);
         
         return createResponse(damage, baos);
     }
@@ -1760,11 +1942,12 @@ public class DamageController {
     public Map<String, Object> poacherSnareShot(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
         boolean hasDebuff = (Boolean) request.getOrDefault("hasDebuff", false);
+        boolean isWeaknessActive = (Boolean) request.getOrDefault("isWeaknessActive", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Poacher.snareShot(stat, hasDebuff, ps);
+        int damage = Poacher.snareShot(stat, hasDebuff, isWeaknessActive, ps);
         
         return createResponse(damage, baos);
     }
@@ -1776,11 +1959,12 @@ public class DamageController {
     public Map<String, Object> poacherHeadshot(@RequestBody Map<String, Object> request) {
         int stat = (Integer) request.getOrDefault("stat", 10);
         boolean hasDebuff = (Boolean) request.getOrDefault("hasDebuff", false);
+        boolean isWeaknessActive = (Boolean) request.getOrDefault("isWeaknessActive", false);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         
-        int damage = Poacher.headshot(stat, hasDebuff, ps);
+        int damage = Poacher.headshot(stat, hasDebuff, isWeaknessActive, ps);
         
         return createResponse(damage, baos);
     }
