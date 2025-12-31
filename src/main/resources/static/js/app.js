@@ -441,12 +441,13 @@ async function calculateGunslinger(skill) {
     const dodgedLastTurn = document.getElementById('gunslinger-dodgedLastTurn').checked;
     const isJudgeTurn = document.getElementById('gunslinger-isJudgeTurn').checked;
     const isJudgementTarget = document.getElementById('gunslinger-isJudgementTarget').checked;
+    const isBackstabActive = document.getElementById('gunslinger-isBackstabActive')?.checked || false;
     
     try {
         const response = await fetch(`${API_BASE}/gunslinger/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat, swiftness, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget })
+            body: JSON.stringify({ stat, swiftness, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget, isBackstabActive })
         });
         
         const data = await response.json();
@@ -496,17 +497,24 @@ async function calculateMasterArcher(skill) {
     const stat = parseInt(document.getElementById('masterarcher-stat').value) || 10;
     const isHeavyString = document.getElementById('masterarcher-isHeavyString').checked;
     const isFirstTarget = document.getElementById('masterarcher-isFirstTarget').checked;
+    const isEmergencyShot = document.getElementById('masterarcher-isEmergencyShot')?.checked || false;
+    
+    // If emergency shot checkbox is checked and basic attack is requested, use emergency-shot endpoint
+    let actualSkill = skill;
+    if (isEmergencyShot && skill === 'plain') {
+        actualSkill = 'emergency-shot';
+    }
     
     try {
-        const response = await fetch(`${API_BASE}/masterarcher/${skill}`, {
+        const response = await fetch(`${API_BASE}/masterarcher/${actualSkill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ stat, isHeavyString, isFirstTarget })
         });
         
         const data = await response.json();
-        showDamageResult(data.damage, '명사수 - ' + getSkillName('masterarcher', skill));
-        addLog(`🏹 명사수 - ${getSkillName('masterarcher', skill)}`, data.log);
+        showDamageResult(data.damage, '명사수 - ' + getSkillName('masterarcher', actualSkill));
+        addLog(`🏹 명사수 - ${getSkillName('masterarcher', actualSkill)}`, data.log);
     } catch (error) {
         console.error('Error:', error);
         addLog('❌ 오류 발생: ' + error.message);
