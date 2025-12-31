@@ -441,12 +441,13 @@ async function calculateGunslinger(skill) {
     const dodgedLastTurn = document.getElementById('gunslinger-dodgedLastTurn').checked;
     const isJudgeTurn = document.getElementById('gunslinger-isJudgeTurn').checked;
     const isJudgementTarget = document.getElementById('gunslinger-isJudgementTarget').checked;
+    const isBackstabActive = document.getElementById('gunslinger-isBackstabActive')?.checked || false;
     
     try {
         const response = await fetch(`${API_BASE}/gunslinger/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat, swiftness, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget })
+            body: JSON.stringify({ stat, swiftness, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget, isBackstabActive })
         });
         
         const data = await response.json();
