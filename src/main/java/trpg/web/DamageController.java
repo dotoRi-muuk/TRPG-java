@@ -1382,6 +1382,22 @@ public class DamageController {
     }
 
     /**
+     * 명궁 - 긴급사격 (무거운 시위 비활성화, 기본공격 2회)
+     */
+    @PostMapping("/masterarcher/emergency-shot")
+    public Map<String, Object> masterArcherEmergencyShot(@RequestBody Map<String, Object> request) {
+        int stat = (Integer) request.getOrDefault("stat", 10);
+        boolean isFirstTarget = (Boolean) request.getOrDefault("isFirstTarget", false);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        
+        int damage = MasterArcher.emergencyShot(stat, isFirstTarget, ps);
+        
+        return createResponse(damage, baos);
+    }
+
+    /**
      * 명궁 - 파위샷
      */
     @PostMapping("/masterarcher/power-shot")
