@@ -290,12 +290,15 @@ async function calculatePriest(skill) {
 // Samurai calculations
 async function calculateSamurai(skill) {
     const stat = parseInt(document.getElementById('samurai-stat').value) || 10;
+    const maxHP = parseInt(document.getElementById('samurai-maxHP').value) || 100;
+    const currentHP = parseInt(document.getElementById('samurai-currentHP').value) || 100;
     const consumedStamina = parseInt(document.getElementById('samurai-consumedStamina').value) || 0;
     const isMula = document.getElementById('samurai-isMula').checked;
     const kakugo = document.getElementById('samurai-kakugo').checked;
     const seishaKetsudan = document.getElementById('samurai-seishaKetsudan').checked;
+    const scatteringSwordDance = document.getElementById('samurai-scatteringSwordDance').checked;
     
-    let body = { stat, isMula, kakugo, seishaKetsudan };
+    let body = { stat, isMula, kakugo, seishaKetsudan, currentHP, maxHP, scatteringSwordDance };
     
     if (skill === 'final-point') {
         body.consumedStamina = consumedStamina;
@@ -367,12 +370,13 @@ async function calculateAssassin(skill) {
     const stat = parseInt(document.getElementById('assassin-stat').value) || 10;
     const isReturnTurn = document.getElementById('assassin-isReturnTurn').checked;
     const isFirstAssault = document.getElementById('assassin-isFirstAssault').checked;
+    const isConfirmKillActive = document.getElementById('assassin-isConfirmKillActive').checked;
     
     try {
         const response = await fetch(`${API_BASE}/assassin/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat, isReturnTurn, isFirstAssault })
+            body: JSON.stringify({ stat, isReturnTurn, isFirstAssault, isConfirmKillActive })
         });
         
         const data = await response.json();
@@ -411,12 +415,13 @@ async function calculateNinja(skill) {
     const isIllusionTurn = document.getElementById('ninja-isIllusionTurn').checked;
     const isCloneActive = document.getElementById('ninja-isCloneActive').checked;
     const isReflexActive = document.getElementById('ninja-isReflexActive').checked;
+    const isIdeologySealActive = document.getElementById('ninja-isIdeologySealActive').checked;
     
     try {
         const response = await fetch(`${API_BASE}/ninja/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat, shurikenCount, isIllusionTurn, isCloneActive, isReflexActive })
+            body: JSON.stringify({ stat, shurikenCount, isIllusionTurn, isCloneActive, isReflexActive, isIdeologySealActive })
         });
         
         const data = await response.json();
@@ -431,15 +436,17 @@ async function calculateNinja(skill) {
 // Gunslinger calculations
 async function calculateGunslinger(skill) {
     const stat = parseInt(document.getElementById('gunslinger-stat').value) || 10;
+    const swiftness = parseInt(document.getElementById('gunslinger-swiftness').value) || 10;
     const isFirstShot = document.getElementById('gunslinger-isFirstShot').checked;
     const dodgedLastTurn = document.getElementById('gunslinger-dodgedLastTurn').checked;
     const isJudgeTurn = document.getElementById('gunslinger-isJudgeTurn').checked;
+    const isJudgementTarget = document.getElementById('gunslinger-isJudgementTarget').checked;
     
     try {
         const response = await fetch(`${API_BASE}/gunslinger/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat, isFirstShot, dodgedLastTurn, isJudgeTurn })
+            body: JSON.stringify({ stat, swiftness, isFirstShot, dodgedLastTurn, isJudgeTurn, isJudgementTarget })
         });
         
         const data = await response.json();
@@ -458,11 +465,21 @@ async function calculateSniper(skill) {
     const notAttackedFor5Turns = document.getElementById('sniper-notAttackedFor5Turns').checked;
     const noBasicAttackUsed = document.getElementById('sniper-noBasicAttackUsed').checked;
     
+    // Additional buff options for 'fire' skill
+    const isAssembled = document.getElementById('sniper-isAssembled')?.checked || false;
+    const isStabilized = document.getElementById('sniper-isStabilized')?.checked || false;
+    const isImmersed = document.getElementById('sniper-isImmersed')?.checked || false;
+    const isConfident = document.getElementById('sniper-isConfident')?.checked || false;
+    const isNerveMax = document.getElementById('sniper-isNerveMax')?.checked || false;
+    
     try {
         const response = await fetch(`${API_BASE}/sniper/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat, numBuffs, notAttackedFor5Turns, noBasicAttackUsed })
+            body: JSON.stringify({ 
+                stat, numBuffs, notAttackedFor5Turns, noBasicAttackUsed,
+                isAssembled, isStabilized, isImmersed, isConfident, isNerveMax
+            })
         });
         
         const data = await response.json();
@@ -488,8 +505,8 @@ async function calculateMasterArcher(skill) {
         });
         
         const data = await response.json();
-        showDamageResult(data.damage, '명궁 - ' + getSkillName('masterarcher', skill));
-        addLog(`🏹 명궁 - ${getSkillName('masterarcher', skill)}`, data.log);
+        showDamageResult(data.damage, '명사수 - ' + getSkillName('masterarcher', skill));
+        addLog(`🏹 명사수 - ${getSkillName('masterarcher', skill)}`, data.log);
     } catch (error) {
         console.error('Error:', error);
         addLog('❌ 오류 발생: ' + error.message);
@@ -500,15 +517,22 @@ async function calculateMasterArcher(skill) {
 async function calculateCrossbowman(skill) {
     const stat = parseInt(document.getElementById('crossbowman-stat').value) || 10;
     const arrows = parseInt(document.getElementById('crossbowman-arrows').value) || 1;
+    const executionArrows = parseInt(document.getElementById('crossbowman-executionArrows').value) || 0;
     const arrowsToBreak = parseInt(document.getElementById('crossbowman-arrowsToBreak').value) || 1;
     const damageTaken = parseInt(document.getElementById('crossbowman-damageTaken').value) || 10;
     const focusedAttack = document.getElementById('crossbowman-focusedAttack').checked;
+    const isErrorRemoval = document.getElementById('crossbowman-isErrorRemoval').checked;
+    const isDistanceCalc = document.getElementById('crossbowman-isDistanceCalc').checked;
+    const isExecutionArrow = document.getElementById('crossbowman-isExecutionArrow').checked;
     
     try {
         const response = await fetch(`${API_BASE}/crossbowman/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat, arrows, arrowsToBreak, damageTaken, focusedAttack })
+            body: JSON.stringify({ 
+                stat, arrows, executionArrows, arrowsToBreak, damageTaken, 
+                focusedAttack, isErrorRemoval, isDistanceCalc, isExecutionArrow 
+            })
         });
         
         const data = await response.json();
@@ -523,12 +547,13 @@ async function calculateCrossbowman(skill) {
 // Spearman calculations
 async function calculateSpearman(skill) {
     const stat = parseInt(document.getElementById('spearman-stat').value) || 10;
+    const isAdaptationActive = document.getElementById('spearman-isAdaptationActive').checked;
     
     try {
         const response = await fetch(`${API_BASE}/spearman/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat })
+            body: JSON.stringify({ stat, isAdaptationActive })
         });
         
         const data = await response.json();
@@ -543,16 +568,22 @@ async function calculateSpearman(skill) {
 // Trickster calculations
 async function calculateTrickster(skill) {
     const stat = parseInt(document.getElementById('trickster-stat').value) || 10;
+    const skillUsedCount = parseInt(document.getElementById('trickster-skillUsedCount').value) || 0;
     const isFocusedFire = document.getElementById('trickster-isFocusedFire').checked;
     const isRepeatCustomer = document.getElementById('trickster-isRepeatCustomer').checked;
-    const hasEventBonus = document.getElementById('trickster-hasEventBonus').checked;
+    const isEventPrepared = document.getElementById('trickster-isEventPrepared').checked;
+    const isMainEvent = document.getElementById('trickster-isMainEvent').checked;
+    const isGiantScarActive = document.getElementById('trickster-isGiantScarActive').checked;
     const oilHit = document.getElementById('trickster-oilHit').checked;
     
     try {
         const response = await fetch(`${API_BASE}/trickster/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat, isFocusedFire, isRepeatCustomer, hasEventBonus, oilHit })
+            body: JSON.stringify({ 
+                stat, skillUsedCount, isFocusedFire, isRepeatCustomer, 
+                isEventPrepared, isMainEvent, isGiantScarActive, oilHit 
+            })
         });
         
         const data = await response.json();
@@ -569,12 +600,13 @@ async function calculatePoacher(skill) {
     const stat = parseInt(document.getElementById('poacher-stat').value) || 10;
     const hasDebuff = document.getElementById('poacher-hasDebuff').checked;
     const isLoaded = document.getElementById('poacher-isLoaded').checked;
+    const isWeaknessActive = document.getElementById('poacher-isWeaknessActive').checked;
     
     try {
         const response = await fetch(`${API_BASE}/poacher/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat, hasDebuff, isLoaded })
+            body: JSON.stringify({ stat, hasDebuff, isLoaded, isWeaknessActive })
         });
         
         const data = await response.json();
@@ -932,7 +964,10 @@ function getSkillName(job, skill) {
             'headshot': '헤드샷',
             'quick-draw': '퀵드로우',
             'focus-fire': '일점사',
-            'backstab': '백스탭'
+            'backstab': '백스탭',
+            'warning': '경고',
+            'notice': '예고장',
+            'active-opportunity': '활약 기회'
         },
         sniper: {
             'plain': '기본공격',
@@ -940,11 +975,16 @@ function getSkillName(job, skill) {
             'assemble': '조립',
             'load': '장전',
             'aim': '조준',
-            'fire': '발사'
+            'fire': '발사',
+            'stabilize': '안정화',
+            'immerse': '몰입',
+            'confidence': '확신',
+            'nerve-max': '신경 극대화'
         },
         masterarcher: {
             'plain': '기본공격',
-            'power-shot': '파위샷',
+            'emergency-shot': '긴급사격',
+            'power-shot': '파워샷',
             'explosive-arrow': '폭탄 화살',
             'split-arrow': '분열 화살',
             'piercing-arrow': '관통 화살',
@@ -975,7 +1015,11 @@ function getSkillName(job, skill) {
             'bean-shot': '콩알탄',
             'oil-barrel': '기름통 투척',
             'lighter-throw': '라이터 투척',
-            'huge-dagger': '특대형 단검'
+            'huge-dagger': '특대형 단검',
+            'party-time': '파티 타임',
+            'event-preparation': '이벤트 준비',
+            'giant-scar': '거대한 상흔',
+            'main-event': '메인 이벤트'
         },
         poacher: {
             'plain': '기본공격',
