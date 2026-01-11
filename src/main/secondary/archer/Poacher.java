@@ -1,0 +1,293 @@
+package main.secondary.archer;
+
+import main.Main;
+import main.Result;
+
+import java.io.PrintStream;
+
+public class Poacher {
+    /*
+    밀렵꾼
+
+    판정 사용 스탯 : 힘, 민첩
+
+    기본 공격(기본 공격) : 대상에게 2D4의 데미지를 입힙니다. (산탄 패시브 적용됨)
+
+    사냥 (패시브) : 디버프가 적용된 적에게 가하는 피해가 1.5배로 증가합니다.
+    약육강식 (패시브) : 적보다 자신의 체력 비율이 높다면 모든 스탯이 +2 증가합니다.
+    직감 (패시브) : 적이 디버프를 얻는 순간 턴에 상관없이 기본 공격을 사용할 수 있습니다.
+    산탄 (패시브) : 기본 공격 데미지가 2D4로 변경됩니다. 기본 공격 시 (스탯 - 1D20 주사위 값)이 10 이상이라면 2D8로 공격 주사위가 변경됩니다.
+
+    장전 (기술) : 다음 턴까지 기본 공격의 데미지가 2D4는 2D6으로, 2D8은 2D12로 변경됩니다. 턴을 소모하지 않습니다. (스태미나 2 소모)
+    머리찍기 (기술) : 대상에게 1D8의 피해를 입힙니다. (스태미나 1 소모)
+    덫 깔기 (기술) : 시전 시 판정을 진행하지 않습니다. 적이 공격 시도 시 판정을 시행합니다. 판정 성공 시 1D10의 데미지를 입히며, 해당 턴에 한하여 적의 공격 데미지가 75%로 감소합니다. (스태미나 3 소모)
+    올가미 탄 (기술) : 대상에게 1D8의 피해를 입힙니다. 다음 턴까지 적에게 행동 불가를 부여합니다. (스태미나 8 소모)
+    헤드샷 (기술) : 대상에게 2D12의 피해를 입힙니다. (스태미나 4 소모)
+
+    사냥터 (스킬) : 2턴 동안 덫을 확정적으로 적중시킵니다. (마나 3 소모, 쿨타임 5턴)
+    구속 함정 (스킬) : 2턴 동안 적에게 수비 불가를 부여하는 덫을 설치합니다. (마나 6 소모, 쿨타임 8턴)
+    약자멸시 (스킬) : (자신의 체력% - 적의 체력%)가 10% 이상이라면 다음 턴 적에게 입히는 데미지가 2배로 증가합니다.
+    압도 (스킬) : (행동, 공격, 수비, 기술 사용, 스킬 사용 등) 불가 상태의 적이 있다면 턴을 연속으로 2회 사용할 수 있습니다. 이 스킬은 턴을 소모하지 않습니다. (마나 6 소모, 쿨타임 8턴)
+    전리품 (스킬) : 다음 2턴 동안 적에게 피해를 입힐 때마다 '덫 깔기'를 스태미나 소모 없이 발동합니다. (마나 8 소모, 쿨타임 12턴)
+     */
+
+    /**
+     * 덫 깔기
+     * @param stat 사용할 스탯
+     * @param damageTaken 상대에게 받은 데미지
+     * @param hunting 사냥 패시브 적용 여부 (디버프 대상 데미지 150%)
+     * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +2)
+     * @param contemptForTheWeak 약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
+     * @param out 출력 스트림
+     * @return 결과 객체
+     */
+    public static Result setTrap(int stat, int damageTaken, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, PrintStream out){
+        int staminaChange = 3;
+
+        out.println("밀렵꾼-덫 깔기 사용");
+
+        int effectiveStat = stat;
+
+        if (survivalOfTheFittest) {
+            out.println("약육강식 패시브 적용: 모든 스탯 +2");
+            effectiveStat += 2;
+        }
+
+        int verdict = Main.verdict(effectiveStat, out);
+
+        if (verdict <= 0) return new Result(damageTaken, 0, false, 0, staminaChange);
+
+        int baseDamage = Main.dice(1, 10, out);
+        float modifier = 1.0f;
+        out.printf("기본 데미지 : %d\n", baseDamage);
+
+        if (hunting) {
+            out.println("사냥 패시브 적용: 디버프 대상 데미지 1.5배");
+            modifier *= 1.5f;
+        }
+        if (contemptForTheWeak) {
+            out.println("약자멸시 스킬 적용: 데미지 2배");
+            modifier *= 2.0f;
+        }
+        int finalDamage = (int) (baseDamage * modifier);
+        out.printf("최종 데미지 : %d\n", finalDamage);
+
+        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out);
+        finalDamage += sideDamage;
+        out.printf("데미지 보정치 : %d\n", sideDamage);
+        out.printf("최종 데미지 : %d\n", finalDamage);
+        return new Result((int) (damageTaken * 0.75), finalDamage, true, 0, staminaChange);
+    }
+
+    /**
+     * 머리찍기
+     * @param stat 사용할 스탯
+     * @param hunting 사냥 패시브 적용 여부 (디버프 대상 데미지 150%)
+     * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +2)
+     * @param contemptForTheWeak 약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
+     * @param out 출력 스트림
+     * @return 결과 객체
+     */
+    public static Result headSmash(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, PrintStream out) {
+        int staminaChange = 1;
+
+        out.println("밀렵꾼-머리찍기 사용");
+
+        int effectiveStat = stat;
+
+        if (survivalOfTheFittest) {
+            out.println("약육강식 패시브 적용: 모든 스탯 +2");
+            effectiveStat += 2;
+        }
+
+        int verdict = Main.verdict(effectiveStat, out);
+
+        if (verdict <= 0) return new Result(0, 0, false, 0, 0);
+
+        int baseDamage = Main.dice(2, 12, out);
+        float modifier = 1.0f;
+        out.printf("기본 데미지 : %d\n", baseDamage);
+
+        if (hunting) {
+            out.println("사냥 패시브 적용: 디버프 대상 데미지 1.5배");
+            modifier *= 1.5f;
+        }
+        if (contemptForTheWeak) {
+            out.println("약자멸시 스킬 적용: 데미지 2배");
+            modifier *= 2.0f;
+        }
+        int finalDamage = (int) (baseDamage * modifier);
+        out.printf("최종 데미지 : %d\n", finalDamage);
+
+        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out);
+        finalDamage += sideDamage;
+        out.printf("데미지 보정치 : %d\n", sideDamage);
+        out.printf("최종 데미지 : %d\n", finalDamage);
+        return new Result(0, finalDamage, true, 0, staminaChange);
+    }
+
+    /**
+     * 올가미 탄
+     * @param stat 사용할 스탯
+     * @param hunting 사냥 패시브 적용 여부 (디버프 대상 데미지 150%)
+     * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +2)
+     * @param contemptForTheWeak 약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
+     * @param out 출력 스트림
+     * @return 결과 객체
+     */
+    public static Result snareShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, PrintStream out) {
+        int staminaChange = 8;
+
+        out.println("밀렵꾼-올가미 탄 사용");
+
+        int effectiveStat = stat;
+
+        if (survivalOfTheFittest) {
+            out.println("약육강식 패시브 적용: 모든 스탯 +2");
+            effectiveStat += 2;
+        }
+
+        int verdict = Main.verdict(effectiveStat, out);
+
+        if (verdict <= 0) return new Result(0, 0, false, 0, staminaChange);
+
+        int baseDamage = Main.dice(1, 8, out);
+        float modifier = 1.0f;
+        out.printf("기본 데미지 : %d\n", baseDamage);
+
+        if (hunting) {
+            out.println("사냥 패시브 적용: 디버프 대상 데미지 1.5배");
+            modifier *= 1.5f;
+        }
+        if (contemptForTheWeak) {
+            out.println("약자멸시 스킬 적용: 데미지 2배");
+            modifier *= 2.0f;
+        }
+        int finalDamage = (int) (baseDamage * modifier);
+        out.printf("배율 적용 데미지 : %d\n", finalDamage);
+
+        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out);
+        finalDamage += sideDamage;
+        out.printf("데미지 보정치 : %d\n", sideDamage);
+        out.printf("최종 데미지 : %d\n", finalDamage);
+        out.println("적에게 행동 불가 부여 (다음 턴까지)");
+        return new Result(0, finalDamage, true, 0, staminaChange);
+    }
+
+    /**
+     * 헤드샷
+     * @param stat 사용할 스탯
+     * @param hunting 사냥 패시브 적용 여부 (디버프 대상 데미지 150%)
+     * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +2)
+     * @param contemptForTheWeak 약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
+     * @param out 출력 스트림
+     * @return 결과 객체
+     */
+    public static Result headShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, PrintStream out) {
+        int staminaChange = 4;
+
+        out.println("밀렵꾼-헤드샷 사용");
+
+        int effectiveStat = stat;
+
+        if (survivalOfTheFittest) {
+            out.println("약육강식 패시브 적용: 모든 스탯 +2");
+            effectiveStat += 2;
+        }
+
+        int verdict = Main.verdict(effectiveStat, out);
+
+        if (verdict <= 0) return new Result(0, 0, false, 0, staminaChange);
+
+        int baseDamage = Main.dice(2, 12, out);
+        float modifier = 1.0f;
+        out.printf("기본 데미지 : %d\n", baseDamage);
+
+        if (hunting) {
+            out.println("사냥 패시브 적용: 디버프 대상 데미지 1.5배");
+            modifier *= 1.5f;
+        }
+        if (contemptForTheWeak) {
+            out.println("약자멸시 스킬 적용: 데미지 2배");
+            modifier *= 2.0f;
+        }
+        int finalDamage = (int) (baseDamage * modifier);
+        out.printf("최종 데미지 : %d\n", finalDamage);
+
+        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out);
+        finalDamage += sideDamage;
+        out.printf("데미지 보정치 : %d\n", sideDamage);
+        out.printf("최종 데미지 : %d\n", finalDamage);
+        return new Result(0, finalDamage, true, 0, staminaChange);
+    }
+
+    /**
+     * 기본공격
+     * @param stat 사용할 스탯
+     * @param hunting 사냥 패시브 (디버프 대상 150%)
+     * @param survivalOfTheFittest 약육강식 패시브 (자신 체력% > 적 체력% 시 스탯 +2)
+     * @param contemptForTheWeak 약자멸시 스킬 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
+     * @param reload 장전 기술 (다음 턴 데미지 2D4->2D6, 2D8->2D12)
+     * @param out 출력 스트림
+     * @return 결과 객체
+     */
+    public static Result plain(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean reload, PrintStream out) {
+        int staminaChange = 0;
+
+        out.println("밀렵꾼-기본공격 사용");
+
+        int effectiveStat = stat;
+
+        if (survivalOfTheFittest) {
+            out.println("약육강식 패시브 적용: 모든 스탯 +2");
+            effectiveStat += 2;
+        }
+
+        int verdict = Main.verdict(effectiveStat, out);
+
+        if (verdict <= 0) return new Result(0, 0, false, 0, 0);
+
+        int dices = 2, sides = 4; // 기본값 2D4
+
+        int buckshot = Main.dice(1, 20, out);
+        boolean buckshotApplied = false;
+
+        if (buckshot - stat >= 10) {
+            out.printf("산탄 패시브 적용: 데미지 주사위 2D8로 변경 (스탯 %d - 주사위 %d >= 10)\n", stat, buckshot);
+            sides = 8;
+            buckshotApplied = true;
+        }
+        if (reload) {
+            staminaChange += 2;
+            if (buckshotApplied) {
+                out.println("장전 기술 적용: 데미지 주사위 2D12로 변경");
+                sides = 12;
+            } else {
+                out.println("장전 기술 적용: 데미지 주사위 2D6로 변경");
+                sides = 6;
+            }
+        }
+
+        int baseDamage = Main.dice(dices, sides, out);
+        float modifier = 1.0f;
+        out.printf("기본 데미지 : %d\n", baseDamage);
+
+        if (hunting) {
+            out.println("사냥 패시브 적용: 디버프 대상 데미지 1.5배");
+            modifier *= 1.5f;
+        }
+        if (contemptForTheWeak) {
+            out.println("약자멸시 스킬 적용: 데미지 2배");
+            modifier *= 2.0f;
+        }
+        int finalDamage = (int) (baseDamage * modifier);
+        out.printf("최종 데미지 : %d\n", finalDamage);
+
+        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out);
+        finalDamage += sideDamage;
+        out.printf("데미지 보정치 : %d\n", sideDamage);
+        out.printf("최종 데미지 : %d\n", finalDamage);
+        return new Result(0, finalDamage, true, 0, staminaChange);
+
+    }
+}

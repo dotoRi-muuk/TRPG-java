@@ -29,6 +29,28 @@ public class Main {
         return damage;
     }
 
+    public static int verdict(int stat, PrintStream out){
+        out.println("판정 시도!");
+        int dice = dice(1,20, out);
+        if (stat >= dice) {
+            out.printf("판정 성공! (스탯 %d > 주사위 %d)\n", stat, dice);
+        } else {
+            out.printf("판정 실패... (스탯 %d <= 주사위 %d)\n", stat, dice);
+        }
+        return dice-stat;
+    }
+
+
+    public static int normalCalculation(int stat, PrintStream out, int dices, int sides) {
+        int damage = dice(dices, sides, out);
+        out.printf("기본 데미지 : %d\n", damage);
+        int sideDamage = sideDamage(damage, stat, out);
+        damage += sideDamage;
+        out.printf("데미지 보정치 : %d\n", sideDamage);
+        out.printf("최종 데미지 : %d\n", damage);
+        return damage;
+    }
+
     public static void main(String[] args) {
     }
 }
