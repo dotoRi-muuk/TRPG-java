@@ -8,7 +8,7 @@ import java.io.PrintStream;
 /**
  * 결계술사
  * <p>
- * 판정 사용 스탯 : 지능 또는 지혜
+ * 판정 사용 스탯 : 지능
  */
 public class BarrierMaster {
 
