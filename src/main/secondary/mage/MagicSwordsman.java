@@ -14,13 +14,14 @@ public class MagicSwordsman {
 
     /**
      * 마나 슬래쉬 : 대상에게 3D6의 피해를 입힙니다. (마나 3 소모, 쿨타임 2턴)
-     * @param stat 사용할 스탯
-     * @param lastMana 이전 휴식 시점의 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
+     *
+     * @param stat        사용할 스탯
+     * @param lastMana    이전 휴식 시점의 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
      * @param currentMana 현재 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
-     * @param overload 오버로드 적용 여부 (모든 스킬이 마나를 2배 소모, 데미지가 1.5배 증가)
+     * @param overload    오버로드 적용 여부 (모든 스킬이 마나를 2배 소모, 데미지가 1.5배 증가)
      * @param ethailSolar 에테일 솔라 적용 여부 (이번 턴의 데미지가 3배로 증가, 모든 스킬이 마나를 소모하지 않음)
      * @param shiftLifter 쉬프트리스터 적용 여부 (스킬이 마나 대신 스태미나를 소모, 소모한 스태미나만큼 마나를 회복)
-     * @param out 출력 스트림
+     * @param out         출력 스트림
      * @return 결과 객체
      */
     public static Result manaSlash(int stat, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, PrintStream out) {
@@ -30,13 +31,14 @@ public class MagicSwordsman {
 
     /**
      * 마나 스트라이크 : 대상에게 2D10의 피해를 입힙니다. (마나 3 소모, 쿨타임 3턴)
-     * @param stat 사용할 스탯
-     * @param lastMana 이전 휴식 시점의 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
+     *
+     * @param stat        사용할 스탯
+     * @param lastMana    이전 휴식 시점의 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
      * @param currentMana 현재 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
-     * @param overload 오버로드 적용 여부 (모든 스킬이 마나를 2배 소모, 데미지가 1.5배 증가)
+     * @param overload    오버로드 적용 여부 (모든 스킬이 마나를 2배 소모, 데미지가 1.5배 증가)
      * @param ethailSolar 에테일 솔라 적용 여부 (이번 턴의 데미지가 3배로 증가, 모든 스킬이 마나를 소모하지 않음)
      * @param shiftLifter 쉬프트리스터 적용 여부 (스킬이 마나 대신 스태미나를 소모, 소모한 스태미나만큼 마나 회복)
-     * @param out 출력 스트림
+     * @param out         출력 스트림
      * @return 결과 객체
      */
     public static Result manaStrike(int stat, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, PrintStream out) {
@@ -46,13 +48,14 @@ public class MagicSwordsman {
 
     /**
      * 마나 스피어 : 대상에게 D20의 피해를 입힙니다. (마나 3 소모, 쿨타임 3턴)
-     * @param stat 사용할 스탯
-     * @param lastMana 이전 휴식 시점의 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
+     *
+     * @param stat        사용할 스탯
+     * @param lastMana    이전 휴식 시점의 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
      * @param currentMana 현재 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
-     * @param overload 오버로드 적용 여부 (모든 스킬이 마나를 2배 소모, 데미지가 1.5배 증가)
+     * @param overload    오버로드 적용 여부 (모든 스킬이 마나를 2배 소모, 데미지가 1.5배 증가)
      * @param ethailSolar 에테일 솔라 적용 여부 (이번 턴의 데미지가 3배로 증가, 모든 스킬이 마나를 소모하지 않음)
      * @param shiftLifter 쉬프트리스터 적용 여부 (스킬이 마나 대신 스태미나를 소모, 소모한 스태미나만큼 마나 회복)
-     * @param out 출력 스트림
+     * @param out         출력 스트림
      * @return 결과 객체
      */
     public static Result manaSphere(int stat, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, PrintStream out) {
@@ -62,13 +65,14 @@ public class MagicSwordsman {
 
     /**
      * 스핀 크라이스트 : 대상에게 4D8의 피해를 입힙니다. (마나 4 소모, 쿨타임 4턴)
-     * @param stat 사용할 스탯
-     * @param lastMana 이전 휴식 시점의 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
+     *
+     * @param stat        사용할 스탯
+     * @param lastMana    이전 휴식 시점의 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
      * @param currentMana 현재 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
-     * @param overload 오버로드 적용 여부 (모든 스킬이 마나를 2배 소모, 데미지가 1.5배 증가)
+     * @param overload    오버로드 적용 여부 (모든 스킬이 마나를 2배 소모, 데미지가 1.5배 증가)
      * @param ethailSolar 에테일 솔라 적용 여부 (이번 턴의 데미지가 3배로 증가, 모든 스킬이 마나를 소모하지 않음)
      * @param shiftLifter 쉬프트리스터 적용 여부 (스킬이 마나 대신 스태미나를 소모, 소모한 스태미나만큼 마나 회복)
-     * @param out 출력 스트림
+     * @param out         출력 스트림
      * @return 결과 객체
      */
     public static Result spinChrist(int stat, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, PrintStream out) {
@@ -78,13 +82,14 @@ public class MagicSwordsman {
 
     /**
      * 트리플 슬레인 : 대상에게 3D12의 피해를 입힙니다. (마나 4 소모, 쿨타임 4턴)
-     * @param stat 사용할 스탯
-     * @param lastMana 이전 휴식 시점의 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
+     *
+     * @param stat        사용할 스탯
+     * @param lastMana    이전 휴식 시점의 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
      * @param currentMana 현재 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
-     * @param overload 오버로드 적용 여부 (모든 스킬이 마나를 2배 소모, 데미지가 1.5배 증가)
+     * @param overload    오버로드 적용 여부 (모든 스킬이 마나를 2배 소모, 데미지가 1.5배 증가)
      * @param ethailSolar 에테일 솔라 적용 여부 (이번 턴의 데미지가 3배로 증가, 모든 스킬이 마나를 소모하지 않음)
      * @param shiftLifter 쉬프트리스터 적용 여부 (스킬이 마나 대신 스태미나를 소모, 소모한 스태미나만큼 마나 회복)
-     * @param out 출력 스트림
+     * @param out         출력 스트림
      * @return 결과 객체
      */
     public static Result tripleSlain(int stat, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, PrintStream out) {
@@ -94,13 +99,14 @@ public class MagicSwordsman {
 
     /**
      * 에테리얼 임페리오 : 대상에게 3D20의 피해를 입힙니다. (영창 2턴, 마나 6 소모, 쿨타임 7턴)
-     * @param stat 사용할 스탯
-     * @param lastMana 이전 휴식 시점의 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
+     *
+     * @param stat        사용할 스탯
+     * @param lastMana    이전 휴식 시점의 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
      * @param currentMana 현재 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
-     * @param overload 오버로드 적용 여부 (모든 스킬이 마나를 2배 소모, 데미지가 1.5배 증가)
+     * @param overload    오버로드 적용 여부 (모든 스킬이 마나를 2배 소모, 데미지가 1.5배 증가)
      * @param ethailSolar 에테일 솔라 적용 여부 (이번 턴의 데미지가 3배로 증가, 모든 스킬이 마나를 소모하지 않음)
      * @param shiftLifter 쉬프트리스터 적용 여부 (스킬이 마나 대신 스태미나를 소모, 소모한 스태미나만큼 마나 회복)
-     * @param out 출력 스트림
+     * @param out         출력 스트림
      * @return 결과 객체
      */
     public static Result etherealImperio(int stat, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, PrintStream out) {
@@ -110,16 +116,17 @@ public class MagicSwordsman {
 
     /**
      * 데미지만 다르고 로직이 같은 스킬의 데미지를 계산하는 공통 함수
-     * @param stat 사용할 스탯
-     * @param dices 스킬의 주사위 개수
-     * @param sides 스킬의 주사위 면수
-     * @param manaUse 스킬의 마나 소모량
+     *
+     * @param stat        사용할 스탯
+     * @param dices       스킬의 주사위 개수
+     * @param sides       스킬의 주사위 면수
+     * @param manaUse     스킬의 마나 소모량
      * @param currentMana 현재 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
-     * @param lastMana 이전 휴식 시점의 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
-     * @param overload 오버로드 적용 여부 (모든 스킬이 마나를 2배 소모, 데미지가 1.5배 증가)
+     * @param lastMana    이전 휴식 시점의 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
+     * @param overload    오버로드 적용 여부 (모든 스킬이 마나를 2배 소모, 데미지가 1.5배 증가)
      * @param ethailSolar 에테일 솔라 적용 여부 (이번 턴의 데미지가 3배로 증가, 모든 스킬이 마나를 소모하지 않음)
      * @param shiftLifter 쉬프트리스터 적용 여부 (스킬이 마나 대신 스태미나를 소모, 소모한 스태미나만큼 마나 회복)
-     * @param out 출력 스트림
+     * @param out         출력 스트림
      * @return 결과 객체
      */
     private static Result basicAttack(int stat, int dices, int sides, int manaUse, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, PrintStream out) {
@@ -178,13 +185,14 @@ public class MagicSwordsman {
 
     /**
      * 기본 공격 : 대상에게 1D6의 데미지를 입힙니다.
-     * @param stat 사용할 스탯
-     * @param level 사용자 레벨 (마나 오라 : 기본 공격 시 마나를 (자신의 레벨) 회복)
-     * @param lastMana 이전 휴식 시점의 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
+     *
+     * @param stat        사용할 스탯
+     * @param level       사용자 레벨 (마나 오라 : 기본 공격 시 마나를 (자신의 레벨) 회복)
+     * @param lastMana    이전 휴식 시점의 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
      * @param currentMana 현재 마나 (마나 축적 : [이전 휴식 시점의 마나 - 현재의 마나] * 10% 만큼 데미지 증가)
-     * @param overload 오버로드 적용 여부 (모든 스킬이 마나를 2배 소모, 데미지가 1.5배 증가)
+     * @param overload    오버로드 적용 여부 (모든 스킬이 마나를 2배 소모, 데미지가 1.5배 증가)
      * @param ethailSolar 에테일 솔라 적용 여부 (이번 턴의 데미지가 3배로 증가, 모든 스킬이 마나를 소모하지 않음)
-     * @param out 출력 스트림
+     * @param out         출력 스트림
      * @return 결과 객체
      */
     public static Result plain(int stat, int level, int lastMana, int currentMana, boolean overload, boolean ethailSolar, PrintStream out) {

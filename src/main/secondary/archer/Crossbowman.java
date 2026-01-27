@@ -17,11 +17,12 @@ public class Crossbowman {
 
     /**
      * 던지기 : 대상에게 D6의 피해를 입힙니다. (스태미나 0 소모)
-     * @param stat 사용할 스탯
-     * @param loadedArrows 장전된 화살 개수
+     *
+     * @param stat           사용할 스탯
+     * @param loadedArrows   장전된 화살 개수
      * @param calculateRange 비거리 계산 패시브 활성화 여부
      * @param eliminateError 오차 제거 스킬 활성화 여부
-     * @param out 출력 스트림
+     * @param out            출력 스트림
      * @return 결과 객체
      */
     public static Result toss(int stat, int loadedArrows, boolean calculateRange, boolean eliminateError, PrintStream out) {
@@ -59,7 +60,7 @@ public class Crossbowman {
         }
 
         // 5. 최종 데미지 산출
-        int damageAfterModifier = (int)(baseDamage * damageModifier);
+        int damageAfterModifier = (int) (baseDamage * damageModifier);
         out.printf("배율 적용 후 데미지 : %d\n", damageAfterModifier);
 
         int sideDamage = Main.sideDamage(damageAfterModifier, stat, out);
@@ -72,13 +73,14 @@ public class Crossbowman {
 
     /**
      * 기본 공격 : 대상에게 1D6의 데미지를 입힙니다.
-     * @param stat 사용할 스탯
-     * @param loadedArrows 장전된 화살 개수
-     * @param executionArrows 처형 화살 개수
+     *
+     * @param stat               사용할 스탯
+     * @param loadedArrows       장전된 화살 개수
+     * @param executionArrows    처형 화살 개수
      * @param indiscriminateFire 무차별 난사 패시브 활성화 여부
-     * @param calculateRange 비거리 계산 패시브 활성화 여부
-     * @param eliminateError 오차 제거 스킬 활성화 여부
-     * @param out 출력 스트림
+     * @param calculateRange     비거리 계산 패시브 활성화 여부
+     * @param eliminateError     오차 제거 스킬 활성화 여부
+     * @param out                출력 스트림
      * @return 결과 객체
      */
     public static Result plain(int stat, int loadedArrows, int executionArrows, boolean indiscriminateFire, boolean calculateRange, boolean eliminateError, PrintStream out) {
@@ -102,7 +104,7 @@ public class Crossbowman {
 
             // 확률이 존재할 때만 주사위 굴림
             if (executionChance > 0) {
-                int random = (int)(Math.random() * 100) + 1;
+                int random = (int) (Math.random() * 100) + 1;
                 if (executionChance >= random) {
                     out.printf("처형 발동! (주사위 %d <= 확률 %d%%)\n", random, executionChance);
                     return new Result(0, Integer.MAX_VALUE, true, 0, 0);
@@ -142,7 +144,7 @@ public class Crossbowman {
         }
 
         // 7. 최종 데미지 산출
-        int damageAfterModifier = (int)((baseDamage + arrowDamage) * damageModifier);
+        int damageAfterModifier = (int) ((baseDamage + arrowDamage) * damageModifier);
         out.printf("배율 적용 후 데미지 : %d\n", damageAfterModifier);
 
         int sideDamage = Main.sideDamage(damageAfterModifier, stat, out);
@@ -155,9 +157,10 @@ public class Crossbowman {
 
     /**
      * 단일사격 : 화살을 1개 소모하여 대상에게 D10의 피해를 입힙니다. (스태미나 2 소모)
-     * @param stat 사용할 스탯
+     *
+     * @param stat         사용할 스탯
      * @param loadedArrows 장전된 화살 개수
-     * @param out 출력 스트림
+     * @param out          출력 스트림
      * @return 결과 객체
      */
     public static Result singleShot(int stat, int loadedArrows, PrintStream out) {
@@ -183,9 +186,10 @@ public class Crossbowman {
 
     /**
      * 발광 화살 : 화살을 2개 소모하여 대상에게 2D8의 피해를 입힙니다. 다음 턴까지 적이 받는 데미지를 1.5배로 증가시킵니다. (스태미나 4 소모)
-     * @param stat 사용할 스탯
+     *
+     * @param stat         사용할 스탯
      * @param loadedArrows 장전된 화살 개수
-     * @param out 출력 스트림
+     * @param out          출력 스트림
      * @return 결과 객체
      */
     public static Result luminousArrow(int stat, int loadedArrows, PrintStream out) {
@@ -212,9 +216,10 @@ public class Crossbowman {
 
     /**
      * 마비 화살 : 화살을 1개 소모하여 대상에게 2D8 + D6의 피해를 입힙니다. 다음 턴까지 적의 모든 스탯을 2 감소시킵니다. (스태미나 6 소모)
-     * @param stat 사용할 스탯
+     *
+     * @param stat         사용할 스탯
      * @param loadedArrows 장전된 화살 개수
-     * @param out 출력 스트림
+     * @param out          출력 스트림
      * @return 결과 객체
      */
     public static Result paralysisArrow(int stat, int loadedArrows, PrintStream out) {
@@ -243,10 +248,11 @@ public class Crossbowman {
 
     /**
      * 화살 꺾기 : (6 * 소모 화살) 만큼 받는 데미지가 감소합니다. (스태미나 3 소모)
-     * @param stat 사용할 스탯
-     * @param damageTaken 받은 데미지
+     *
+     * @param stat           사용할 스탯
+     * @param damageTaken    받은 데미지
      * @param consumedArrows 소모할 화살 개수
-     * @param out 출력 스트림
+     * @param out            출력 스트림
      * @return 결과 객체
      */
     public static Result arrowBreak(int stat, int damageTaken, int consumedArrows, PrintStream out) {
@@ -266,9 +272,10 @@ public class Crossbowman {
 
     /**
      * 이럴 때 일수록! : 받은 데미지 4마다 화살 1개를 장전합니다. (스태미나 9 소모)
-     * @param stat 사용할 스탯
+     *
+     * @param stat        사용할 스탯
      * @param damageTaken 받은 데미지
-     * @param out 출력 스트림
+     * @param out         출력 스트림
      * @return 결과 객체
      */
     public static Result crisisReload(int stat, int damageTaken, PrintStream out) {

@@ -14,15 +14,16 @@ public class Poacher {
 
     /**
      * 덫 깔기 : 적이 공격 시도 시 판정을 시행합니다. 판정 성공 시 1D10의 데미지를 입히며, 해당 턴에 한하여 적의 공격 데미지가 75%로 감소합니다.
-     * @param stat 사용할 스탯
-     * @param damageTaken 상대에게 받은 데미지
-     * @param hunting 사냥 패시브 적용 여부 (디버프 대상 데미지 150%)
+     *
+     * @param stat                 사용할 스탯
+     * @param damageTaken          상대에게 받은 데미지
+     * @param hunting              사냥 패시브 적용 여부 (디버프 대상 데미지 150%)
      * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +2)
-     * @param contemptForTheWeak 약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
-     * @param out 출력 스트림
+     * @param contemptForTheWeak   약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
+     * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result setTrap(int stat, int damageTaken, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, PrintStream out){
+    public static Result setTrap(int stat, int damageTaken, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, PrintStream out) {
         int staminaChange = 3;
 
         out.println("밀렵꾼-덫 깔기 사용");
@@ -62,11 +63,12 @@ public class Poacher {
 
     /**
      * 머리찍기 : 대상에게 1D8의 피해를 입힙니다.
-     * @param stat 사용할 스탯
-     * @param hunting 사냥 패시브 적용 여부 (디버프 대상 데미지 150%)
+     *
+     * @param stat                 사용할 스탯
+     * @param hunting              사냥 패시브 적용 여부 (디버프 대상 데미지 150%)
      * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +2)
-     * @param contemptForTheWeak 약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
-     * @param out 출력 스트림
+     * @param contemptForTheWeak   약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
+     * @param out                  출력 스트림
      * @return 결과 객체
      */
     public static Result headSmash(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, PrintStream out) {
@@ -109,11 +111,12 @@ public class Poacher {
 
     /**
      * 올가미 탄 : 대상에게 1D8의 피해를 입힙니다. 다음 턴까지 적에게 행동 불가를 부여합니다.
-     * @param stat 사용할 스탯
-     * @param hunting 사냥 패시브 적용 여부 (디버프 대상 데미지 150%)
+     *
+     * @param stat                 사용할 스탯
+     * @param hunting              사냥 패시브 적용 여부 (디버프 대상 데미지 150%)
      * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +2)
-     * @param contemptForTheWeak 약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
-     * @param out 출력 스트림
+     * @param contemptForTheWeak   약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
+     * @param out                  출력 스트림
      * @return 결과 객체
      */
     public static Result snareShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, PrintStream out) {
@@ -157,11 +160,12 @@ public class Poacher {
 
     /**
      * 헤드샷 : 대상에게 2D12의 피해를 입힙니다.
-     * @param stat 사용할 스탯
-     * @param hunting 사냥 패시브 적용 여부 (디버프 대상 데미지 150%)
+     *
+     * @param stat                 사용할 스탯
+     * @param hunting              사냥 패시브 적용 여부 (디버프 대상 데미지 150%)
      * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +2)
-     * @param contemptForTheWeak 약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
-     * @param out 출력 스트림
+     * @param contemptForTheWeak   약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
+     * @param out                  출력 스트림
      * @return 결과 객체
      */
     public static Result headShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, PrintStream out) {
@@ -204,12 +208,13 @@ public class Poacher {
 
     /**
      * 기본공격 : 대상에게 2D4의 데미지를 입힙니다. (산탄 패시브 적용됨)
-     * @param stat 사용할 스탯
-     * @param hunting 사냥 패시브 (디버프 대상 150%)
+     *
+     * @param stat                 사용할 스탯
+     * @param hunting              사냥 패시브 (디버프 대상 150%)
      * @param survivalOfTheFittest 약육강식 패시브 (자신 체력% > 적 체력% 시 스탯 +2)
-     * @param contemptForTheWeak 약자멸시 스킬 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
-     * @param reload 장전 기술 (다음 턴 데미지 2D4->2D6, 2D8->2D12)
-     * @param out 출력 스트림
+     * @param contemptForTheWeak   약자멸시 스킬 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
+     * @param reload               장전 기술 (다음 턴 데미지 2D4->2D6, 2D8->2D12)
+     * @param out                  출력 스트림
      * @return 결과 객체
      */
     public static Result plain(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean reload, PrintStream out) {

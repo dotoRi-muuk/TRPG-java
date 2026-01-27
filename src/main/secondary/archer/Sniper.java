@@ -14,17 +14,18 @@ public class Sniper {
 
     /**
      * 발사: 탄환을 소모하여 대상에게 4D20의 피해를 입힙니다.
-     * @param stat 사용할 스탯
-     * @param vitalAim 급소조준 적용 여부 (5턴 이상 공격X 시 데미지 2배)
-     * @param deathBullet 죽음의 탄환 적용 여부 (기본 공격 사용X 시 데미지 1.5배)
-     * @param assemble 조립 기술 적용 여부 (데미지 1.5배)
-     * @param aim 조준 기술 적용 여부 (수비 무시)
-     * @param sureHit 필즉 스킬 적용 여부 (확정 명중)
-     * @param stabilize 안정화 스킬 적용 여부 (데미지 75%로 감소, 주사위 복제)
-     * @param focus 몰입 스킬 적용 여부 (데미지 2배)
-     * @param conviction 확신 스킬 적용 여부 (데미지 2.5배)
+     *
+     * @param stat             사용할 스탯
+     * @param vitalAim         급소조준 적용 여부 (5턴 이상 공격X 시 데미지 2배)
+     * @param deathBullet      죽음의 탄환 적용 여부 (기본 공격 사용X 시 데미지 1.5배)
+     * @param assemble         조립 기술 적용 여부 (데미지 1.5배)
+     * @param aim              조준 기술 적용 여부 (수비 무시)
+     * @param sureHit          필즉 스킬 적용 여부 (확정 명중)
+     * @param stabilize        안정화 스킬 적용 여부 (데미지 75%로 감소, 주사위 복제)
+     * @param focus            몰입 스킬 적용 여부 (데미지 2배)
+     * @param conviction       확신 스킬 적용 여부 (데미지 2.5배)
      * @param heightenedSenses 신경 극대화 스킬 적용 여부 (데미지 4배)
-     * @param out 출력 스트림
+     * @param out              출력 스트림
      * @return 결과 객체
      */
     public static Result fire(int stat, boolean vitalAim, boolean deathBullet, boolean assemble, boolean aim, boolean sureHit, boolean stabilize, boolean focus, boolean conviction, boolean heightenedSenses, PrintStream out) {
@@ -100,16 +101,17 @@ public class Sniper {
 
     /**
      * 기본공격: 대상에게 1D6의 데미지를 입힙니다.
-     * @param stat 사용할 스탯
-     * @param vitalAim 급소조준 적용 여부 (5턴 이상 공격X 시 데미지 2배)
-     * @param assemble 조립 기술 적용 여부 (데미지 1.5배)
-     * @param aim 조준 기술 적용 여부 (수비 무시)
-     * @param sureHit 필즉 스킬 적용 여부 (확정 명중)
-     * @param stabilize 안정화 스킬 적용 여부 (데미지 75%로 감소, 주사위 복제)
-     * @param focus 몰입 스킬 적용 여부 (데미지 2배)
-     * @param conviction 확신 스킬 적용 여부 (데미지 2.5배)
+     *
+     * @param stat             사용할 스탯
+     * @param vitalAim         급소조준 적용 여부 (5턴 이상 공격X 시 데미지 2배)
+     * @param assemble         조립 기술 적용 여부 (데미지 1.5배)
+     * @param aim              조준 기술 적용 여부 (수비 무시)
+     * @param sureHit          필즉 스킬 적용 여부 (확정 명중)
+     * @param stabilize        안정화 스킬 적용 여부 (데미지 75%로 감소, 주사위 복제)
+     * @param focus            몰입 스킬 적용 여부 (데미지 2배)
+     * @param conviction       확신 스킬 적용 여부 (데미지 2.5배)
      * @param heightenedSenses 신경 극대화 스킬 적용 여부 (데미지 4배)
-     * @param out 출력 스트림
+     * @param out              출력 스트림
      * @return 결과 객체
      */
     public static Result plain(int stat, boolean vitalAim, boolean assemble, boolean aim, boolean sureHit, boolean stabilize, boolean focus, boolean conviction, boolean heightenedSenses, PrintStream out) {

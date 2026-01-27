@@ -15,9 +15,10 @@ public class Gunslinger {
 
     /**
      * 백스탭 : 판정 성공 시 공격을 회피합니다. 1.5배의 데미지로 반격합니다. (스태미나 3 소모)
-     * @param stat 사용 스탯
+     *
+     * @param stat        사용 스탯
      * @param damageTaken 받은 데미지
-     * @param out 출력 스트림
+     * @param out         출력 스트림
      * @return 결과 객체
      */
     public static Result backStab(int stat, int damageTaken, PrintStream out) {
@@ -35,9 +36,10 @@ public class Gunslinger {
 
     /**
      * 활약 기회 : 신속 판정 성공 시 이번 턴 반격 데미지가 1.5배로 증가합니다.
-     * @param stat 사용 스탯
+     *
+     * @param stat       사용 스탯
      * @param baseDamage 기본 데미지
-     * @param out 출력 스트림
+     * @param out        출력 스트림
      * @return 결과 객체
      */
     public static Result opportunity(int stat, int baseDamage, PrintStream out) {
@@ -55,8 +57,9 @@ public class Gunslinger {
 
     /**
      * 일점사 : 대상에게 6D6의 피해를 입힙니다. (스태미나 4 소모)
+     *
      * @param stat 사용 스탯
-     * @param out 출력 스트림
+     * @param out  출력 스트림
      * @return 결과 객체
      */
     public static Result focusedFire(int stat, PrintStream out) {
@@ -71,8 +74,9 @@ public class Gunslinger {
 
     /**
      * 헤드샷 : 대상에게 D20의 피해를 입힙니다. (스태미나 3 소모)
+     *
      * @param stat 사용 스탯
-     * @param out 출력 스트림
+     * @param out  출력 스트림
      * @return 결과 객체
      */
     public static Result HeadShot(int stat, PrintStream out) {
@@ -87,8 +91,9 @@ public class Gunslinger {
 
     /**
      * 헤드샷 : 대상에게 2D6의 피해를 입힙니다. (스태미나 2 소모)
+     *
      * @param stat 사용 스탯
-     * @param out 출력 스트림
+     * @param out  출력 스트림
      * @return 결과 객체
      */
     public static Result doubleShot(int stat, PrintStream out) {
@@ -103,9 +108,10 @@ public class Gunslinger {
 
     /**
      * 퀵드로우 : 대상에게 D8의 피해를 입힙니다. '신중함' 발동 시 4D8의 피해를 입힙니다. (스태미나 1 소모)
-     * @param stat 사용 스탯
+     *
+     * @param stat     사용 스탯
      * @param prudence 신중함 패시브 적용 여부
-     * @param out 출력 스트림
+     * @param out      출력 스트림
      * @return 결과 객체
      */
     public static Result quickDraw(int stat, boolean prudence, PrintStream out) {
@@ -125,13 +131,14 @@ public class Gunslinger {
 
     /**
      * 기본공격 : 대상에게 1D6의 데미지를 입힙니다.
-     * @param stat 사용할 스탯
-     * @param prudence 신중함 패시브 적용 여부
-     * @param calculatedMove 노림수 패시브 적용 여부
-     * @param judge 심판자 패시브 적용 여부
+     *
+     * @param stat            사용할 스탯
+     * @param prudence        신중함 패시브 적용 여부
+     * @param calculatedMove  노림수 패시브 적용 여부
+     * @param judge           심판자 패시브 적용 여부
      * @param judgementTarget 심판 대상 스킬 적용 여부
-     * @param warning 경고 스킬 적용 여부
-     * @param out 출력 스트림
+     * @param warning         경고 스킬 적용 여부
+     * @param out             출력 스트림
      * @return 결과 객체
      */
     public static Result plain(int stat, boolean prudence, boolean calculatedMove, boolean judge, boolean judgementTarget, boolean warning, PrintStream out) {
