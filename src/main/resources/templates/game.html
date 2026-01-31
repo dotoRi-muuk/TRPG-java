@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRPG 게임 계산기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .section {
+            background: #f8f9fa;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .section h2 {
+            color: #495057;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .result-box {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            display: none;
+        }
+        
+        .result-box.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result-title {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .result-content {
+            color: #495057;
+            line-height: 1.8;
+        }
+        
+        .result-content p {
+            margin: 5px 0;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        
+        .success {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .failure {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎲 TRPG 게임 계산기</h1>
+        <p class="subtitle">주사위 굴리기, 데미지 계산, 판정 확인</p>
+        
+        <!-- Dice Rolling Section -->
+        <div class="section">
+            <h2>🎲 주사위 굴리기</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="diceCount">주사위 개수</label>
+                    <input type="number" id="diceCount" value="1" min="1" max="20">
+                </div>
+                <div class="form-group">
+                    <label for="diceSides">주사위 면 수</label>
+                    <select id="diceSides">
+                        <option value="4">D4 (4면)</option>
+                        <option value="6" selected>D6 (6면)</option>
+                        <option value="8">D8 (8면)</option>
+                        <option value="10">D10 (10면)</option>
+                        <option value="12">D12 (12면)</option>
+                        <option value="20">D20 (20면)</option>
+                    </select>
+                </div>
+            </div>
+            <button onclick="rollDice()" class="btn btn-primary">🎲 주사위 굴리기</button>
+            <div id="diceResult" class="result-box"></div>
+        </div>
+        
+        <!-- Damage Calculation Section -->
+        <div class="section">
+            <h2>⚔️ 일반 데미지 계산</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="damageStat">스탯 값</label>
+                    <input type="number" id="damageStat" value="15" min="1" max="30">
+                </div>
+                <div class="form-group">
+                    <label for="damageDices">주사위 개수</label>
+                    <input type="number" id="damageDices" value="2" min="1" max="10">
+                </div>
+                <div class="form-group">
+                    <label for="damageSides">주사위 면 수</label>
+                    <select id="damageSides">
+                        <option value="4">D4 (4면)</option>
+                        <option value="6" selected>D6 (6면)</option>
+                        <option value="8">D8 (8면)</option>
+                        <option value="10">D10 (10면)</option>
+                        <option value="12">D12 (12면)</option>
+                        <option value="20">D20 (20면)</option>
+                    </select>
+                </div>
+            </div>
+            <button onclick="calculateDamage()" class="btn btn-primary">⚔️ 데미지 계산</button>
+            <div id="damageResult" class="result-box"></div>
+        </div>
+        
+        <!-- Verdict Check Section -->
+        <div class="section">
+            <h2>✅ 스탯 판정</h2>
+            <div class="form-group">
+                <label for="verdictStat">스탯 값</label>
+                <input type="number" id="verdictStat" value="12" min="1" max="30">
+            </div>
+            <button onclick="checkVerdict()" class="btn btn-primary">✅ 판정 시도</button>
+            <div id="verdictResult" class="result-box"></div>
+        </div>
+        
+        <!-- Side Damage Section -->
+        <div class="section">
+            <h2>🔧 사이드 데미지 계산</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="sideDamageFinal">최종 데미지</label>
+                    <input type="number" id="sideDamageFinal" value="20" min="1">
+                </div>
+                <div class="form-group">
+                    <label for="sideDamageStat">스탯 값</label>
+                    <input type="number" id="sideDamageStat" value="15" min="1" max="30">
+                </div>
+            </div>
+            <button onclick="calculateSideDamage()" class="btn btn-primary">🔧 사이드 데미지 계산</button>
+            <div id="sideDamageResult" class="result-box"></div>
+        </div>
+    </div>
+    
+    <script>
+        function rollDice() {
+            const dices = document.getElementById('diceCount').value;
+            const sides = document.getElementById('diceSides').value;
+            
+            fetch('/roll-dice', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `dices=${dices}&sides=${sides}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('diceResult');
+                resultDiv.innerHTML = `
+                    <div class="result-title">주사위 결과</div>
+                    <div class="result-content">
+                        <p><span class="highlight">${data.total}</span></p>
+                        <p>${data.message}</p>
+                    </div>
+                `;
+                resultDiv.classList.add('show');
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+        function calculateDamage() {
+            const stat = document.getElementById('damageStat').value;
+            const dices = document.getElementById('damageDices').value;
+            const sides = document.getElementById('damageSides').value;
+            
+            fetch('/calculate-damage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `stat=${stat}&dices=${dices}&sides=${sides}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('damageResult');
+                const messagesHtml = data.messages.map(msg => `<p>${msg}</p>`).join('');
+                resultDiv.innerHTML = `
+                    <div class="result-title">데미지 계산 결과</div>
+                    <div class="result-content">
+                        ${messagesHtml}
+                        <p style="margin-top: 15px; font-size: 1.2em;">
+                            <strong>최종 데미지: <span class="highlight">${data.totalDamage}</span></strong>
+                        </p>
+                    </div>
+                `;
+                resultDiv.classList.add('show');
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+        function checkVerdict() {
+            const stat = document.getElementById('verdictStat').value;
+            
+            fetch('/verdict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `stat=${stat}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('verdictResult');
+                const messagesHtml = data.messages.map(msg => `<p>${msg}</p>`).join('');
+                const statusClass = data.success ? 'success' : 'failure';
+                const statusText = data.success ? '성공! ✓' : '실패 ✗';
+                
+                resultDiv.innerHTML = `
+                    <div class="result-title">판정 결과</div>
+                    <div class="result-content">
+                        ${messagesHtml}
+                        <p style="margin-top: 15px; font-size: 1.2em;">
+                            <strong class="${statusClass}">${statusText}</strong>
+                        </p>
+                    </div>
+                `;
+                resultDiv.classList.add('show');
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+        function calculateSideDamage() {
+            const finalDamage = document.getElementById('sideDamageFinal').value;
+            const stat = document.getElementById('sideDamageStat').value;
+            
+            fetch('/side-damage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `finalDamage=${finalDamage}&stat=${stat}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('sideDamageResult');
+                const messagesHtml = data.messages.map(msg => `<p>${msg}</p>`).join('');
+                resultDiv.innerHTML = `
+                    <div class="result-title">사이드 데미지 결과</div>
+                    <div class="result-content">
+                        ${messagesHtml}
+                        <p style="margin-top: 15px; font-size: 1.2em;">
+                            <strong>사이드 데미지: <span class="highlight">${data.damage}</span></strong>
+                        </p>
+                    </div>
+                `;
+                resultDiv.classList.add('show');
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
