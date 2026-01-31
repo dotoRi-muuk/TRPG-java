@@ -1,5 +1,7 @@
 package trpg.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -15,6 +17,8 @@ import java.util.*;
  */
 @Service
 public class SkillService {
+
+    private static final Logger logger = LoggerFactory.getLogger(SkillService.class);
 
     // Primary classes (main job classes)
     private static final Map<String, String> PRIMARY_CLASSES = new LinkedHashMap<>();
@@ -236,7 +240,7 @@ public class SkillService {
             return new SkillResult(true, "스킬 실행 성공", resultData);
             
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to execute skill '{}' for subclass '{}': {}", methodName, subclassName, e.getMessage(), e);
             return new SkillResult(false, "스킬 실행 오류: " + e.getMessage(), null);
         }
     }
@@ -523,9 +527,17 @@ public class SkillService {
             return Double.parseDouble(value.toString());
         }
         if (targetType.isEnum()) {
-            @SuppressWarnings({"unchecked", "rawtypes"})
-            Object enumValue = Enum.valueOf((Class<Enum>) targetType, value.toString());
-            return enumValue;
+            try {
+                @SuppressWarnings({"unchecked", "rawtypes"})
+                Object enumValue = Enum.valueOf((Class<Enum>) targetType, value.toString());
+                return enumValue;
+            } catch (IllegalArgumentException e) {
+                logger.warn("Invalid enum value '{}' for type '{}'. Valid values: {}", 
+                    value, targetType.getSimpleName(), Arrays.toString(targetType.getEnumConstants()));
+                // Return first enum value as default
+                Object[] constants = targetType.getEnumConstants();
+                return constants.length > 0 ? constants[0] : null;
+            }
         }
 
         return value;

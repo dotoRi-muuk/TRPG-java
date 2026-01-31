@@ -360,7 +360,10 @@
                         select.appendChild(option);
                     });
                 })
-                .catch(error => console.error('Error loading classes:', error));
+                .catch(error => {
+                    console.error('Error loading classes:', error);
+                    alert('직업군 데이터를 불러오는 중 오류가 발생했습니다.');
+                });
         }
 
         function loadSubclasses() {
@@ -395,7 +398,10 @@
                         subclassSelect.appendChild(option);
                     });
                 })
-                .catch(error => console.error('Error loading subclasses:', error));
+                .catch(error => {
+                    console.error('Error loading subclasses:', error);
+                    alert('직업 데이터를 불러오는 중 오류가 발생했습니다.');
+                });
         }
 
         function loadSkills() {
@@ -428,7 +434,10 @@
                         skillSelect.appendChild(option);
                     });
                 })
-                .catch(error => console.error('Error loading skills:', error));
+                .catch(error => {
+                    console.error('Error loading skills:', error);
+                    alert('스킬 데이터를 불러오는 중 오류가 발생했습니다.');
+                });
         }
 
         function loadParameters() {
