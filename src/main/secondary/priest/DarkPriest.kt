@@ -52,6 +52,7 @@ class DarkPriest {
         piety: Boolean,
         out: PrintStream
     ): Result {
+        out.println("영혼의 사제 - 엔시아스티켈리아 사용")
         return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 9, 10, 16, out)
     }
 
@@ -75,6 +76,7 @@ class DarkPriest {
         piety: Boolean,
         out: PrintStream
     ): Result {
+        out.println("영혼의 사제 - 어나이스필레인 사용")
         return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 7, 12, 18, out)
     }
 
@@ -98,6 +100,7 @@ class DarkPriest {
         piety: Boolean,
         out: PrintStream
     ): Result {
+        out.println("영혼의 사제 - 엑실리스터 사용")
         return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 4, 20, 14, out)
     }
 
@@ -121,6 +124,7 @@ class DarkPriest {
         piety: Boolean,
         out: PrintStream
     ): Result {
+        out.println("영혼의 사제 - 우즈마니아 사용")
         return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 4, 12, 8, out)
     }
 
@@ -144,6 +148,7 @@ class DarkPriest {
         piety: Boolean,
         out: PrintStream
     ): Result {
+        out.println("영혼의 사제 - 손아귀 사용")
         return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 1, 8, 5, out)
     }
 
@@ -167,6 +172,7 @@ class DarkPriest {
         piety: Boolean,
         out: PrintStream
     ): Result {
+        out.println("영혼의 사제 - 어둠의 기운 사용")
         return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 1, 4, 2, out)
     }
 
@@ -189,6 +195,7 @@ class DarkPriest {
         piety: Boolean,
         out: PrintStream
     ): Result {
+        out.println("어둠의 사제 - 기본 공격 사용")
         return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 1, 6, 0, out)
     }
 
@@ -202,7 +209,7 @@ class DarkPriest {
      * @param piety 신앙심 스킬 사용 여부 (데미지 2배)
      * @return 결과 객체
      */
-    fun normalAttack(
+    private fun normalAttack(
         stat: Int,
         domination: Boolean,
         curse: Boolean,

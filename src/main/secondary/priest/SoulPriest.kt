@@ -9,21 +9,6 @@ import kotlin.math.min
  * 영혼의 사제
  *
  * 판정 사용 스탯 : 지능(지혜)
- *
- * - 기본 공격(기본 공격) : 대상에게 1D6의 데미지를 입힙니다.
- *
- * 축복 (패시브) : [영혼] 누적에 따라 효과를 얻습니다.
- * * - 20개 : 데미지 20[영혼]% 증가 (최대 600%)
- *
- * - 저주 (스킬) : 대상에게 3D4의 피해를 입힙니다. 다음 턴까지 가하는 피해를 50%로 감소시킵니다. ([영혼] 2개 소모, 쿨타임 4턴)
- * - 흉통 (스킬) : 대상에게 8D4의 피해를 입힙니다. 다음 턴까지 받는 피해를 1.5배로 증가시킵니다. ([영혼] 3개 소모, 쿨타임 6턴)
- * - 원한 (스킬) : ([영혼] 소모 개수)D12의 피해를 입힙니다. (쿨타임 8턴)
- *
- * 폐허 (스킬) : [축복] 효과를 변경합니다. 전투 내 영구 지속되며, 취소할 수 없습니다. ([영혼] 5개 소모)
- * * - 20개 : 자신 받는 피해 50% / 자신 제외 모두가 받는 피해 150%
- * * - 30개 : 데미지 30[영혼]% 증가 (최대 1200%)
- *
- *
  */
 class SoulPriest {
 
@@ -92,7 +77,7 @@ class SoulPriest {
      * @param ruins 폐허 스킬 사용 여부
      * @return 결과 객체
      */
-    fun normalAttack(stat: Int, dices: Int, sides: Int, soul: Int, ruins: Boolean, out: PrintStream): Result {
+    private fun normalAttack(stat: Int, dices: Int, sides: Int, soul: Int, ruins: Boolean, out: PrintStream): Result {
         val verdict = Main.verdict(stat, out)
         if (verdict <= 0) {
             return Result()
