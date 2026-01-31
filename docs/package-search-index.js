@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"main"},{"l":"main.primary"},{"l":"main.secondary.archer"},{"l":"main.secondary.mage"},{"l":"main.secondary.priest"},{"l":"main.secondary.rogue"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"main"},{"l":"main.primary"},{"l":"main.secondary.archer"},{"l":"main.secondary.mage"},{"l":"main.secondary.priest"},{"l":"main.secondary.rogue"},{"l":"trpg"},{"l":"trpg.controller"},{"l":"trpg.service"}];updateSearchResults();

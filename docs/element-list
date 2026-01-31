@@ -4,3 +4,6 @@ main.secondary.archer
 main.secondary.mage
 main.secondary.priest
 main.secondary.rogue
+trpg
+trpg.controller
+trpg.service
