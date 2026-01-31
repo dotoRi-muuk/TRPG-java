@@ -198,9 +198,10 @@ class SpearMaster {
             damage = (damage * 0.5).toInt()
             out.println("약점파악 패시브 적용: 기본 기술 데미지 50% 감소")
         }
+        out.println("빈틈 패시브 적용 시도!")
         if (combo && Main.verdict(agi, out) > 0) {
-            val extraDamage = plain(stat, out).damageDealt
             out.println("빈틈 패시브 적용: 민첩 판정 성공으로 추가 공격 가능")
+            val extraDamage = plain(stat, out).damageDealt
             out.println("추가 공격 데미지 : $extraDamage")
             damage += extraDamage
         }
