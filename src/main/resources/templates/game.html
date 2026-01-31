@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRPG 게임 계산기</title>
+    <title>TRPG 스킬 시뮬레이터</title>
     <style>
         * {
             margin: 0;
@@ -19,7 +19,7 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
             border-radius: 15px;
@@ -53,7 +53,7 @@
         .section h2 {
             color: #495057;
             margin-bottom: 20px;
-            font-size: 1.5em;
+            font-size: 1.3em;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -73,11 +73,12 @@
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             border: 2px solid #dee2e6;
             border-radius: 8px;
-            font-size: 1em;
+            font-size: 1.1em;
             transition: border-color 0.3s;
+            background: white;
         }
         
         .form-group input:focus,
@@ -85,17 +86,24 @@
             outline: none;
             border-color: #667eea;
         }
+
+        .form-group select {
+            cursor: pointer;
+        }
+
+        .form-group select option {
+            padding: 10px;
+        }
         
         .btn {
-            padding: 12px 30px;
-            font-size: 1em;
+            padding: 14px 30px;
+            font-size: 1.1em;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            width: 100%;
         }
         
         .btn-primary {
@@ -106,6 +114,13 @@
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
         
         .result-box {
@@ -143,10 +158,37 @@
         .result-content {
             color: #495057;
             line-height: 1.8;
+            white-space: pre-wrap;
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 400px;
+            overflow-y: auto;
         }
         
-        .result-content p {
-            margin: 5px 0;
+        .result-summary {
+            margin-top: 15px;
+            padding: 15px;
+            background: #e8f4fd;
+            border-radius: 8px;
+        }
+        
+        .result-summary .stat {
+            display: inline-block;
+            margin-right: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .result-summary .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .result-summary .stat-value {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
         }
         
         .highlight {
@@ -166,214 +208,401 @@
             font-weight: 600;
         }
         
-        .grid-2 {
+        .params-section {
+            display: none;
+        }
+        
+        .params-section.show {
+            display: block;
+        }
+        
+        .param-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .param-item {
+            margin-bottom: 10px;
+        }
+
+        .param-item label {
+            display: block;
+            margin-bottom: 5px;
+            color: #495057;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .param-item input[type="number"],
+        .param-item input[type="text"],
+        .param-item select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+
+        .param-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.9em;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎲 TRPG 게임 계산기</h1>
-        <p class="subtitle">주사위 굴리기, 데미지 계산, 판정 확인</p>
+        <h1>⚔️ TRPG 스킬 시뮬레이터</h1>
+        <p class="subtitle">직업군과 스킬을 선택하여 데미지를 계산하세요</p>
         
-        <!-- Dice Rolling Section -->
+        <!-- Step 1: Primary Class Selection -->
         <div class="section">
-            <h2>🎲 주사위 굴리기</h2>
-            <div class="grid-2">
-                <div class="form-group">
-                    <label for="diceCount">주사위 개수</label>
-                    <input type="number" id="diceCount" value="1" min="1" max="20">
-                </div>
-                <div class="form-group">
-                    <label for="diceSides">주사위 면 수</label>
-                    <select id="diceSides">
-                        <option value="4">D4 (4면)</option>
-                        <option value="6" selected>D6 (6면)</option>
-                        <option value="8">D8 (8면)</option>
-                        <option value="10">D10 (10면)</option>
-                        <option value="12">D12 (12면)</option>
-                        <option value="20">D20 (20면)</option>
-                    </select>
-                </div>
-            </div>
-            <button onclick="rollDice()" class="btn btn-primary">🎲 주사위 굴리기</button>
-            <div id="diceResult" class="result-box"></div>
-        </div>
-        
-        <!-- Damage Calculation Section -->
-        <div class="section">
-            <h2>⚔️ 일반 데미지 계산</h2>
-            <div class="grid-2">
-                <div class="form-group">
-                    <label for="damageStat">스탯 값</label>
-                    <input type="number" id="damageStat" value="15" min="1" max="30">
-                </div>
-                <div class="form-group">
-                    <label for="damageDices">주사위 개수</label>
-                    <input type="number" id="damageDices" value="2" min="1" max="10">
-                </div>
-                <div class="form-group">
-                    <label for="damageSides">주사위 면 수</label>
-                    <select id="damageSides">
-                        <option value="4">D4 (4면)</option>
-                        <option value="6" selected>D6 (6면)</option>
-                        <option value="8">D8 (8면)</option>
-                        <option value="10">D10 (10면)</option>
-                        <option value="12">D12 (12면)</option>
-                        <option value="20">D20 (20면)</option>
-                    </select>
-                </div>
-            </div>
-            <button onclick="calculateDamage()" class="btn btn-primary">⚔️ 데미지 계산</button>
-            <div id="damageResult" class="result-box"></div>
-        </div>
-        
-        <!-- Verdict Check Section -->
-        <div class="section">
-            <h2>✅ 스탯 판정</h2>
+            <h2><span class="step-number">1</span> 직업군 선택</h2>
             <div class="form-group">
-                <label for="verdictStat">스탯 값</label>
-                <input type="number" id="verdictStat" value="12" min="1" max="30">
+                <label for="primaryClass">직업군을 선택하세요</label>
+                <select id="primaryClass" onchange="loadSubclasses()">
+                    <option value="">-- 직업군 선택 --</option>
+                </select>
             </div>
-            <button onclick="checkVerdict()" class="btn btn-primary">✅ 판정 시도</button>
-            <div id="verdictResult" class="result-box"></div>
         </div>
         
-        <!-- Side Damage Section -->
+        <!-- Step 2: Subclass Selection -->
         <div class="section">
-            <h2>🔧 사이드 데미지 계산</h2>
-            <div class="grid-2">
-                <div class="form-group">
-                    <label for="sideDamageFinal">최종 데미지</label>
-                    <input type="number" id="sideDamageFinal" value="20" min="1">
-                </div>
-                <div class="form-group">
-                    <label for="sideDamageStat">스탯 값</label>
-                    <input type="number" id="sideDamageStat" value="15" min="1" max="30">
-                </div>
+            <h2><span class="step-number">2</span> 직업 선택</h2>
+            <div class="form-group">
+                <label for="subclass">직업을 선택하세요</label>
+                <select id="subclass" onchange="loadSkills()" disabled>
+                    <option value="">-- 먼저 직업군을 선택하세요 --</option>
+                </select>
             </div>
-            <button onclick="calculateSideDamage()" class="btn btn-primary">🔧 사이드 데미지 계산</button>
-            <div id="sideDamageResult" class="result-box"></div>
+        </div>
+        
+        <!-- Step 3: Skill Selection -->
+        <div class="section">
+            <h2><span class="step-number">3</span> 스킬 선택</h2>
+            <div class="form-group">
+                <label for="skill">스킬을 선택하세요</label>
+                <select id="skill" onchange="loadParameters()" disabled>
+                    <option value="">-- 먼저 직업을 선택하세요 --</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Step 4: Parameters -->
+        <div class="section params-section" id="paramsSection">
+            <h2><span class="step-number">4</span> 스킬 인자 입력</h2>
+            <div class="param-grid" id="paramsContainer">
+                <!-- Parameters will be dynamically added here -->
+            </div>
+        </div>
+        
+        <!-- Execute Button -->
+        <div class="section">
+            <button id="executeBtn" onclick="executeSkill()" class="btn btn-primary" disabled>
+                🎯 스킬 실행
+            </button>
+        </div>
+        
+        <!-- Result -->
+        <div id="resultBox" class="result-box">
+            <div class="result-title">📊 실행 결과</div>
+            <div class="result-content" id="resultContent"></div>
+            <div class="result-summary" id="resultSummary"></div>
         </div>
     </div>
     
     <script>
-        function rollDice() {
-            const dices = document.getElementById('diceCount').value;
-            const sides = document.getElementById('diceSides').value;
-            
-            fetch('/roll-dice', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `dices=${dices}&sides=${sides}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                const resultDiv = document.getElementById('diceResult');
-                resultDiv.innerHTML = `
-                    <div class="result-title">주사위 결과</div>
-                    <div class="result-content">
-                        <p><span class="highlight">${data.total}</span></p>
-                        <p>${data.message}</p>
-                    </div>
-                `;
-                resultDiv.classList.add('show');
-            })
-            .catch(error => console.error('Error:', error));
+        // Store current skills data
+        let currentSkills = [];
+        let currentParameters = [];
+
+        // Load primary classes on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPrimaryClasses();
+        });
+
+        function loadPrimaryClasses() {
+            fetch('/api/classes')
+                .then(response => response.json())
+                .then(classes => {
+                    const select = document.getElementById('primaryClass');
+                    select.innerHTML = '<option value="">-- 직업군 선택 --</option>';
+                    classes.forEach(cls => {
+                        const option = document.createElement('option');
+                        option.value = cls;
+                        option.textContent = cls;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error loading classes:', error));
         }
-        
-        function calculateDamage() {
-            const stat = document.getElementById('damageStat').value;
-            const dices = document.getElementById('damageDices').value;
-            const sides = document.getElementById('damageSides').value;
+
+        function loadSubclasses() {
+            const primaryClass = document.getElementById('primaryClass').value;
+            const subclassSelect = document.getElementById('subclass');
+            const skillSelect = document.getElementById('skill');
+            const paramsSection = document.getElementById('paramsSection');
+            const executeBtn = document.getElementById('executeBtn');
             
-            fetch('/calculate-damage', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `stat=${stat}&dices=${dices}&sides=${sides}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                const resultDiv = document.getElementById('damageResult');
-                const messagesHtml = data.messages.map(msg => `<p>${msg}</p>`).join('');
-                resultDiv.innerHTML = `
-                    <div class="result-title">데미지 계산 결과</div>
-                    <div class="result-content">
-                        ${messagesHtml}
-                        <p style="margin-top: 15px; font-size: 1.2em;">
-                            <strong>최종 데미지: <span class="highlight">${data.totalDamage}</span></strong>
-                        </p>
-                    </div>
-                `;
-                resultDiv.classList.add('show');
-            })
-            .catch(error => console.error('Error:', error));
+            // Reset downstream selections
+            subclassSelect.innerHTML = '<option value="">-- 직업 선택 --</option>';
+            skillSelect.innerHTML = '<option value="">-- 먼저 직업을 선택하세요 --</option>';
+            skillSelect.disabled = true;
+            paramsSection.classList.remove('show');
+            executeBtn.disabled = true;
+            document.getElementById('resultBox').classList.remove('show');
+
+            if (!primaryClass) {
+                subclassSelect.disabled = true;
+                return;
+            }
+
+            subclassSelect.disabled = false;
+            
+            fetch(`/api/classes/${encodeURIComponent(primaryClass)}/subclasses`)
+                .then(response => response.json())
+                .then(subclasses => {
+                    subclasses.forEach(sub => {
+                        const option = document.createElement('option');
+                        option.value = sub;
+                        option.textContent = sub;
+                        subclassSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error loading subclasses:', error));
         }
-        
-        function checkVerdict() {
-            const stat = document.getElementById('verdictStat').value;
+
+        function loadSkills() {
+            const subclass = document.getElementById('subclass').value;
+            const skillSelect = document.getElementById('skill');
+            const paramsSection = document.getElementById('paramsSection');
+            const executeBtn = document.getElementById('executeBtn');
             
-            fetch('/verdict', {
+            // Reset downstream selections
+            skillSelect.innerHTML = '<option value="">-- 스킬 선택 --</option>';
+            paramsSection.classList.remove('show');
+            executeBtn.disabled = true;
+            document.getElementById('resultBox').classList.remove('show');
+
+            if (!subclass) {
+                skillSelect.disabled = true;
+                return;
+            }
+
+            skillSelect.disabled = false;
+            
+            fetch(`/api/subclasses/${encodeURIComponent(subclass)}/skills`)
+                .then(response => response.json())
+                .then(skills => {
+                    currentSkills = skills;
+                    skills.forEach(skill => {
+                        const option = document.createElement('option');
+                        option.value = skill.methodName;
+                        option.textContent = skill.displayName;
+                        skillSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error loading skills:', error));
+        }
+
+        function loadParameters() {
+            const skillName = document.getElementById('skill').value;
+            const paramsSection = document.getElementById('paramsSection');
+            const paramsContainer = document.getElementById('paramsContainer');
+            const executeBtn = document.getElementById('executeBtn');
+            
+            document.getElementById('resultBox').classList.remove('show');
+
+            if (!skillName) {
+                paramsSection.classList.remove('show');
+                executeBtn.disabled = true;
+                return;
+            }
+
+            // Find the selected skill
+            const skill = currentSkills.find(s => s.methodName === skillName);
+            if (!skill) return;
+
+            currentParameters = skill.parameters;
+            paramsContainer.innerHTML = '';
+
+            if (skill.parameters.length === 0) {
+                paramsSection.classList.remove('show');
+            } else {
+                skill.parameters.forEach(param => {
+                    const item = document.createElement('div');
+                    item.className = 'param-item';
+                    
+                    if (param.type === 'boolean') {
+                        item.innerHTML = `
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" id="param_${param.name}" name="${param.name}">
+                                <label for="param_${param.name}">${param.displayName}</label>
+                            </div>
+                        `;
+                    } else if (param.type === 'int') {
+                        item.innerHTML = `
+                            <label for="param_${param.name}">${param.displayName}</label>
+                            <input type="number" id="param_${param.name}" name="${param.name}" value="10">
+                        `;
+                    } else if (param.type === 'double') {
+                        item.innerHTML = `
+                            <label for="param_${param.name}">${param.displayName}</label>
+                            <input type="number" step="0.1" id="param_${param.name}" name="${param.name}" value="0.5">
+                        `;
+                    } else if (param.type.startsWith('enum:')) {
+                        const enumName = param.type.split(':')[1];
+                        let options = getEnumOptions(enumName);
+                        item.innerHTML = `
+                            <label for="param_${param.name}">${param.displayName}</label>
+                            <select id="param_${param.name}" name="${param.name}">
+                                ${options.map(o => `<option value="${o.value}">${o.label}</option>`).join('')}
+                            </select>
+                        `;
+                    } else {
+                        item.innerHTML = `
+                            <label for="param_${param.name}">${param.displayName}</label>
+                            <input type="text" id="param_${param.name}" name="${param.name}">
+                        `;
+                    }
+                    
+                    paramsContainer.appendChild(item);
+                });
+                paramsSection.classList.add('show');
+            }
+            
+            executeBtn.disabled = false;
+        }
+
+        function getEnumOptions(enumName) {
+            // Handle MasterArcherPassive enum
+            if (enumName === 'MasterArcherPassive') {
+                return [
+                    { value: 'NONE', label: '없음' },
+                    { value: 'POWER_SHOT', label: '파워샷' },
+                    { value: 'SPLIT_ARROW', label: '분열 화살' },
+                    { value: 'PENETRATING_ARROW', label: '관통 화살' },
+                    { value: 'EXPLOSIVE_ARROW', label: '폭탄 화살' },
+                    { value: 'DOUBLE_SHOT', label: '더블 샷' }
+                ];
+            }
+            return [{ value: '', label: '선택' }];
+        }
+
+        function executeSkill() {
+            const subclass = document.getElementById('subclass').value;
+            const skill = document.getElementById('skill').value;
+            
+            if (!subclass || !skill) return;
+
+            // Collect parameters
+            const params = {};
+            currentParameters.forEach(param => {
+                const element = document.getElementById(`param_${param.name}`);
+                if (element) {
+                    if (param.type === 'boolean') {
+                        params[param.name] = element.checked;
+                    } else if (param.type === 'int') {
+                        params[param.name] = parseInt(element.value) || 0;
+                    } else if (param.type === 'double') {
+                        params[param.name] = parseFloat(element.value) || 0.0;
+                    } else {
+                        params[param.name] = element.value;
+                    }
+                }
+            });
+
+            // Execute skill
+            const executeBtn = document.getElementById('executeBtn');
+            executeBtn.disabled = true;
+            executeBtn.textContent = '실행 중...';
+
+            fetch('/api/execute', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                 },
-                body: `stat=${stat}`
+                body: JSON.stringify({
+                    subclass: subclass,
+                    skill: skill,
+                    params: params
+                })
             })
             .then(response => response.json())
-            .then(data => {
-                const resultDiv = document.getElementById('verdictResult');
-                const messagesHtml = data.messages.map(msg => `<p>${msg}</p>`).join('');
-                const statusClass = data.success ? 'success' : 'failure';
-                const statusText = data.success ? '성공! ✓' : '실패 ✗';
+            .then(result => {
+                const resultBox = document.getElementById('resultBox');
+                const resultContent = document.getElementById('resultContent');
+                const resultSummary = document.getElementById('resultSummary');
                 
-                resultDiv.innerHTML = `
-                    <div class="result-title">판정 결과</div>
-                    <div class="result-content">
-                        ${messagesHtml}
-                        <p style="margin-top: 15px; font-size: 1.2em;">
-                            <strong class="${statusClass}">${statusText}</strong>
-                        </p>
-                    </div>
-                `;
-                resultDiv.classList.add('show');
+                if (result.success && result.data) {
+                    resultContent.textContent = result.data.output || '결과 없음';
+                    
+                    let summaryHtml = '';
+                    if (result.data.damageDealt !== undefined && result.data.damageDealt !== 0) {
+                        summaryHtml += `<span class="stat"><span class="stat-label">가한 데미지: </span><span class="stat-value highlight">${result.data.damageDealt}</span></span>`;
+                    }
+                    if (result.data.damageTaken !== undefined && result.data.damageTaken !== 0) {
+                        summaryHtml += `<span class="stat"><span class="stat-label">받은 데미지: </span><span class="stat-value">${result.data.damageTaken}</span></span>`;
+                    }
+                    if (result.data.succeeded !== undefined) {
+                        const successClass = result.data.succeeded ? 'success' : 'failure';
+                        const successText = result.data.succeeded ? '성공' : '실패';
+                        summaryHtml += `<span class="stat"><span class="stat-label">판정: </span><span class="stat-value ${successClass}">${successText}</span></span>`;
+                    }
+                    if (result.data.manaUsed !== undefined && result.data.manaUsed !== 0) {
+                        summaryHtml += `<span class="stat"><span class="stat-label">마나 소모: </span><span class="stat-value">${result.data.manaUsed}</span></span>`;
+                    }
+                    if (result.data.staminaUsed !== undefined && result.data.staminaUsed !== 0) {
+                        summaryHtml += `<span class="stat"><span class="stat-label">스태미나 소모: </span><span class="stat-value">${result.data.staminaUsed}</span></span>`;
+                    }
+                    
+                    resultSummary.innerHTML = summaryHtml || '<span class="stat-label">추가 정보 없음</span>';
+                    resultSummary.style.display = summaryHtml ? 'block' : 'none';
+                } else {
+                    resultContent.textContent = result.message || '실행 오류';
+                    resultSummary.innerHTML = '';
+                    resultSummary.style.display = 'none';
+                }
+                
+                resultBox.classList.add('show');
             })
-            .catch(error => console.error('Error:', error));
-        }
-        
-        function calculateSideDamage() {
-            const finalDamage = document.getElementById('sideDamageFinal').value;
-            const stat = document.getElementById('sideDamageStat').value;
-            
-            fetch('/side-damage', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `finalDamage=${finalDamage}&stat=${stat}`
+            .catch(error => {
+                console.error('Error executing skill:', error);
+                const resultBox = document.getElementById('resultBox');
+                const resultContent = document.getElementById('resultContent');
+                resultContent.textContent = '스킬 실행 중 오류가 발생했습니다.';
+                resultBox.classList.add('show');
             })
-            .then(response => response.json())
-            .then(data => {
-                const resultDiv = document.getElementById('sideDamageResult');
-                const messagesHtml = data.messages.map(msg => `<p>${msg}</p>`).join('');
-                resultDiv.innerHTML = `
-                    <div class="result-title">사이드 데미지 결과</div>
-                    <div class="result-content">
-                        ${messagesHtml}
-                        <p style="margin-top: 15px; font-size: 1.2em;">
-                            <strong>사이드 데미지: <span class="highlight">${data.damage}</span></strong>
-                        </p>
-                    </div>
-                `;
-                resultDiv.classList.add('show');
-            })
-            .catch(error => console.error('Error:', error));
+            .finally(() => {
+                executeBtn.disabled = false;
+                executeBtn.textContent = '🎯 스킬 실행';
+            });
         }
     </script>
 </body>
