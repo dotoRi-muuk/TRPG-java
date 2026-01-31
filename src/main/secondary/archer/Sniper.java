@@ -45,7 +45,7 @@ public class Sniper {
 
         int dices = 4;
         if (stabilize) {
-            out.print("안정화 스킬 적용: 데미지 75%로 감소, 주사위 복제%n");
+            out.println("안정화 스킬 적용: 데미지 75%로 감소, 주사위 복제");
             dices *= 2;
             damageMultiplier *= 0.75;
 
@@ -84,7 +84,8 @@ public class Sniper {
             enabled++;
         }
         if (enabled > 0) {
-            out.printf("정조준 패시브 적용: 버프 스킬 %d개당 데미지 25%% 증가\n", enabled);
+            out.print("정조준 패시브 적용: 버프 스킬 1개당 데미지 25% 증가\n");
+            out.println("데미지 증가 효과 적용 개수: " + enabled);
             damageMultiplier *= (1.0 + 0.25 * enabled);
         }
         damage = (int) (damage * damageMultiplier);
@@ -131,7 +132,7 @@ public class Sniper {
 
         int dices = 1;
         if (stabilize) {
-            out.print("안정화 스킬 적용: 데미지 75%로 감소, 주사위 복제%n");
+            out.println("안정화 스킬 적용: 데미지 75%로 감소, 주사위 복제");
             dices *= 2;
             damageMultiplier *= 0.75;
         }
@@ -165,7 +166,8 @@ public class Sniper {
             enabled++;
         }
         if (enabled > 0) {
-            out.printf("정조준 패시브 적용: 버프 스킬 %d개당 데미지 25%% 증가\n", enabled);
+            out.print("정조준 패시브 적용: 버프 스킬 1개당 데미지 25% 증가\n");
+            out.println("데미지 증가 효과 적용 개수: " + enabled);
             damageMultiplier *= (1.0 + 0.25 * enabled);
         }
         damage = (int) (damage * damageMultiplier);

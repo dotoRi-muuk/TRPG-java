@@ -37,7 +37,8 @@ public class Main {
         } else {
             out.printf("판정 실패... (스탯 %d <= 주사위 %d)\n", stat, dice);
         }
-        return dice-stat;
+        out.printf("판정 결과 값 : %d - %d = %d\n", stat, dice, stat - dice);
+        return stat-dice;
     }
 
 
