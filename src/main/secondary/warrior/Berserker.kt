@@ -20,8 +20,8 @@ import kotlin.math.roundToInt
  * 일격 (기술) : 대상에게 D20의 피해를 입힙니다. (스태미나 5 소모)
  * 무지성 난타 (기술) : 대상에게 4D8의 피해를 입힙니다. (스태미나 8 소모)
  * 흉폭한 맹공 (기술) : 대상에게 5D12의 피해를 입힙니다. (스태미나 12 소모)
+ * 파멸의 일격 (기술) : 대상에게 6D8의 피해를 입힙니다. (스태미나 10 소모)
  * 최후의 일격 (기술) : 대상에게 4D20의 피해를 입힙니다. 체력이 10% 이하로 남았을 때 사용 가능합니다. 모든 스태미나를 소모합니다.
-
  * 저항 (스킬) : 다음 턴까지 받는 데미지가 50% 감소합니다. (마나 5 소모, 쿨타임 10턴)
  *
  * 동귀어진 (전용 수비) : 받는 데미지가 2배로 증가합니다. 입은 피해의 4배만큼 적에게 피해를 입힙니다. (스태미나 6 소모, 쿨타임 10턴)
@@ -126,6 +126,23 @@ class Berserker {
     ): main.Result {
         out.println("버서커 - 무지성 난타 사용")
         return normalAttack(stat, 4, 8, euphoria, 8, out)
+    }
+
+    /**
+     * 버서커 파멸의 일격 : 대상에게 6D8의 피해를 입힙니다. (스태미나 10 소모)
+     *
+     * @param stat 사용할 스탯
+     * @param euphoria 감소한 체력 값
+     * @param out 출력 스트림
+     * @return 결과 객체
+     */
+    fun devastatingBlow(
+        stat: Int,
+        euphoria: Int,
+        out: PrintStream
+    ): main.Result {
+        out.println("버서커 - 파멸의 일격 사용")
+        return normalAttack(stat, 6, 8, euphoria, 10, out)
     }
 
     /**

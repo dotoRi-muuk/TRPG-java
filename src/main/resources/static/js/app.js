@@ -931,7 +931,8 @@ function getSkillName(job, skill) {
             'strike': '일격',
             'mindless-barrage': '무지성 난타',
             'savage-assault': '흉폭한 맹공',
-            'last-strike': '최후의 일격'
+            'last-strike': '최후의 일격',
+            'devastating-blow': '파멸의 일격'
         },
         gambler: {
             'plain': '기본공격',
