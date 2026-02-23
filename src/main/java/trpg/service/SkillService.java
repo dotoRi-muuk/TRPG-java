@@ -352,6 +352,7 @@ public class SkillService {
             case "crush" -> "부수기";
             case "mindlessThrashing" -> "무지성 난타";
             case "ferociousAssault" -> "흉폭한 맹공";
+            case "devastatingBlow" -> "파멸의 일격";
             case "finalStrike" -> "최후의 일격";
             case "drawBlade" -> "발검";
             case "drawSword" -> "발도";
