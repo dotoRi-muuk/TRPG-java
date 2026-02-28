@@ -102,8 +102,9 @@ class SoulPriest {
                 out.println("축복 패시브 적용: 데미지 ${soul * 20}% 증가")
             }
         }
-        val totalDamage = Main.criticalHit(precision, (baseDamage * damageMultiplier).toInt(), out)
-        out.println("최종 데미지 : $totalDamage")
+        val preCritDamage = (baseDamage * damageMultiplier).toInt()
+        out.println("최종 데미지 : $preCritDamage")
+        val totalDamage = Main.criticalHit(precision, preCritDamage, out)
         return Result(0, totalDamage, true, 0, 0)
     }
 }
