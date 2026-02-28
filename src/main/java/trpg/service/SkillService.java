@@ -380,6 +380,9 @@ public class SkillService {
             case "frontalStab" -> "[연계] 정면 찌르기";
             case "flashSpear" -> "[연계] 일섬창";
             case "heavenlyThunderStrike" -> "[연계] 천뢰격";
+            case "splendor" -> "현란함";
+            case "acceleration" -> "가속";
+            case "adaptation" -> "적응";
             default -> methodName;
         };
     }
@@ -503,6 +506,7 @@ public class SkillService {
             case "blessing" -> "축복 여부";
             case "agi" -> "민첩";
             case "adaptation" -> "적응 여부";
+            case "linkSuccessCount" -> "연계 성공 횟수";
             case "totalCast" -> "총 영창 시간";
             case "remainingCast" -> "남은 영창 시간";
             default -> paramName;
