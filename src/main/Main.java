@@ -52,6 +52,24 @@ public class Main {
         return damage;
     }
 
+    /**
+     * 새로운 데미지 계산 공식
+     * 최종 데미지 = 기본 주사위 데미지 * { (100 + 추가 고정 데미지) * 배율 } %
+     * 
+     * @param baseDamage 주사위로 굴린 기본 데미지
+     * @param flatBonus  추가할 고정 데미지 (현재는 0, 추후 스킬/아이템 등에서 추가)
+     * @param multiplier 스킬/패시브 배율 (기본 1.0)
+     * @param out        출력 스트림
+     * @return 최종 계산된 데미지
+     */
+    public static int calculateDamage(int baseDamage, int flatBonus, double multiplier, PrintStream out) {
+        double percent = (100 + flatBonus) * multiplier;
+        int finalDamage = (int)(baseDamage * (percent / 100.0));
+        out.printf("데미지 계산: %d * { (100 + %d) * %.2f }%% = %d\n", 
+                baseDamage, flatBonus, multiplier, finalDamage);
+        return finalDamage;
+    }
+
     public static void main(String[] args) {
     }
 }
