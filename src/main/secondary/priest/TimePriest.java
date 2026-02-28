@@ -22,9 +22,9 @@ public class TimePriest {
      * @param out        출력 스트림
      * @return 결과 객체
      */
-    public static Result corrosion(int stat, boolean impatience, int turns, boolean piety, int chantTurns, PrintStream out) {
+    public static Result corrosion(int stat, boolean impatience, int turns, boolean piety, int chantTurns, int precision, PrintStream out) {
         out.println("시간의 사제-부식 사용");
-        return attack(stat, chantTurns * 4, 8, 15, impatience, turns, piety, out);
+        return attack(stat, chantTurns * 4, 8, 15, impatience, turns, piety, precision, out);
     }
 
     /**
@@ -37,9 +37,9 @@ public class TimePriest {
      * @param out        출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, boolean impatience, int turns, boolean piety, PrintStream out) {
+    public static Result plain(int stat, boolean impatience, int turns, boolean piety, int precision, PrintStream out) {
         out.println("시간의 사제-기본공격 사용");
-        return attack(stat, 1, 6, 0, impatience, turns, piety, out);
+        return attack(stat, 1, 6, 0, impatience, turns, piety, precision, out);
     }
 
     /**
@@ -55,7 +55,7 @@ public class TimePriest {
      * @param out        출력 스트림
      * @return 결과 객체
      */
-    private static Result attack(int stat, int dices, int sides, int mana, boolean impatience, int turns, boolean piety, PrintStream out) {
+    private static Result attack(int stat, int dices, int sides, int mana, boolean impatience, int turns, boolean piety, int precision, PrintStream out) {
         int verdict = main.Main.verdict(stat, out);
         if (verdict <= 0) {
             return new Result(0, 0, false, mana, 0);
@@ -77,6 +77,7 @@ public class TimePriest {
         int sideDamage = main.Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
+        damage = main.Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d%n", damage);
         return new Result(0, damage, true, mana, 0);
     }

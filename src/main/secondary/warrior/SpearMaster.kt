@@ -50,6 +50,7 @@ class SpearMaster {
      */
     fun plain(
         stat: Int,
+        precision: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - 기본 공격 사용")
@@ -57,8 +58,10 @@ class SpearMaster {
         out.println("기본 데미지 : $damage")
         val sideDamage = Main.sideDamage(damage, stat, out)
         out.println("데미지 보정치 : $sideDamage")
-        out.println("최종 데미지 : ${damage + sideDamage}")
-        return main.Result(0, damage+sideDamage, false, 0, 0)
+        val totalDamage = damage + sideDamage
+        out.println("최종 데미지 : $totalDamage")
+        val finalDamage = Main.criticalHit(precision, totalDamage, out)
+        return main.Result(0, finalDamage, false, 0, 0)
     }
 
     /**
@@ -66,16 +69,18 @@ class SpearMaster {
      *
      * @param stat 사용할 스탯
      * @param agi 민첩 스탯 (빈틈 패시브용)
+     * @param precision 정밀 스탯 (치명타 판정)
      * @param out 출력 스트림
      * @return 결과 객체
      */
     fun spinStab(
         stat: Int,
         agi: Int,
+        precision: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - 돌려 찌르기 사용")
-        return normalAttack(stat, agi, 1, 8, false, false, 1, out)
+        return normalAttack(stat, agi, 1, 8, false, false, 1, precision, out)
     }
 
     /**
@@ -83,17 +88,19 @@ class SpearMaster {
      *
      * @param stat 사용할 스탯
      * @param agi 민첩 스탯 (빈틈 패시브용)
+     * @param precision 정밀 스탯 (치명타 판정)
      * @param out 출력 스트림
      * @return 결과 객체
      */
     fun spinStrike(
         stat: Int,
         agi: Int,
+        precision: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - 회전 타격 사용")
         out.println("[연계] 획득")
-        return normalAttack(stat, agi, 1, 10, false, false, 2, out)
+        return normalAttack(stat, agi, 1, 10, false, false, 2, precision, out)
     }
 
     /**
@@ -101,18 +108,20 @@ class SpearMaster {
      *
      * @param stat 사용할 스탯
      * @param agi 민첩 스탯 (빈틈 패시브용)
+     * @param precision 정밀 스탯 (치명타 판정)
      * @param out 출력 스트림
      * @return 결과 객체
      */
     fun lowSlash(
         stat: Int,
         agi: Int,
+        precision: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - 하단 베기 사용")
         out.println("상대에게 수비 불가 부여")
         out.println("[연계] 획득")
-        return normalAttack(stat, agi, 1, 6, false, false, 2, out)
+        return normalAttack(stat, agi, 1, 6, false, false, 2, precision, out)
     }
 
     /**
@@ -121,6 +130,7 @@ class SpearMaster {
      * @param stat 사용할 스탯
      * @param agi 민첩 스탯 (빈틈 패시브용)
      * @param adaptation 적응 스킬 적용 여부
+     * @param precision 정밀 스탯 (치명타 판정)
      * @param out 출력 스트림
      * @return 결과 객체
      */
@@ -128,10 +138,11 @@ class SpearMaster {
         stat: Int,
         agi: Int,
         adaptation: Boolean,
+        precision: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - [연계] 정면 찌르기 사용")
-        return normalAttack(stat, agi, 2, 10, true, adaptation, 1, out)
+        return normalAttack(stat, agi, 2, 10, true, adaptation, 1, precision, out)
     }
 
     /**
@@ -140,6 +151,7 @@ class SpearMaster {
      * @param stat 사용할 스탯
      * @param agi 민첩 스탯 (빈틈 패시브용)
      * @param adaptation 적응 스킬 적용 여부
+     * @param precision 정밀 스탯 (치명타 판정)
      * @param out 출력 스트림
      * @return 결과 객체
      */
@@ -147,10 +159,11 @@ class SpearMaster {
         stat: Int,
         agi: Int,
         adaptation: Boolean,
+        precision: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - [연계] 일섬창 사용")
-        return normalAttack(stat, agi, 4, 8, true, adaptation, 3, out)
+        return normalAttack(stat, agi, 4, 8, true, adaptation, 3, precision, out)
     }
 
     /**
@@ -159,6 +172,7 @@ class SpearMaster {
      * @param stat 사용할 스탯
      * @param agi 민첩 스탯 (빈틈 패시브용)
      * @param adaptation 적응 스킬 적용 여부
+     * @param precision 정밀 스탯 (치명타 판정)
      * @param out 출력 스트림
      * @return 결과 객체
      */
@@ -166,10 +180,11 @@ class SpearMaster {
         stat: Int,
         agi: Int,
         adaptation: Boolean,
+        precision: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - [연계] 천뢰격 사용")
-        return normalAttack(stat, agi, 5, 12, true, adaptation, 5, out)
+        return normalAttack(stat, agi, 5, 12, true, adaptation, 5, precision, out)
     }
 
     private fun normalAttack(
@@ -180,6 +195,7 @@ class SpearMaster {
         combo: Boolean,
         adaptation: Boolean,
         staminaCost: Int,
+        precision: Int,
         out: java.io.PrintStream
     ): main.Result {
         if (main.Main.verdict(stat, out) <= 0) {
@@ -201,13 +217,15 @@ class SpearMaster {
         out.println("빈틈 패시브 적용 시도!")
         if (combo && Main.verdict(agi, out) > 0) {
             out.println("빈틈 패시브 적용: 민첩 판정 성공으로 추가 공격 가능")
-            val extraDamage = plain(stat, out).damageDealt
+            val extraDamage = plain(stat, precision, out).damageDealt
             out.println("추가 공격 데미지 : $extraDamage")
             damage += extraDamage
         }
         val sideDamage = Main.sideDamage(damage, stat, out)
         out.println("데미지 보정치 : $sideDamage")
-        out.println("최종 데미지 : ${damage + sideDamage}")
-        return main.Result(0, damage + sideDamage, true, 0, staminaCost)
+        val totalDamage = damage + sideDamage
+        out.println("최종 데미지 : $totalDamage")
+        val finalDamage = Main.criticalHit(precision, totalDamage, out)
+        return main.Result(0, finalDamage, true, 0, staminaCost)
     }
 }

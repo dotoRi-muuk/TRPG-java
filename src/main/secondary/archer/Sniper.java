@@ -28,7 +28,7 @@ public class Sniper {
      * @param out              출력 스트림
      * @return 결과 객체
      */
-    public static Result fire(int stat, boolean vitalAim, boolean deathBullet, boolean assemble, boolean aim, boolean sureHit, boolean stabilize, boolean focus, boolean conviction, boolean heightenedSenses, PrintStream out) {
+    public static Result fire(int stat, boolean vitalAim, boolean deathBullet, boolean assemble, boolean aim, boolean sureHit, boolean stabilize, boolean focus, boolean conviction, boolean heightenedSenses, int precision, PrintStream out) {
         out.println("저격수-발사 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -93,6 +93,7 @@ public class Sniper {
         int sideDamage = Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
+        damage = Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d\n", damage);
         if (aim) {
             out.println("조준 기술 적용: 수비를 무시합니다.");
@@ -115,7 +116,7 @@ public class Sniper {
      * @param out              출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, boolean vitalAim, boolean assemble, boolean aim, boolean sureHit, boolean stabilize, boolean focus, boolean conviction, boolean heightenedSenses, PrintStream out) {
+    public static Result plain(int stat, boolean vitalAim, boolean assemble, boolean aim, boolean sureHit, boolean stabilize, boolean focus, boolean conviction, boolean heightenedSenses, int precision, PrintStream out) {
 
         out.println("저격수-기본공격 사용");
 
@@ -175,6 +176,7 @@ public class Sniper {
         int sideDamage = Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
+        damage = Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d\n", damage);
         if (aim) {
             out.println("조준 기술 적용: 수비를 무시합니다.");

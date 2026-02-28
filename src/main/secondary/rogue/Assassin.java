@@ -50,8 +50,8 @@ public class Assassin {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result assassinate(int stat, boolean assassinationTarget, boolean powerOverLifeAndDeath, boolean confirmKill, PrintStream out) {
-        return commonAttack("암살", stat, 4, 20, out, damage -> {
+    public static Result assassinate(int stat, boolean assassinationTarget, boolean powerOverLifeAndDeath, boolean confirmKill, int precision, PrintStream out) {
+        return commonAttack("암살", stat, 4, 20, precision, out, damage -> {
             damage = applyAssassinationTarget(damage, assassinationTarget, out);
             if (powerOverLifeAndDeath) {
                 out.println("'생사여탈' 패시브 적용. 데미지 2배 증가");
@@ -74,8 +74,8 @@ public class Assassin {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, boolean assassinationTarget, PrintStream out) {
-        return commonAttack("기본 공격", stat, 1, 6, out, damage ->
+    public static Result plain(int stat, boolean assassinationTarget, int precision, PrintStream out) {
+        return commonAttack("기본 공격", stat, 1, 6, precision, out, damage ->
                 applyAssassinationTarget(damage, assassinationTarget, out));
     }
 
@@ -86,8 +86,8 @@ public class Assassin {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result vitalPointStab(int stat, boolean assassinationTarget, PrintStream out) {
-        return commonAttack("급소 찌르기", stat, 2, 10, out, damage ->
+    public static Result vitalPointStab(int stat, boolean assassinationTarget, int precision, PrintStream out) {
+        return commonAttack("급소 찌르기", stat, 2, 10, precision, out, damage ->
                 applyAssassinationTarget(damage, assassinationTarget, out));
     }
 
@@ -98,8 +98,8 @@ public class Assassin {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result throatSlit(int stat, boolean assassinationTarget, PrintStream out) {
-        return commonAttack("목 긋기", stat, 1, 20, out, damage ->
+    public static Result throatSlit(int stat, boolean assassinationTarget, int precision, PrintStream out) {
+        return commonAttack("목 긋기", stat, 1, 20, precision, out, damage ->
                 applyAssassinationTarget(damage, assassinationTarget, out));
     }
 
@@ -110,8 +110,8 @@ public class Assassin {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result wristSlit(int stat, boolean assassinationTarget, PrintStream out) {
-        return commonAttack("손목 긋기", stat, 4, 4, out, damage ->
+    public static Result wristSlit(int stat, boolean assassinationTarget, int precision, PrintStream out) {
+        return commonAttack("손목 긋기", stat, 4, 4, precision, out, damage ->
                 applyAssassinationTarget(damage, assassinationTarget, out));
     }
 
@@ -122,12 +122,12 @@ public class Assassin {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result backStab(int stat, boolean assassinationTarget, PrintStream out) {
-        return commonAttack("후방 공격", stat, 3, 6, out, damage ->
+    public static Result backStab(int stat, boolean assassinationTarget, int precision, PrintStream out) {
+        return commonAttack("후방 공격", stat, 3, 6, precision, out, damage ->
                 applyAssassinationTarget(damage, assassinationTarget, out));
     }
 
-    private static Result commonAttack(String skillName, int stat, int diceCount, int diceFaces, PrintStream out, DamageCalculator calculator) {
+    private static Result commonAttack(String skillName, int stat, int diceCount, int diceFaces, int precision, PrintStream out, DamageCalculator calculator) {
         out.println("암살자-" + skillName + " 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict < 0) {
@@ -143,6 +143,7 @@ public class Assassin {
         int sideDamage = Main.sideDamage(baseDamage, stat, out);
         baseDamage += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
+        baseDamage = Main.criticalHit(precision, baseDamage, out);
         out.printf("최종 데미지 : %d%n", baseDamage);
         return new Result(0, baseDamage, true, 0, 0);
     }

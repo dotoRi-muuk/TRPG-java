@@ -50,10 +50,11 @@ class DarkPriest {
         scapegoat: Boolean,
         erosion: Int,
         piety: Boolean,
+        precision: Int,
         out: PrintStream
     ): Result {
         out.println("영혼의 사제 - 엔시아스티켈리아 사용")
-        return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 9, 10, 16, out)
+        return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 9, 10, 16, precision, out)
     }
 
     /**
@@ -74,10 +75,11 @@ class DarkPriest {
         scapegoat: Boolean,
         erosion: Int,
         piety: Boolean,
+        precision: Int,
         out: PrintStream
     ): Result {
         out.println("영혼의 사제 - 어나이스필레인 사용")
-        return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 7, 12, 18, out)
+        return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 7, 12, 18, precision, out)
     }
 
     /**
@@ -98,10 +100,11 @@ class DarkPriest {
         scapegoat: Boolean,
         erosion: Int,
         piety: Boolean,
+        precision: Int,
         out: PrintStream
     ): Result {
         out.println("영혼의 사제 - 엑실리스터 사용")
-        return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 4, 20, 14, out)
+        return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 4, 20, 14, precision, out)
     }
 
     /**
@@ -122,10 +125,11 @@ class DarkPriest {
         scapegoat: Boolean,
         erosion: Int,
         piety: Boolean,
+        precision: Int,
         out: PrintStream
     ): Result {
         out.println("영혼의 사제 - 우즈마니아 사용")
-        return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 4, 12, 8, out)
+        return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 4, 12, 8, precision, out)
     }
 
     /**
@@ -146,10 +150,11 @@ class DarkPriest {
         scapegoat: Boolean,
         erosion: Int,
         piety: Boolean,
+        precision: Int,
         out: PrintStream
     ): Result {
         out.println("영혼의 사제 - 손아귀 사용")
-        return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 1, 8, 5, out)
+        return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 1, 8, 5, precision, out)
     }
 
     /**
@@ -170,10 +175,11 @@ class DarkPriest {
         scapegoat: Boolean,
         erosion: Int,
         piety: Boolean,
+        precision: Int,
         out: PrintStream
     ): Result {
         out.println("영혼의 사제 - 어둠의 기운 사용")
-        return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 1, 4, 2, out)
+        return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 1, 4, 2, precision, out)
     }
 
     /**
@@ -193,10 +199,11 @@ class DarkPriest {
         scapegoat: Boolean,
         erosion: Int,
         piety: Boolean,
+        precision: Int,
         out: PrintStream
     ): Result {
         out.println("어둠의 사제 - 기본 공격 사용")
-        return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 1, 6, 0, out)
+        return normalAttack(stat, domination, curse, scapegoat, erosion, piety, 1, 6, 0, precision, out)
     }
 
     /**
@@ -219,6 +226,7 @@ class DarkPriest {
         dices: Int,
         sides: Int,
         mana: Int,
+        precision: Int,
         out: PrintStream
     ): Result {
         val verdict = Main.verdict(stat, out)
@@ -251,8 +259,9 @@ class DarkPriest {
         out.printf("배율 적용 데미지 : %d%n", damage)
         val sideDamage = Main.sideDamage(damage, stat, out)
         out.printf("데미지 보정치 : %d%n", sideDamage)
-        out.printf("최종 데미지 : %d%n", damage + sideDamage)
-        return Result(0, damage + sideDamage, true, mana, 0)
+        val finalDamage = Main.criticalHit(precision, damage + sideDamage, out)
+        out.printf("최종 데미지 : %d%n", finalDamage)
+        return Result(0, finalDamage, true, mana, 0)
     }
 
 }

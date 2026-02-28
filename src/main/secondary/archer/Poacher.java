@@ -23,7 +23,7 @@ public class Poacher {
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result setTrap(int stat, int damageTaken, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, PrintStream out) {
+    public static Result setTrap(int stat, int damageTaken, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, int precision, PrintStream out) {
         int staminaChange = 3;
 
         out.println("밀렵꾼-덫 깔기 사용");
@@ -57,6 +57,7 @@ public class Poacher {
         int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out);
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
+        finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         return new Result((int) (damageTaken * 0.75), finalDamage, true, 0, staminaChange);
     }
@@ -71,7 +72,7 @@ public class Poacher {
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result headSmash(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, PrintStream out) {
+    public static Result headSmash(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, int precision, PrintStream out) {
         int staminaChange = 1;
 
         out.println("밀렵꾼-머리찍기 사용");
@@ -105,6 +106,7 @@ public class Poacher {
         int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out);
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
+        finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         return new Result(0, finalDamage, true, 0, staminaChange);
     }
@@ -119,7 +121,7 @@ public class Poacher {
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result snareShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, PrintStream out) {
+    public static Result snareShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, int precision, PrintStream out) {
         int staminaChange = 8;
 
         out.println("밀렵꾼-올가미 탄 사용");
@@ -153,6 +155,7 @@ public class Poacher {
         int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out);
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
+        finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         out.println("적에게 행동 불가 부여 (다음 턴까지)");
         return new Result(0, finalDamage, true, 0, staminaChange);
@@ -168,7 +171,7 @@ public class Poacher {
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result headShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, PrintStream out) {
+    public static Result headShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, int precision, PrintStream out) {
         int staminaChange = 4;
 
         out.println("밀렵꾼-헤드샷 사용");
@@ -202,6 +205,7 @@ public class Poacher {
         int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out);
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
+        finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         return new Result(0, finalDamage, true, 0, staminaChange);
     }
@@ -217,7 +221,7 @@ public class Poacher {
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean reload, PrintStream out) {
+    public static Result plain(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean reload, int precision, PrintStream out) {
         int staminaChange = 0;
 
         out.println("밀렵꾼-기본공격 사용");
@@ -272,6 +276,7 @@ public class Poacher {
         int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out);
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
+        finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         return new Result(0, finalDamage, true, 0, staminaChange);
 

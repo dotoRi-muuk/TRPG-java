@@ -25,7 +25,7 @@ public class MasterArcher {
      * @param cracking 흐름 깨기 스킬 활성화 여부 (데미지 300%)
      * @param stage 무대 스킬 활성화 여부 (데미지 200%)
      */
-    public static Result plain(int stat, boolean isHeavyString, boolean isFirstTarget, boolean isEmergency, MasterArcherPassive ability, boolean preyEnabled, boolean isArrowReinforced, boolean calm, boolean cracking, boolean stage, PrintStream out) {
+    public static Result plain(int stat, boolean isHeavyString, boolean isFirstTarget, boolean isEmergency, MasterArcherPassive ability, boolean preyEnabled, boolean isArrowReinforced, boolean calm, boolean cracking, boolean stage, int precision, PrintStream out) {
 
         if (isEmergency && isHeavyString) {
             out.println("긴급 사격과 무거운 시위는 동시에 사용할 수 없습니다!");
@@ -168,6 +168,7 @@ public class MasterArcher {
             int sideDamage = Main.sideDamage(damageAfterPassives, effectiveStat, out);
             out.printf("추가 사이드 데미지: %d%n", sideDamage);
             int totalDamage = damageAfterPassives + sideDamage;
+            totalDamage = Main.criticalHit(precision, totalDamage, out);
             out.printf("총 데미지 : %d%n", totalDamage);
             damageDealt += totalDamage;
         }

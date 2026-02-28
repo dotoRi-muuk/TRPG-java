@@ -70,6 +70,28 @@ public class Main {
         return finalDamage;
     }
 
+    /**
+     * 정밀 판정 - 공격 시 치명타 여부를 결정
+     * 정밀 스탯 >= D20 판정 성공 시 최종 데미지 1.5배 (치명타)
+     *
+     * @param precision 정밀 스탯
+     * @param finalDamage 판정 전 최종 데미지
+     * @param out 출력 스트림
+     * @return 치명타 적용 후 데미지
+     */
+    public static int criticalHit(int precision, int finalDamage, PrintStream out) {
+        out.println("정밀 판정 시도!");
+        int diceRoll = dice(1, 20, out);
+        if (precision >= diceRoll) {
+            int critDamage = (int)(finalDamage * 1.5);
+            out.printf("정밀 판정 성공! (정밀 %d >= 주사위 %d) 치명타 발동: %d * 1.5 = %d%n", precision, diceRoll, finalDamage, critDamage);
+            return critDamage;
+        } else {
+            out.printf("정밀 판정 실패 (정밀 %d < 주사위 %d)%n", precision, diceRoll);
+            return finalDamage;
+        }
+    }
+
     public static void main(String[] args) {
     }
 }

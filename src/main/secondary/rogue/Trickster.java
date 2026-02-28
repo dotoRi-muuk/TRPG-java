@@ -23,7 +23,7 @@ public class Trickster {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result fakeDagger(int stat, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar,  PrintStream out) {
+    public static Result fakeDagger(int stat, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, int precision, PrintStream out) {
         out.println("트릭스터-페이크 단검 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result();
@@ -32,7 +32,7 @@ public class Trickster {
         out.println("페이크 단검 데미지 최종 보정치: " + modifier + "배");
 
         int damage = Main.dice(1, 4, out);
-        damage = calculateFinalDamage(damage, modifier, stat, "페이크 단검", out);
+        damage = calculateFinalDamage(damage, modifier, stat, "페이크 단검", precision, out);
 
         out.println("페이크 단검 효과 발동: 다음 턴의 공격 데미지가 1.5배로 증가합니다.");
         return new Result(0, damage, true, 0, 2);
@@ -49,7 +49,7 @@ public class Trickster {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result beanBomb(int stat, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, PrintStream out) {
+    public static Result beanBomb(int stat, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, int precision, PrintStream out) {
         out.println("트릭스터-콩알탄 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result();
@@ -58,7 +58,7 @@ public class Trickster {
         out.println("콩알탄 데미지 최종 보정치: " + modifier + "배");
 
         int damage = Main.dice(2, 6, out);
-        damage = calculateFinalDamage(damage, modifier, stat, "콩알탄", out);
+        damage = calculateFinalDamage(damage, modifier, stat, "콩알탄", precision, out);
 
         return new Result(0, damage, true, 0, 2);
     }
@@ -74,7 +74,7 @@ public class Trickster {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result oilBarrel(int stat, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, PrintStream out) {
+    public static Result oilBarrel(int stat, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, int precision, PrintStream out) {
         out.println("트릭스터-기름통 투척 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result();
@@ -83,7 +83,7 @@ public class Trickster {
         out.println("기름통 투척 데미지 최종 보정치: " + modifier + "배");
 
         int damage = Main.dice(1, 4, out);
-        damage = calculateFinalDamage(damage, modifier, stat, "기름통 투척", out);
+        damage = calculateFinalDamage(damage, modifier, stat, "기름통 투척", precision, out);
 
         return new Result(0, damage, true, 0, 2);
     }
@@ -100,7 +100,7 @@ public class Trickster {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result lighterThrow(int stat, boolean oilHit, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, PrintStream out) {
+    public static Result lighterThrow(int stat, boolean oilHit, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, int precision, PrintStream out) {
         out.println("트릭스터-라이터 투척 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result();
@@ -113,7 +113,7 @@ public class Trickster {
             out.println("기름통 적중 확인: 3D6 추가 데미지");
             damage += Main.dice(3, 6, out);
         }
-        damage = calculateFinalDamage(damage, modifier, stat, "라이터 투척", out);
+        damage = calculateFinalDamage(damage, modifier, stat, "라이터 투척", precision, out);
 
         return new Result(0, damage, true, 0, 2);
     }
@@ -129,7 +129,7 @@ public class Trickster {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result xlDagger(int stat, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, PrintStream out) {
+    public static Result xlDagger(int stat, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, int precision, PrintStream out) {
         out.println("트릭스터-특대형 단검 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result();
@@ -138,7 +138,7 @@ public class Trickster {
         out.println("특대형 단검 데미지 최종 보정치: " + modifier + "배");
 
         int damage = Main.dice(1, 20, out);
-        damage = calculateFinalDamage(damage, modifier, stat, "특대형 단검", out);
+        damage = calculateFinalDamage(damage, modifier, stat, "특대형 단검", precision, out);
 
         return new Result(0, damage, true, 0, 3);
     }
@@ -180,7 +180,7 @@ public class Trickster {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, int suddenEvent, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean eventPreparation, boolean greatScar, boolean mainEvent, PrintStream out) {
+    public static Result plain(int stat, int suddenEvent, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean eventPreparation, boolean greatScar, boolean mainEvent, int precision, PrintStream out) {
         out.println("트릭스터-기본공격 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result();
@@ -231,7 +231,7 @@ public class Trickster {
                 break;
             }
         }
-        finalDamage = calculateFinalDamage(finalDamage, modifier, stat, "기본 공격", out);
+        finalDamage = calculateFinalDamage(finalDamage, modifier, stat, "기본 공격", precision, out);
         return new Result(0, finalDamage, true, 0, 0);
     }
 
@@ -260,12 +260,13 @@ public class Trickster {
         return modifier;
     }
 
-    private static int calculateFinalDamage(int rawDamage, double modifier, int stat, String skillName, PrintStream out) {
+    private static int calculateFinalDamage(int rawDamage, double modifier, int stat, String skillName, int precision, PrintStream out) {
         int damage = (int)(rawDamage * modifier);
         out.println("배율 적용 " + skillName + " 데미지: " + damage);
         int sideDamage = Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.println("데미지 보정치: " + sideDamage);
+        damage = Main.criticalHit(precision, damage, out);
         out.println("최종 데미지: " + damage);
         return damage;
     }

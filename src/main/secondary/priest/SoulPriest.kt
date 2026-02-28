@@ -21,13 +21,13 @@ class SoulPriest {
      * @param soulUse 사용할 영혼 개수
      * @return 결과 객체
      */
-    fun grudge(stat: Int, soul: Int, ruins: Boolean, soulUse: Int, out: PrintStream): Result {
+    fun grudge(stat: Int, soul: Int, ruins: Boolean, soulUse: Int, precision: Int, out: PrintStream): Result {
         out.println("영혼의 사제 - 원한 사용")
         if (soulUse <= 0) {
             out.println("사용한 영혼의 개수가 올바르지 않습니다.")
             return Result()
         }
-        return normalAttack(stat, soulUse, 12, soul, ruins, out)
+        return normalAttack(stat, soulUse, 12, soul, ruins, precision, out)
     }
 
     /**
@@ -38,9 +38,9 @@ class SoulPriest {
      * @param ruins 폐허 스킬 사용 여부
      * @return 결과 객체
      */
-    fun chestPain(stat: Int, soul: Int, ruins: Boolean, out: PrintStream): Result {
+    fun chestPain(stat: Int, soul: Int, ruins: Boolean, precision: Int, out: PrintStream): Result {
         out.println("영혼의 사제 - 흉통 사용")
-        return normalAttack(stat, 8, 4, soul, ruins, out)
+        return normalAttack(stat, 8, 4, soul, ruins, precision, out)
     }
 
     /**
@@ -51,9 +51,9 @@ class SoulPriest {
      * @param ruins 폐허 스킬 사용 여부
      * @return 결과 객체
      */
-    fun curse(stat: Int, soul: Int, ruins: Boolean, out: PrintStream): Result {
+    fun curse(stat: Int, soul: Int, ruins: Boolean, precision: Int, out: PrintStream): Result {
         out.println("영혼의 사제 - 저주 사용")
-        return normalAttack(stat, 3, 4, soul, ruins, out)
+        return normalAttack(stat, 3, 4, soul, ruins, precision, out)
     }
 
     /**
@@ -64,9 +64,9 @@ class SoulPriest {
      * @param ruins 폐허 스킬 사용 여부
      * @return 결과 객체
      */
-    fun plain(stat: Int, soul: Int, ruins: Boolean, out: PrintStream): Result {
+    fun plain(stat: Int, soul: Int, ruins: Boolean, precision: Int, out: PrintStream): Result {
         out.println("영혼의 사제 - 기본 공격 사용")
-        return normalAttack(stat, 1, 6, soul, ruins, out)
+        return normalAttack(stat, 1, 6, soul, ruins, precision, out)
     }
 
     /**
@@ -77,7 +77,7 @@ class SoulPriest {
      * @param ruins 폐허 스킬 사용 여부
      * @return 결과 객체
      */
-    private fun normalAttack(stat: Int, dices: Int, sides: Int, soul: Int, ruins: Boolean, out: PrintStream): Result {
+    private fun normalAttack(stat: Int, dices: Int, sides: Int, soul: Int, ruins: Boolean, precision: Int, out: PrintStream): Result {
         val verdict = Main.verdict(stat, out)
         if (verdict <= 0) {
             return Result()
@@ -102,7 +102,7 @@ class SoulPriest {
                 out.println("축복 패시브 적용: 데미지 ${soul * 20}% 증가")
             }
         }
-        val totalDamage = (baseDamage * damageMultiplier).toInt()
+        val totalDamage = Main.criticalHit(precision, (baseDamage * damageMultiplier).toInt(), out)
         out.println("최종 데미지 : $totalDamage")
         return Result(0, totalDamage, true, 0, 0)
     }
