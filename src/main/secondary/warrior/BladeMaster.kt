@@ -28,6 +28,7 @@ class BladeMaster {
         oneStrikeKill: Boolean,
         resolve: Boolean,
         lifeOrDeath: Boolean,
+        precision: Int,
         out: PrintStream
     ): Result {
         out.println("무사 - 발검 사용")
@@ -41,6 +42,7 @@ class BladeMaster {
             resolve,
             lifeOrDeath,
             false,
+            precision,
             out
         )
     }
@@ -62,6 +64,7 @@ class BladeMaster {
         oneStrikeKill: Boolean,
         resolve: Boolean,
         lifeOrDeath: Boolean,
+        precision: Int,
         out: PrintStream
     ): Result {
         out.println("무사 - 발도 사용")
@@ -75,6 +78,7 @@ class BladeMaster {
             resolve,
             lifeOrDeath,
             false,
+            precision,
             out
         )
     }
@@ -96,6 +100,7 @@ class BladeMaster {
         oneStrikeKill: Boolean,
         resolve: Boolean,
         lifeOrDeath: Boolean,
+        precision: Int,
         out: PrintStream
     ): Result {
         out.println("무사 - 자법 사용")
@@ -109,6 +114,7 @@ class BladeMaster {
             resolve,
             lifeOrDeath,
             false,
+            precision,
             out
         )
     }
@@ -130,6 +136,7 @@ class BladeMaster {
         oneStrikeKill: Boolean,
         resolve: Boolean,
         lifeOrDeath: Boolean,
+        precision: Int,
         out: PrintStream
     ): Result {
         out.println("무사 - 일섬 사용")
@@ -143,6 +150,7 @@ class BladeMaster {
             resolve,
             lifeOrDeath,
             false,
+            precision,
             out
         )
     }
@@ -164,6 +172,7 @@ class BladeMaster {
         oneStrikeKill: Boolean,
         resolve: Boolean,
         lifeOrDeath: Boolean,
+        precision: Int,
         out: PrintStream
     ): Result {
         out.println("무사 - 난격 사용")
@@ -177,6 +186,7 @@ class BladeMaster {
             resolve,
             lifeOrDeath,
             false,
+            precision,
             out
         )
     }
@@ -198,6 +208,7 @@ class BladeMaster {
         oneStrikeKill: Boolean,
         resolve: Boolean,
         lifeOrDeath: Boolean,
+        precision: Int,
         out: PrintStream
     ): Result {
         out.println("무사 - 섬격 사용")
@@ -211,6 +222,7 @@ class BladeMaster {
             resolve,
             lifeOrDeath,
             true, // 섬격 전용 플래그
+            precision,
             out
         )
     }
@@ -234,6 +246,7 @@ class BladeMaster {
         oneStrikeKill: Boolean,
         resolve: Boolean,
         lifeOrDeath: Boolean,
+        precision: Int,
         out: PrintStream
     ): Result {
         out.println("무사 - 종점 사용")
@@ -277,7 +290,9 @@ class BladeMaster {
         out.println("데미지 보정치 : $sideDamage")
         out.println("최종 데미지 : ${sideDamage + totalDamage}")
 
-        return Result(0, totalDamage + sideDamage, true, 0, currentStamina)
+        val preCritDamage = totalDamage + sideDamage
+        val critDamage = Main.criticalHit(precision, preCritDamage, out)
+        return Result(0, critDamage, true, 0, currentStamina)
     }
 
     /**
@@ -297,6 +312,7 @@ class BladeMaster {
         oneStrikeKill: Boolean,
         resolve: Boolean,
         lifeOrDeath: Boolean,
+        precision: Int,
         out: PrintStream
     ): Result {
         out.println("무사 - 개화 사용")
@@ -310,6 +326,7 @@ class BladeMaster {
             resolve,
             lifeOrDeath,
             false,
+            precision,
             out
         )
     }
@@ -394,6 +411,7 @@ class BladeMaster {
         oneStrikeKill: Boolean,
         resolve: Boolean,
         lifeOrDeath: Boolean,
+        precision: Int,
         out: PrintStream
     ): Result {
         out.println("무사 - 기본 공격 사용")
@@ -407,6 +425,7 @@ class BladeMaster {
             resolve,
             lifeOrDeath,
             false,
+            precision,
             out
         )
     }
@@ -436,6 +455,7 @@ class BladeMaster {
         resolve: Boolean,
         lifeOrDeath: Boolean,
         flashStrike: Boolean,
+        precision: Int,
         out: PrintStream
     ): Result {
         if (Main.verdict(stat, out) <= 0) {
@@ -476,8 +496,10 @@ class BladeMaster {
         out.println("배율 적용 데미지 : $totalDamage")
         val sideDamage = Main.sideDamage(totalDamage, stat, out)
         out.println("데미지 보정치 : $sideDamage")
-        out.println("최종 데미지 : ${sideDamage + totalDamage}")
-        return Result(0, totalDamage + sideDamage, true, 0, stamina)
+        val preCritDamage = sideDamage + totalDamage
+        out.println("최종 데미지 : $preCritDamage")
+        val finalDamage = Main.criticalHit(precision, preCritDamage, out)
+        return Result(0, finalDamage, true, 0, stamina)
 
     }
 }
