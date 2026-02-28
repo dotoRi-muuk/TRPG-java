@@ -363,6 +363,10 @@ public class SkillService {
             case "terminus" -> "종점";
             case "blooming" -> "개화";
             case "resolve" -> "각오";
+            case "lifeOrDeath" -> "생사결단";
+            case "despair" -> "절명";
+            case "limitBreak" -> "극한돌파";
+            case "moonHide" -> "월은";
             case "deflect" -> "빗겨내기";
             case "downwardStrike" -> "내려치기";
             case "bash" -> "후려치기";
@@ -486,10 +490,16 @@ public class SkillService {
             case "resistance" -> "저항 여부";
             case "euphoria" -> "감소 체력";
             case "currentStamina" -> "현재 스태미나";
+            case "recentStaminaConsumed" -> "최근 5턴 소모 스태미나";
             case "objectI" -> "물아 모드 여부";
             case "oneStrikeKill" -> "일격필살 여부";
             case "lifeOrDeath" -> "생사결단 여부";
             case "notMe" -> "무아 모드 여부";
+            case "resolve" -> "각오 스킬 사용 여부";
+            case "despair" -> "절명 여부";
+            case "limitBreak" -> "극한돌파 여부";
+            case "moonHide" -> "월은 여부";
+            case "precision" -> "정밀 스탯";
             case "blessing" -> "축복 여부";
             case "agi" -> "민첩";
             case "adaptation" -> "적응 여부";
