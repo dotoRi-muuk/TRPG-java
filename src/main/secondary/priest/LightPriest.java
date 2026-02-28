@@ -137,9 +137,9 @@ public class LightPriest {
      * @param out  출력 스트림
      * @return 결과 객체
      */
-    public static Result healingWind(int stat, PrintStream out) {
+    public static Result healingWind(int stat, int precision, PrintStream out) {
         out.println("빛의 사제-치유의 바람 사용");
-        return normalAttack(stat, 2, 6, 2, out);
+        return normalAttack(stat, 2, 6, 2, precision, out);
     }
 
     /**
@@ -149,9 +149,9 @@ public class LightPriest {
      * @param out  출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, PrintStream out) {
+    public static Result plain(int stat, int precision, PrintStream out) {
         out.println("빛의 사제-기본공격 사용");
-        return normalAttack(stat, 1, 6, 0, out);
+        return normalAttack(stat, 1, 6, 0, precision, out);
     }
 
     /**
@@ -162,7 +162,7 @@ public class LightPriest {
      * @param mana 소모 마나
      * @return 결과 객체
      */
-    private static Result normalAttack(int stat, int dices, int sides, int mana, PrintStream out) {
+    private static Result normalAttack(int stat, int dices, int sides, int mana, int precision, PrintStream out) {
         int verdict = main.Main.verdict(stat, out);
         if (verdict <= 0) {
             return new Result(0, 0, false, mana, 0);
@@ -173,6 +173,7 @@ public class LightPriest {
         int sideDamage = main.Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
+        damage = main.Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d\n", damage);
         return new Result(0, damage, true, mana, 0);
     }

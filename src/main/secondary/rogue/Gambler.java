@@ -66,7 +66,7 @@ public class Gambler {
      * @param staminaCost           소모 스태미나
      * @return 결과 객체
      */
-    private static Result executeSkill(String skillName, int stat, int luckStat, int decreasedLuck, PrintStream out,
+    private static Result executeSkill(String skillName, int stat, int luckStat, int decreasedLuck, int precision, PrintStream out,
                                        int baseDiceSide,
                                        int bonusDiceNum, int bonusDiceSide,
                                        int requiredLuckSuccesses, int staminaCost) {
@@ -117,6 +117,7 @@ public class Gambler {
         int sideDamage = Main.sideDamage(baseDamage, stat, out);
         baseDamage += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
+        baseDamage = Main.criticalHit(precision, baseDamage, out);
         out.printf("최종 데미지 : %d%n", baseDamage);
         return new Result(0, baseDamage, true, 0, staminaCost, Map.of(
                 Stat.LUCK, misfortuneAversion ? 0 : 2
@@ -131,8 +132,8 @@ public class Gambler {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result coinToss(int stat, int luckStat, int decreasedLuck, PrintStream out) {
-        return executeSkill("코인 토스", stat, luckStat, decreasedLuck, out, 4, 1, 12, 1, 1);
+    public static Result coinToss(int stat, int luckStat, int decreasedLuck, int precision, PrintStream out) {
+        return executeSkill("코인 토스", stat, luckStat, decreasedLuck, precision, out, 4, 1, 12, 1, 1);
     }
 
     /**
@@ -143,8 +144,8 @@ public class Gambler {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result jokerCard(int stat, int luckStat, int decreasedLuck, PrintStream out) {
-        return executeSkill("조커 카드", stat, luckStat, decreasedLuck, out, 6, 2, 12, 1, 3);
+    public static Result jokerCard(int stat, int luckStat, int decreasedLuck, int precision, PrintStream out) {
+        return executeSkill("조커 카드", stat, luckStat, decreasedLuck, precision, out, 6, 2, 12, 1, 3);
     }
 
     /**
@@ -155,8 +156,8 @@ public class Gambler {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result blackJack(int stat, int luckStat, int decreasedLuck, PrintStream out) {
-        return executeSkill("블랙잭", stat, luckStat, decreasedLuck, out, 6, 3, 8, 1, 3);
+    public static Result blackJack(int stat, int luckStat, int decreasedLuck, int precision, PrintStream out) {
+        return executeSkill("블랙잭", stat, luckStat, decreasedLuck, precision, out, 6, 3, 8, 1, 3);
     }
 
     /**
@@ -167,8 +168,8 @@ public class Gambler {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result yachtDice(int stat, int luckStat, int decreasedLuck, PrintStream out) {
-        return executeSkill("야추 다이스", stat, luckStat, decreasedLuck, out, 8, 2, 20, 2, 4);
+    public static Result yachtDice(int stat, int luckStat, int decreasedLuck, int precision, PrintStream out) {
+        return executeSkill("야추 다이스", stat, luckStat, decreasedLuck, precision, out, 8, 2, 20, 2, 4);
     }
 
     /**
@@ -179,8 +180,8 @@ public class Gambler {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result royalFlush(int stat, int luckStat, int decreasedLuck, PrintStream out) {
-        return executeSkill("로얄 플러쉬", stat, luckStat, decreasedLuck, out, 4, 4, 20, 3, 7);
+    public static Result royalFlush(int stat, int luckStat, int decreasedLuck, int precision, PrintStream out) {
+        return executeSkill("로얄 플러쉬", stat, luckStat, decreasedLuck, precision, out, 4, 4, 20, 3, 7);
     }
 
     /**
@@ -191,8 +192,8 @@ public class Gambler {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, int luckStat, int decreasedLuck, PrintStream out) {
-        return executeSkill("기본공격", stat, luckStat, decreasedLuck, out, 6, 0, 0, 0, 0);
+    public static Result plain(int stat, int luckStat, int decreasedLuck, int precision, PrintStream out) {
+        return executeSkill("기본공격", stat, luckStat, decreasedLuck, precision, out, 6, 0, 0, 0, 0);
     }
 
 }

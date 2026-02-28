@@ -21,7 +21,7 @@ public class Ninja {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, boolean illusion, boolean quickReflexes, boolean ideologySeal, PrintStream out) {
+    public static Result plain(int stat, boolean illusion, boolean quickReflexes, boolean ideologySeal, int precision, PrintStream out) {
         out.println("닌자-기본공격 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -29,10 +29,10 @@ public class Ninja {
             return new Result(0, 0, false, 0, 0);
         }
         int baseDamage = Main.dice(1, 6, out);
-        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, true, 0, 0, out);
+        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, true, 0, 0, precision, out);
     }
 
-    private static Result applyNinjaDamageLogic(int baseDamage, int stat, boolean illusion, boolean quickReflexes, boolean ideologySeal, boolean applyClone, int staminaChange, int manaChange, PrintStream out) {
+    private static Result applyNinjaDamageLogic(int baseDamage, int stat, boolean illusion, boolean quickReflexes, boolean ideologySeal, boolean applyClone, int staminaChange, int manaChange, int precision, PrintStream out) {
         double damageMultiplier = 1.0;
         if (applyClone) {
             out.println("분신 패시브 적용: 데미지 75%로 감소");
@@ -56,6 +56,7 @@ public class Ninja {
         int sideDamage = Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
+        damage = Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d\n", damage);
         return new Result(0, damage, true, manaChange, staminaChange);
     }
@@ -69,14 +70,14 @@ public class Ninja {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result strike(int stat, boolean illusion, boolean quickReflexes, boolean ideologySeal, PrintStream out) {
+    public static Result strike(int stat, boolean illusion, boolean quickReflexes, boolean ideologySeal, int precision, PrintStream out) {
         out.println("닌자-일격 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) {
             return new Result(0, 0, false, 0, -2);
         }
         int baseDamage = Main.dice(2, 6, out);
-        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, true, -2, 0, out);
+        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, true, -2, 0, precision, out);
     }
 
     /**
@@ -88,14 +89,14 @@ public class Ninja {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result slash(int stat, boolean illusion, boolean quickReflexes, boolean ideologySeal, PrintStream out) {
+    public static Result slash(int stat, boolean illusion, boolean quickReflexes, boolean ideologySeal, int precision, PrintStream out) {
         out.println("닌자-난도 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) {
             return new Result(0, 0, false, 0, -4);
         }
         int baseDamage = Main.dice(3, 8, out);
-        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, true, -4, 0, out);
+        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, true, -4, 0, precision, out);
     }
 
     /**
@@ -107,7 +108,7 @@ public class Ninja {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result throwShuriken(int stat, boolean illusion, boolean quickReflexes, boolean ideologySeal, PrintStream out) {
+    public static Result throwShuriken(int stat, boolean illusion, boolean quickReflexes, boolean ideologySeal, int precision, PrintStream out) {
         out.println("닌자-투척 표창 사용 (표창 1개 소모)");
         out.println("!턴 소모 없음!");
         int verdict = Main.verdict(stat, out);
@@ -115,7 +116,7 @@ public class Ninja {
             return new Result(0, 0, false, 0, 0);
         }
         int baseDamage = Main.dice(1, 8, out);
-        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, true, 0, 0, out);
+        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, true, 0, 0, precision, out);
     }
 
     /**
@@ -127,7 +128,7 @@ public class Ninja {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result phantomDance(int stat, boolean illusion, boolean quickReflexes, boolean ideologySeal, PrintStream out) {
+    public static Result phantomDance(int stat, boolean illusion, boolean quickReflexes, boolean ideologySeal, int precision, PrintStream out) {
         out.println("닌자-환영난무 사용");
         if (!illusion) {
             out.println("실패: 환영(은신) 상태가 아님");
@@ -141,7 +142,7 @@ public class Ninja {
         }
         int baseDamage = Main.dice(8, 6, out);
         // 분신 패시브 제거되므로 75% 감소 적용 안함 (applyClone = false)
-        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, false, -4, 0, out);
+        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, false, -4, 0, precision, out);
     }
 
     /**
@@ -155,7 +156,7 @@ public class Ninja {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result allOutThrow(int dex, int speed, int numShurikens, boolean illusion, boolean quickReflexes, boolean ideologySeal, PrintStream out) {
+    public static Result allOutThrow(int dex, int speed, int numShurikens, boolean illusion, boolean quickReflexes, boolean ideologySeal, int precision, PrintStream out) {
         out.println("닌자-일점투척 사용");
         out.printf("표창 %d개 전량 소모\n", numShurikens);
 
@@ -167,7 +168,7 @@ public class Ninja {
             return new Result(0, 0, false, -3, 0);
         }
         int baseDamage = Main.dice(numShurikens, 10, out);
-        return applyNinjaDamageLogic(baseDamage, dex, illusion, quickReflexes, ideologySeal, true, 0, -3, out);
+        return applyNinjaDamageLogic(baseDamage, dex, illusion, quickReflexes, ideologySeal, true, 0, -3, precision, out);
     }
 
 }

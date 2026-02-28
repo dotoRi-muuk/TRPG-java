@@ -11,14 +11,14 @@ public class Priest {
      * 기본 공격을 지능으로 사용 가능
      * 사용시 지정한 아군의 체력 1 회복
      */
-    public static int plain(int intelligence, PrintStream out) {
+    public static int plain(int intelligence, int precision, PrintStream out) {
         out.println("사제-기본공격 사용");
         int defaultDamage = Main.dice(1, 6, out);
         int sideDamage = Main.sideDamage(defaultDamage, intelligence, out);
         int totalDamage = defaultDamage + sideDamage;
         out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, totalDamage);
         out.println("※ 지정한 아군의 체력 1 회복");
-        return totalDamage;
+        return Main.criticalHit(precision, totalDamage, out);
     }
 
     /**
@@ -26,7 +26,7 @@ public class Priest {
      * D4 x 6
      * 자신 또는 아군의 체력이 5이하가 되는 피해를 받았을때 즉시 발동
      */
-    public static int revenge(int intelligence, PrintStream out) {
+    public static int revenge(int intelligence, int precision, PrintStream out) {
         out.println("사제-복수 스킬 사용");
         out.println("※ 공격을 받은 턴까지 해당 아군에게 보호막 10 부여");
 
@@ -41,7 +41,7 @@ public class Priest {
         int sideDamage = Main.sideDamage(baseDamage, intelligence, out);
         int totalDamage = baseDamage + sideDamage;
         out.printf("총 데미지 : %d + %d = %d%n", baseDamage, sideDamage, totalDamage);
-        return totalDamage;
+        return Main.criticalHit(precision, totalDamage, out);
     }
 
     /**

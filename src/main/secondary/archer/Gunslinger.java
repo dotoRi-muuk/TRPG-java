@@ -21,7 +21,7 @@ public class Gunslinger {
      * @param out         출력 스트림
      * @return 결과 객체
      */
-    public static Result backStab(int stat, int damageTaken, PrintStream out) {
+    public static Result backStab(int stat, int damageTaken, int precision, PrintStream out) {
         out.println("건슬링거-백스탭 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -30,6 +30,7 @@ public class Gunslinger {
 
         out.print("백스탭 반격 데미지 적용: 데미지 배율 1.5배\n");
         int finalDamage = (int) (damageTaken * 1.5);
+        finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         return new Result(0, finalDamage, true, 0, 3);
     }
@@ -42,7 +43,7 @@ public class Gunslinger {
      * @param out        출력 스트림
      * @return 결과 객체
      */
-    public static Result opportunity(int stat, int baseDamage, PrintStream out) {
+    public static Result opportunity(int stat, int baseDamage, int precision, PrintStream out) {
         out.println("건슬링거-활약 기회 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -51,6 +52,7 @@ public class Gunslinger {
 
         out.print("활약 기회 신속 적용: 데미지 배율 1.5배\n");
         int finalDamage = (int) (baseDamage * 1.5);
+        finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         return new Result(0, finalDamage, true, 0, 0);
     }
@@ -62,14 +64,14 @@ public class Gunslinger {
      * @param out  출력 스트림
      * @return 결과 객체
      */
-    public static Result focusedFire(int stat, PrintStream out) {
+    public static Result focusedFire(int stat, int precision, PrintStream out) {
         out.println("건슬링거-일점사 사용");
 
         int verdict = Main.verdict(stat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 4);
 
-        return new Result(0, Main.normalCalculation(stat, out, 6, 6), true, 0, 4);
+        return new Result(0, Main.criticalHit(precision, Main.normalCalculation(stat, out, 6, 6), out), true, 0, 4);
     }
 
     /**
@@ -79,14 +81,14 @@ public class Gunslinger {
      * @param out  출력 스트림
      * @return 결과 객체
      */
-    public static Result HeadShot(int stat, PrintStream out) {
+    public static Result HeadShot(int stat, int precision, PrintStream out) {
         out.println("건슬링거-헤드샷 사용");
 
         int verdict = Main.verdict(stat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 3);
 
-        return new Result(0, Main.normalCalculation(stat, out, 1, 20), true, 0, 3);
+        return new Result(0, Main.criticalHit(precision, Main.normalCalculation(stat, out, 1, 20), out), true, 0, 3);
     }
 
     /**
@@ -96,14 +98,14 @@ public class Gunslinger {
      * @param out  출력 스트림
      * @return 결과 객체
      */
-    public static Result doubleShot(int stat, PrintStream out) {
+    public static Result doubleShot(int stat, int precision, PrintStream out) {
         out.println("건슬링거-더블샷 사용");
 
         int verdict = Main.verdict(stat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 2);
 
-        return new Result(0, Main.normalCalculation(stat, out, 2, 6), true, 0, 2);
+        return new Result(0, Main.criticalHit(precision, Main.normalCalculation(stat, out, 2, 6), out), true, 0, 2);
     }
 
     /**
@@ -114,7 +116,7 @@ public class Gunslinger {
      * @param out      출력 스트림
      * @return 결과 객체
      */
-    public static Result quickDraw(int stat, boolean prudence, PrintStream out) {
+    public static Result quickDraw(int stat, boolean prudence, int precision, PrintStream out) {
         out.println("건슬링거-퀵드로우 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -126,7 +128,7 @@ public class Gunslinger {
             out.println("신중함 패시브 적용: D8 -> 4D8 적용");
             dices = 4;
         }
-        return new Result(0, Main.normalCalculation(stat, out, dices, 8), true, 0, 1);
+        return new Result(0, Main.criticalHit(precision, Main.normalCalculation(stat, out, dices, 8), out), true, 0, 1);
     }
 
     /**
@@ -141,7 +143,7 @@ public class Gunslinger {
      * @param out             출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, boolean prudence, boolean calculatedMove, boolean judge, boolean judgementTarget, boolean warning, PrintStream out) {
+    public static Result plain(int stat, boolean prudence, boolean calculatedMove, boolean judge, boolean judgementTarget, boolean warning, int precision, PrintStream out) {
         out.println("건슬링거-기본공격 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -179,6 +181,7 @@ public class Gunslinger {
         int sideDamage = Main.sideDamage(finalDamage, stat, out);
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
+        finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         return new Result(0, finalDamage, true, 0, 0);
     }

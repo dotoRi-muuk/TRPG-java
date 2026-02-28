@@ -25,7 +25,7 @@ public class Crossbowman {
      * @param out            출력 스트림
      * @return 결과 객체
      */
-    public static Result toss(int stat, int loadedArrows, boolean calculateRange, boolean eliminateError, PrintStream out) {
+    public static Result toss(int stat, int loadedArrows, boolean calculateRange, boolean eliminateError, int precision, PrintStream out) {
         out.println("석궁사수-던지기 사용");
 
         // 1. 판정 로직
@@ -66,6 +66,7 @@ public class Crossbowman {
         int sideDamage = Main.sideDamage(damageAfterModifier, stat, out);
         damageAfterModifier += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
+        damageAfterModifier = Main.criticalHit(precision, damageAfterModifier, out);
         out.printf("최종 데미지 : %d\n", damageAfterModifier);
 
         return new Result(0, damageAfterModifier, true, 0, 0);
@@ -83,7 +84,7 @@ public class Crossbowman {
      * @param out                출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, int loadedArrows, int executionArrows, boolean indiscriminateFire, boolean calculateRange, boolean eliminateError, PrintStream out) {
+    public static Result plain(int stat, int loadedArrows, int executionArrows, boolean indiscriminateFire, boolean calculateRange, boolean eliminateError, int precision, PrintStream out) {
         out.println("석궁사수-기본공격 사용");
 
         // 1. 판정 로직
@@ -150,6 +151,7 @@ public class Crossbowman {
         int sideDamage = Main.sideDamage(damageAfterModifier, stat, out);
         damageAfterModifier += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
+        damageAfterModifier = Main.criticalHit(precision, damageAfterModifier, out);
         out.printf("최종 데미지 : %d\n", damageAfterModifier);
 
         return new Result(0, damageAfterModifier, true, 0, 0);
@@ -163,7 +165,7 @@ public class Crossbowman {
      * @param out          출력 스트림
      * @return 결과 객체
      */
-    public static Result singleShot(int stat, int loadedArrows, PrintStream out) {
+    public static Result singleShot(int stat, int loadedArrows, int precision, PrintStream out) {
         out.println("석궁사수-단일사격 사용");
 
         if (loadedArrows < 1) {
@@ -179,6 +181,7 @@ public class Crossbowman {
 
         int sideDamage = Main.sideDamage(baseDamage, stat, out);
         int finalDamage = baseDamage + sideDamage;
+        finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
 
         return new Result(0, finalDamage, true, 0, 2);
@@ -192,7 +195,7 @@ public class Crossbowman {
      * @param out          출력 스트림
      * @return 결과 객체
      */
-    public static Result luminousArrow(int stat, int loadedArrows, PrintStream out) {
+    public static Result luminousArrow(int stat, int loadedArrows, int precision, PrintStream out) {
         out.println("석궁사수-발광 화살 사용");
 
         if (loadedArrows < 2) {
@@ -208,6 +211,7 @@ public class Crossbowman {
 
         int sideDamage = Main.sideDamage(baseDamage, stat, out);
         int finalDamage = baseDamage + sideDamage;
+        finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         out.println("효과: 다음 턴까지 적이 받는 데미지를 1.5배로 증가시킵니다.");
 
@@ -222,7 +226,7 @@ public class Crossbowman {
      * @param out          출력 스트림
      * @return 결과 객체
      */
-    public static Result paralysisArrow(int stat, int loadedArrows, PrintStream out) {
+    public static Result paralysisArrow(int stat, int loadedArrows, int precision, PrintStream out) {
         out.println("석궁사수-마비 화살 사용");
 
         if (loadedArrows < 1) {
@@ -240,6 +244,7 @@ public class Crossbowman {
 
         int sideDamage = Main.sideDamage(baseDamage, stat, out);
         int finalDamage = baseDamage + sideDamage;
+        finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         out.println("효과: 다음 턴까지 적의 모든 스탯을 2 감소시킵니다.");
 

@@ -9,19 +9,19 @@ public class Mage {
     /**
      * 마법사 기본공격 - 매지션 패시브 적용 (일반 D6)
      */
-    public static int plain(int intelligence, PrintStream out) {
+    public static int plain(int intelligence, int precision, PrintStream out) {
         out.println("마법사-기본공격 사용 (D6)");
         int defaultDamage = Main.dice(1, 6, out);
         int sideDamage = Main.sideDamage(defaultDamage, intelligence, out);
         int totalDamage = defaultDamage + sideDamage;
         out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, totalDamage);
-        return totalDamage;
+        return Main.criticalHit(precision, totalDamage, out);
     }
 
     /**
      * 마법사 기본공격 - 매지션 패시브 적용 (마나 소모 D8)
      */
-    public static int plain(int intelligence, boolean useMana, PrintStream out) {
+    public static int plain(int intelligence, boolean useMana, int precision, PrintStream out) {
         if (useMana) {
             out.println("마법사-기본공격 사용 (마나 1 소모, D8)");
             out.println("※ 마나 1 소모");
@@ -29,9 +29,9 @@ public class Mage {
             int sideDamage = Main.sideDamage(defaultDamage, intelligence, out);
             int totalDamage = defaultDamage + sideDamage;
             out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, totalDamage);
-            return totalDamage;
+            return Main.criticalHit(precision, totalDamage, out);
         } else {
-            return plain(intelligence, out);
+            return plain(intelligence, precision, out);
         }
     }
 
@@ -39,7 +39,7 @@ public class Mage {
      * 마탄 스킬
      * D8 x 3
      */
-    public static int magicBullet(int intelligence, PrintStream out) {
+    public static int magicBullet(int intelligence, int precision, PrintStream out) {
         out.println("마법사-마탄 스킬 사용");
         int baseDamage = 0;
 
@@ -52,14 +52,14 @@ public class Mage {
         int sideDamage = Main.sideDamage(baseDamage, intelligence, out);
         int totalDamage = baseDamage + sideDamage;
         out.printf("총 데미지 : %d + %d = %d%n", baseDamage, sideDamage, totalDamage);
-        return totalDamage;
+        return Main.criticalHit(precision, totalDamage, out);
     }
 
     /**
      * 마나 블래스트 스킬
      * D6 x 6 + 소모한 추가 마나
      */
-    public static int manaBlast(int intelligence, int additionalMana, PrintStream out) {
+    public static int manaBlast(int intelligence, int additionalMana, int precision, PrintStream out) {
         out.println("마법사-마나 블래스트 스킬 사용");
         out.printf("추가 소모 마나: %d (기본 8 + 추가 %d = 총 %d)%n", additionalMana, additionalMana, 8 + additionalMana);
 
@@ -76,7 +76,7 @@ public class Mage {
         int sideDamage = Main.sideDamage(baseDamage, intelligence, out);
         int totalDamage = baseDamage + sideDamage;
         out.printf("총 데미지 : %d + %d(추가 마나 포함) + %d = %d%n", baseDamage - additionalMana, additionalMana, sideDamage, totalDamage);
-        return totalDamage;
+        return Main.criticalHit(precision, totalDamage, out);
     }
 
     /**

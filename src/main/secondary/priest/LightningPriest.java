@@ -22,7 +22,7 @@ public class LightningPriest {
      * @param out            출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, boolean monopoly, double monopolyAmount, boolean piety, PrintStream out) {
+    public static Result plain(int stat, boolean monopoly, double monopolyAmount, boolean piety, int precision, PrintStream out) {
         out.println("번개의 사제-기본공격 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -45,6 +45,7 @@ public class LightningPriest {
         int sideDamage = Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
+        damage = Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d\n", damage);
         return new Result(0, damage, true, 0, 0, Map.of());
     }
@@ -59,7 +60,7 @@ public class LightningPriest {
      * @param out            출력 스트림
      * @return 결과 객체
      */
-    public static Result spark(int stat, boolean monopoly, double monopolyAmount, boolean piety, PrintStream out) {
+    public static Result spark(int stat, boolean monopoly, double monopolyAmount, boolean piety, int precision, PrintStream out) {
         out.println("스파크 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) {
@@ -81,6 +82,7 @@ public class LightningPriest {
         int sideDamage = Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
+        damage = Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d\n", damage);
         return new Result(0, damage, true, 1, 0, Map.of());
     }
@@ -96,7 +98,7 @@ public class LightningPriest {
      * @param out            출력 스트림
      * @return 결과 객체
      */
-    public static Result chainLightning(int stat, boolean monopoly, double monopolyAmount, boolean piety, PrintStream out) {
+    public static Result chainLightning(int stat, boolean monopoly, double monopolyAmount, boolean piety, int precision, PrintStream out) {
         out.println("체인 라이트닝 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) {
@@ -119,6 +121,7 @@ public class LightningPriest {
         int sideDamage = Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
+        damage = Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d\n", damage);
 
         out.println();
@@ -140,7 +143,7 @@ public class LightningPriest {
      * @param out            출력 스트림
      * @return 결과 객체
      */
-    public static Result electricField(int stat, int chantTurns, boolean monopoly, double monopolyAmount, boolean piety, PrintStream out) {
+    public static Result electricField(int stat, int chantTurns, boolean monopoly, double monopolyAmount, boolean piety, int precision, PrintStream out) {
         out.println("일렉트릭 필드 사용 (영창 " + chantTurns + "턴)");
 
         // Buff output
@@ -174,6 +177,7 @@ public class LightningPriest {
         int sideDamage = Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
+        damage = Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d\n", damage);
 
         return new Result(0, damage, true, 8, 0, Map.of());
@@ -189,7 +193,7 @@ public class LightningPriest {
      * @param out            출력 스트림
      * @return 결과 객체
      */
-    public static Result strike(int stat, boolean monopoly, double monopolyAmount, boolean piety, PrintStream out) {
+    public static Result strike(int stat, boolean monopoly, double monopolyAmount, boolean piety, int precision, PrintStream out) {
         out.println("스트라이크 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) {
@@ -211,6 +215,7 @@ public class LightningPriest {
         int sideDamage = Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
+        damage = Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d\n", damage);
         return new Result(0, damage, true, 2, 0, Map.of());
     }
@@ -225,7 +230,7 @@ public class LightningPriest {
      * @param out            출력 스트림
      * @return 결과 객체
      */
-    public static Result divineThunderStrike(int stat, boolean monopoly, double monopolyAmount, boolean piety, PrintStream out) {
+    public static Result divineThunderStrike(int stat, boolean monopoly, double monopolyAmount, boolean piety, int precision, PrintStream out) {
         out.println("신뇌격 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) {
@@ -247,6 +252,7 @@ public class LightningPriest {
         int sideDamage = Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
+        damage = Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d\n", damage);
         return new Result(0, damage, true, 7, 0, Map.of());
     }
