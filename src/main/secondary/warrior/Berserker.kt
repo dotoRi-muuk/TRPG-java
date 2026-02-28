@@ -243,7 +243,7 @@ class Berserker {
      * @param out 출력 스트림
      * @return 결과 객체 (damageTaken = 자해 피해량)
      */
-    fun adrenaline(maxHp: Int, out: PrintStream): main.Result {
+    private fun adrenaline(maxHp: Int, out: PrintStream): main.Result {
         out.println("버서커 - 아드레날린 사용")
         val selfDamage = (maxHp * 0.1).roundToInt()
         out.println("아드레날린 자해 데미지 (최대 체력의 10%): $selfDamage")
@@ -260,7 +260,7 @@ class Berserker {
      * @param out 출력 스트림
      * @return 결과 객체 (damageTaken 음수 = 회복량)
      */
-    fun overcome(currentHp: Int, maxHp: Int, damageDealtThisTurn: Int, out: PrintStream): main.Result {
+    private fun overcome(currentHp: Int, maxHp: Int, damageDealtThisTurn: Int, out: PrintStream): main.Result {
         out.println("버서커 - 극복 사용")
         if (currentHp > maxHp * 0.05) {
             out.println("체력이 5% 이하가 아닙니다. 기술 사용 실패.")
@@ -278,7 +278,7 @@ class Berserker {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    fun instillFear(currentHp: Int, maxHp: Int, out: PrintStream): main.Result {
+    private fun instillFear(currentHp: Int, maxHp: Int, out: PrintStream): main.Result {
         out.println("버서커 - 공포 새기기 사용")
         if (currentHp > maxHp * 0.15) {
             out.println("체력이 15% 이하가 아닙니다. 기술 사용 실패.")
@@ -294,7 +294,7 @@ class Berserker {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    fun resistance(out: PrintStream): main.Result {
+    private fun resistance(out: PrintStream): main.Result {
         out.println("버서커 - 저항 사용")
         out.println("다음 턴까지 받는 데미지 50% 감소")
         out.println("다음 턴 가한 피해만큼 그 다음 턴까지 지속되는 쉴드 획득")
