@@ -1248,4 +1248,10 @@ async function calculateEssence(essenceType) {
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     addLog('🎮 TRPG 데미지 계산기가 시작되었습니다!');
+
+    // Prevent skill buttons from submitting any enclosing form so that
+    // input values typed within the same job are preserved when switching skills.
+    document.querySelectorAll('.skill-form .btn-skill').forEach(btn => {
+        btn.addEventListener('click', e => e.preventDefault());
+    });
 });
