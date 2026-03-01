@@ -874,14 +874,34 @@
                             <label for="spearman-stat">스탯 (힘)</label>
                             <input type="number" id="spearman-stat" value="10" min="1">
                         </div>
+                        <div class="form-group">
+                            <label for="spearman-linkSuccessCount">연계 성공 횟수</label>
+                            <input type="number" id="spearman-linkSuccessCount" value="0" min="0">
+                        </div>
                         <div class="form-group checkbox-group">
                             <label>
                                 <input type="checkbox" id="spearman-isAdaptationActive">
                                 적응 스킬 (연계 10회↑ 후 3턴간 [연계] 400%)
                             </label>
                         </div>
+                        <div class="form-group">
+                            <label for="spearman-splendorTurns">현란함 지속 턴 수</label>
+                            <input type="number" id="spearman-splendorTurns" value="0" min="0">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="spearman-isSplendorActive">
+                                현란함 스킬 (지속 턴 × 50% 데미지 증가)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="spearman-isAccelerationActive">
+                                가속 스킬 (연계 성공 횟수 / 2 힘/민첩 증가)
+                            </label>
+                        </div>
                     </div>
-                    <p class="note" style="font-size: 0.9em; color: #666;">※ 약점파악: 기본 기술 50%, [연계]기술 200%<br>※ 적응 + 약점파악: 200% × 400% = 800%</p>
+                    <p class="note" style="font-size: 0.9em; color: #666;">※ 약점파악: 기본 기술 50%, [연계]기술 200%<br>※ 적응 + 약점파악: 200% × 400% = 800%<br>※ 현란함: 지속 턴 × 50% 데미지 증가<br>※ 가속: 연계 성공 횟수 / 2 만큼 힘/민첩 증가</p>
                     <div class="skill-buttons">
                         <h4>기본 기술 (50%)</h4>
                         <button onclick="calculateSpearman('plain')" class="btn btn-skill">기본공격 (D6)</button>
