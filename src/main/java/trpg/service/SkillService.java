@@ -507,6 +507,10 @@ public class SkillService {
             case "agi" -> "민첩";
             case "adaptation" -> "적응 여부";
             case "linkSuccessCount" -> "연계 성공 횟수";
+            case "isSplendorActive" -> "현란함 여부";
+            case "splendorTurns" -> "현란함 지속 턴 수";
+            case "isAccelerationActive" -> "가속 여부";
+            case "turnsSustained" -> "지속 턴 수";
             case "totalCast" -> "총 영창 시간";
             case "remainingCast" -> "남은 영창 시간";
             default -> paramName;

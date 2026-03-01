@@ -75,6 +75,10 @@ class SpearMaster {
      * @param stat 사용할 스탯
      * @param agi 민첩 스탯 (빈틈 패시브용)
      * @param precision 정밀 스탯 (치명타 판정)
+     * @param isSplendorActive 현란함 스킬 적용 여부
+     * @param splendorTurns 현란함 지속 턴 수
+     * @param isAccelerationActive 가속 스킬 적용 여부
+     * @param linkSuccessCount 전투 중 [연계] 성공 횟수
      * @param out 출력 스트림
      * @return 결과 객체
      */
@@ -82,10 +86,14 @@ class SpearMaster {
         stat: Int,
         agi: Int,
         precision: Int,
+        isSplendorActive: Boolean,
+        splendorTurns: Int,
+        isAccelerationActive: Boolean,
+        linkSuccessCount: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - 돌려 찌르기 사용")
-        return normalAttack(stat, agi, 1, 8, false, false, 1, precision, out)
+        return normalAttack(stat, agi, 1, 8, false, false, 1, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, out)
     }
 
     /**
@@ -94,6 +102,10 @@ class SpearMaster {
      * @param stat 사용할 스탯
      * @param agi 민첩 스탯 (빈틈 패시브용)
      * @param precision 정밀 스탯 (치명타 판정)
+     * @param isSplendorActive 현란함 스킬 적용 여부
+     * @param splendorTurns 현란함 지속 턴 수
+     * @param isAccelerationActive 가속 스킬 적용 여부
+     * @param linkSuccessCount 전투 중 [연계] 성공 횟수
      * @param out 출력 스트림
      * @return 결과 객체
      */
@@ -101,11 +113,15 @@ class SpearMaster {
         stat: Int,
         agi: Int,
         precision: Int,
+        isSplendorActive: Boolean,
+        splendorTurns: Int,
+        isAccelerationActive: Boolean,
+        linkSuccessCount: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - 회전 타격 사용")
         out.println("[연계] 획득")
-        return normalAttack(stat, agi, 1, 10, false, false, 2, precision, out)
+        return normalAttack(stat, agi, 1, 10, false, false, 2, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, out)
     }
 
     /**
@@ -114,6 +130,10 @@ class SpearMaster {
      * @param stat 사용할 스탯
      * @param agi 민첩 스탯 (빈틈 패시브용)
      * @param precision 정밀 스탯 (치명타 판정)
+     * @param isSplendorActive 현란함 스킬 적용 여부
+     * @param splendorTurns 현란함 지속 턴 수
+     * @param isAccelerationActive 가속 스킬 적용 여부
+     * @param linkSuccessCount 전투 중 [연계] 성공 횟수
      * @param out 출력 스트림
      * @return 결과 객체
      */
@@ -121,12 +141,16 @@ class SpearMaster {
         stat: Int,
         agi: Int,
         precision: Int,
+        isSplendorActive: Boolean,
+        splendorTurns: Int,
+        isAccelerationActive: Boolean,
+        linkSuccessCount: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - 하단 베기 사용")
         out.println("상대에게 수비 불가 부여")
         out.println("[연계] 획득")
-        return normalAttack(stat, agi, 1, 6, false, false, 2, precision, out)
+        return normalAttack(stat, agi, 1, 6, false, false, 2, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, out)
     }
 
     /**
@@ -136,6 +160,10 @@ class SpearMaster {
      * @param agi 민첩 스탯 (빈틈 패시브용)
      * @param adaptation 적응 스킬 적용 여부
      * @param precision 정밀 스탯 (치명타 판정)
+     * @param isSplendorActive 현란함 스킬 적용 여부
+     * @param splendorTurns 현란함 지속 턴 수
+     * @param isAccelerationActive 가속 스킬 적용 여부
+     * @param linkSuccessCount 전투 중 [연계] 성공 횟수
      * @param out 출력 스트림
      * @return 결과 객체
      */
@@ -144,10 +172,14 @@ class SpearMaster {
         agi: Int,
         adaptation: Boolean,
         precision: Int,
+        isSplendorActive: Boolean,
+        splendorTurns: Int,
+        isAccelerationActive: Boolean,
+        linkSuccessCount: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - [연계] 정면 찌르기 사용")
-        return normalAttack(stat, agi, 2, 10, true, adaptation, 1, precision, out)
+        return normalAttack(stat, agi, 2, 10, true, adaptation, 1, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, out)
     }
 
     /**
@@ -157,6 +189,10 @@ class SpearMaster {
      * @param agi 민첩 스탯 (빈틈 패시브용)
      * @param adaptation 적응 스킬 적용 여부
      * @param precision 정밀 스탯 (치명타 판정)
+     * @param isSplendorActive 현란함 스킬 적용 여부
+     * @param splendorTurns 현란함 지속 턴 수
+     * @param isAccelerationActive 가속 스킬 적용 여부
+     * @param linkSuccessCount 전투 중 [연계] 성공 횟수
      * @param out 출력 스트림
      * @return 결과 객체
      */
@@ -165,10 +201,14 @@ class SpearMaster {
         agi: Int,
         adaptation: Boolean,
         precision: Int,
+        isSplendorActive: Boolean,
+        splendorTurns: Int,
+        isAccelerationActive: Boolean,
+        linkSuccessCount: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - [연계] 일섬창 사용")
-        return normalAttack(stat, agi, 4, 8, true, adaptation, 3, precision, out)
+        return normalAttack(stat, agi, 4, 8, true, adaptation, 3, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, out)
     }
 
     /**
@@ -178,6 +218,10 @@ class SpearMaster {
      * @param agi 민첩 스탯 (빈틈 패시브용)
      * @param adaptation 적응 스킬 적용 여부
      * @param precision 정밀 스탯 (치명타 판정)
+     * @param isSplendorActive 현란함 스킬 적용 여부
+     * @param splendorTurns 현란함 지속 턴 수
+     * @param isAccelerationActive 가속 스킬 적용 여부
+     * @param linkSuccessCount 전투 중 [연계] 성공 횟수
      * @param out 출력 스트림
      * @return 결과 객체
      */
@@ -186,10 +230,14 @@ class SpearMaster {
         agi: Int,
         adaptation: Boolean,
         precision: Int,
+        isSplendorActive: Boolean,
+        splendorTurns: Int,
+        isAccelerationActive: Boolean,
+        linkSuccessCount: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - [연계] 천뢰격 사용")
-        return normalAttack(stat, agi, 5, 12, true, adaptation, 5, precision, out)
+        return normalAttack(stat, agi, 5, 12, true, adaptation, 5, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, out)
     }
 
     /**
@@ -216,11 +264,13 @@ class SpearMaster {
      * 창술사 현란함 : 전투 중 [연계] 5회 이상 성공 후 사용 가능. 데미지 증가: ([연계] 끊기기 전 지속 시간) × 50%. (마나 5 소모, 쿨타임 8턴)
      *
      * @param linkSuccessCount 전투 중 [연계] 성공 횟수
+     * @param turnsSustained [연계] 끊기기 전 지속 턴 수
      * @param out 출력 스트림
      * @return 결과 객체
      */
     fun splendor(
         linkSuccessCount: Int,
+        turnsSustained: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - 현란함 사용")
@@ -228,7 +278,8 @@ class SpearMaster {
             out.println("현란함 사용 불가: 전투 중 [연계] 성공 횟수가 5회 미만입니다.")
             return main.Result(0, 0, false, 0, 0)
         }
-        out.println("데미지 증가: ([연계] 끊기기 전 지속 시간) × 50%")
+        val damageIncrease = turnsSustained * 50
+        out.println("데미지 증가: $turnsSustained 턴 × 50% = ${damageIncrease}% 증가")
         return main.Result(0, 0, true, 5, 0)
     }
 
@@ -278,9 +329,19 @@ class SpearMaster {
         adaptation: Boolean,
         staminaCost: Int,
         precision: Int,
+        isSplendorActive: Boolean,
+        splendorTurns: Int,
+        isAccelerationActive: Boolean,
+        linkSuccessCount: Int,
         out: java.io.PrintStream
     ): main.Result {
-        if (main.Main.verdict(stat, out) <= 0) {
+        val effectiveStat = if (isAccelerationActive) {
+            val increase = linkSuccessCount / 2
+            out.println("가속 스킬 적용: 힘/민첩 +$increase 증가")
+            stat + increase
+        } else stat
+        val effectiveAgi = if (isAccelerationActive) agi + linkSuccessCount / 2 else agi
+        if (main.Main.verdict(effectiveStat, out) <= 0) {
             return main.Result(0, 0, false, 0, staminaCost)
         }
         var damage = Main.dice(dices, sides, out)
@@ -296,14 +357,19 @@ class SpearMaster {
             damage = (damage * 0.5).toInt()
             out.println("약점파악 패시브 적용: 기본 기술 데미지 50% 감소")
         }
+        if (isSplendorActive && splendorTurns > 0) {
+            val damageIncrease = splendorTurns * 50
+            damage = (damage * (1 + splendorTurns * 0.5)).toInt()
+            out.println("현란함 스킬 적용: 데미지 ${damageIncrease}% 증가")
+        }
         out.println("빈틈 패시브 적용 시도!")
-        if (combo && Main.verdict(agi, out) > 0) {
+        if (combo && Main.verdict(effectiveAgi, out) > 0) {
             out.println("빈틈 패시브 적용: 민첩 판정 성공으로 추가 공격 가능")
-            val extraDamage = plain(stat, precision, out).damageDealt
+            val extraDamage = plain(effectiveStat, precision, out).damageDealt
             out.println("추가 공격 데미지 : $extraDamage")
             damage += extraDamage
         }
-        val sideDamage = Main.sideDamage(damage, stat, out)
+        val sideDamage = Main.sideDamage(damage, effectiveStat, out)
         out.println("데미지 보정치 : $sideDamage")
         val totalDamage = damage + sideDamage
         out.println("최종 데미지 : $totalDamage")

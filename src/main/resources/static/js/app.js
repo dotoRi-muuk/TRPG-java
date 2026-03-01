@@ -556,12 +556,16 @@ async function calculateCrossbowman(skill) {
 async function calculateSpearman(skill) {
     const stat = parseInt(document.getElementById('spearman-stat').value) || 10;
     const isAdaptationActive = document.getElementById('spearman-isAdaptationActive').checked;
+    const isSplendorActive = document.getElementById('spearman-isSplendorActive').checked;
+    const splendorTurns = parseInt(document.getElementById('spearman-splendorTurns').value) || 0;
+    const isAccelerationActive = document.getElementById('spearman-isAccelerationActive').checked;
+    const linkSuccessCount = parseInt(document.getElementById('spearman-linkSuccessCount').value) || 0;
     
     try {
         const response = await fetch(`${API_BASE}/spearman/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat, isAdaptationActive })
+            body: JSON.stringify({ stat, isAdaptationActive, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount })
         });
         
         const data = await response.json();
