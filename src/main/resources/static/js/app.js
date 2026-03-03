@@ -465,24 +465,33 @@ async function calculateSniper(skill) {
     const numBuffs = parseInt(document.getElementById('sniper-numBuffs').value) || 0;
     const notAttackedFor5Turns = document.getElementById('sniper-notAttackedFor5Turns').checked;
     const noBasicAttackUsed = document.getElementById('sniper-noBasicAttackUsed').checked;
-    
-    // Additional buff options for 'fire' skill
+    const isSureHit = document.getElementById('sniper-isSureHit')?.checked || false;
     const isAssembled = document.getElementById('sniper-isAssembled')?.checked || false;
+    const isAimed = document.getElementById('sniper-isAimed')?.checked || false;
     const isStabilized = document.getElementById('sniper-isStabilized')?.checked || false;
     const isImmersed = document.getElementById('sniper-isImmersed')?.checked || false;
     const isConfident = document.getElementById('sniper-isConfident')?.checked || false;
     const isNerveMax = document.getElementById('sniper-isNerveMax')?.checked || false;
-    
+
+    const turnsSinceAttack = notAttackedFor5Turns ? 5 : 0;
+
     try {
         const response = await fetch(`${API_BASE}/sniper/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                stat, numBuffs, notAttackedFor5Turns, noBasicAttackUsed,
-                isAssembled, isStabilized, isImmersed, isConfident, isNerveMax
+            body: JSON.stringify({
+                stat, numBuffs, turnsSinceAttack,
+                deathBullet: noBasicAttackUsed,
+                assemble: isAssembled,
+                aim: isAimed,
+                sureHit: isSureHit,
+                stabilize: isStabilized,
+                immersion: isImmersed,
+                conviction: isConfident,
+                heightenedSenses: isNerveMax
             })
         });
-        
+
         const data = await response.json();
         showDamageResult(data.damage, '저격수 - ' + getSkillName('sniper', skill));
         addLog(`🎯 저격수 - ${getSkillName('sniper', skill)}`, data.log);

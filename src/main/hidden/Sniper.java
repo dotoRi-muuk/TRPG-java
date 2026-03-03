@@ -30,6 +30,7 @@ public class Sniper {
      * @param immersion        몰입 스킬 적용 여부 (데미지 +100%)
      * @param conviction       확신 스킬 적용 여부 (최종 데미지 x2.5)
      * @param heightenedSenses 신경 극대화 스킬 적용 여부 (데미지 +1000%)
+     * @param numBuffs         추가 외부 버프 수 (정조준 패시브에 반영)
      * @param precision        정밀 스탯
      * @param staminaUsed      소모 스태미나
      * @param out              출력 스트림
@@ -38,9 +39,9 @@ public class Sniper {
     public static Result calculate(int dices, int sides, int stat, boolean vitalAim, boolean deathBullet,
                                    boolean assemble, boolean aim, boolean sureHit, boolean stabilize,
                                    boolean immersion, boolean conviction, boolean heightenedSenses,
-                                   int precision, int staminaUsed, PrintStream out) {
+                                   int numBuffs, int precision, int staminaUsed, PrintStream out) {
         // 정조준: 버프 스킬 1개당 데미지 +50%
-        int buffCount = 0;
+        int buffCount = numBuffs;
         if (sureHit) buffCount++;
         if (stabilize) buffCount++;
         if (immersion) buffCount++;
@@ -125,13 +126,14 @@ public class Sniper {
      * @param immersion        몰입 스킬 적용 여부 (데미지 +100%)
      * @param conviction       확신 스킬 적용 여부 (최종 데미지 x2.5)
      * @param heightenedSenses 신경 극대화 스킬 적용 여부 (데미지 +1000%)
+     * @param numBuffs         추가 외부 버프 수 (정조준 패시브에 반영)
      * @param precision        정밀 스탯
      * @param out              출력 스트림
      * @return 결과 객체
      */
     public static Result plain(int stat, boolean vitalAim, boolean assemble, boolean aim,
                                boolean sureHit, boolean stabilize, boolean immersion,
-                               boolean conviction, boolean heightenedSenses, int precision, PrintStream out) {
+                               boolean conviction, boolean heightenedSenses, int numBuffs, int precision, PrintStream out) {
         out.println("저격수-기본공격 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -144,7 +146,7 @@ public class Sniper {
         }
 
         return calculate(1, 6, stat, vitalAim, false, assemble, aim,
-                sureHit, stabilize, immersion, conviction, heightenedSenses, precision, 0, out);
+                sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, 0, out);
     }
 
     /**
@@ -160,13 +162,14 @@ public class Sniper {
      * @param immersion        몰입 스킬 적용 여부 (데미지 +100%)
      * @param conviction       확신 스킬 적용 여부 (최종 데미지 x2.5)
      * @param heightenedSenses 신경 극대화 스킬 적용 여부 (데미지 +1000%)
+     * @param numBuffs         추가 외부 버프 수 (정조준 패시브에 반영)
      * @param precision        정밀 스탯
      * @param out              출력 스트림
      * @return 결과 객체
      */
     public static Result fire(int stat, boolean vitalAim, boolean deathBullet, boolean assemble, boolean aim,
                               boolean sureHit, boolean stabilize, boolean immersion,
-                              boolean conviction, boolean heightenedSenses, int precision, PrintStream out) {
+                              boolean conviction, boolean heightenedSenses, int numBuffs, int precision, PrintStream out) {
         out.println("저격수-발사 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -180,6 +183,6 @@ public class Sniper {
 
         out.println("발사 스킬 적용: 5D20 데미지");
         return calculate(5, 20, stat, vitalAim, deathBullet, assemble, aim,
-                sureHit, stabilize, immersion, conviction, heightenedSenses, precision, 10, out);
+                sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, 10, out);
     }
 }
