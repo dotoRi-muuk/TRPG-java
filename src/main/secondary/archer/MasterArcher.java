@@ -19,13 +19,13 @@ public class MasterArcher {
      * @param isFirstTarget 포착 패시브 (첫 대상 200%, 그외 50%)
      * @param isEmergency 긴급 사격 패시브 (기본 공격 연속 2회 사용)
      * @param ability 적용된 기술
-     * @param preyEnabled 사냥감 스킬 활성화 여부 (데미지 250%)
-     * @param isArrowReinforced 화살 강화 스킬 활성화 여부 (데미지 200%)
+     * @param preyEnabled 사냥감 스킬 활성화 여부 (데미지 400%)
+     * @param arrowOverheatCount 화살 과열 스킬 스택 수 (전 턴 기술 수, 스택당 60% 증가)
      * @param calm 차분함 스킬 활성화 여부 (데미지 200%)
-     * @param cracking 흐름 깨기 스킬 활성화 여부 (데미지 300%)
-     * @param stage 무대 스킬 활성화 여부 (데미지 200%)
+     * @param cracking 흐름 깨기 스킬 활성화 여부 (데미지 400%)
+     * @param stageTurn 무대 스킬 지속 턴 (턴당 70% 증가, 최대 +500%)
      */
-    public static Result plain(int stat, boolean isHeavyString, boolean isFirstTarget, boolean isEmergency, MasterArcherPassive ability, boolean preyEnabled, boolean isArrowReinforced, boolean calm, boolean cracking, boolean stage, int precision, PrintStream out) {
+    public static Result plain(int stat, boolean isHeavyString, boolean isFirstTarget, boolean isEmergency, MasterArcherPassive ability, boolean preyEnabled, int arrowOverheatCount, boolean calm, boolean cracking, int stageTurn, int precision, PrintStream out) {
 
         if (isEmergency && isHeavyString) {
             out.println("긴급 사격과 무거운 시위는 동시에 사용할 수 없습니다!");
@@ -110,9 +110,9 @@ public class MasterArcher {
             }
             case PENETRATING_ARROW -> {
                 if (isHeavyString) {
-                    dices = 1;
+                    dices = 2;
                     sides = 20;
-                    out.println("관통 화살 기술 적용: 2D8 → 1D20");
+                    out.println("관통 화살 기술 적용: 2D8 → 2D20");
                 } else {
                     dices = 2;
                     sides = 12;
@@ -138,24 +138,25 @@ public class MasterArcher {
             out.println("포착 패시브 적용: 첫 타격 이외 대상 데미지 50%");
         }
         if (preyEnabled) {
-            modifier *= 2.5f;
-            out.println("사냥감 스킬 적용: 데미지 2.5배");
+            modifier *= 4.0f;
+            out.println("사냥감 스킬 적용: 데미지 4배");
         }
-        if (isArrowReinforced) {
-            modifier *= 2.0f;
-            out.println("화살 강화 스킬 적용: 데미지 2배");
+        if (arrowOverheatCount > 0) {
+            modifier *= (1.0f + arrowOverheatCount * 0.6f);
+            out.printf("화살 과열 스킬 적용: 데미지 %.1f배 (스택 %d)%n", 1.0f + arrowOverheatCount * 0.6f, arrowOverheatCount);
         }
         if (calm) {
             modifier *= 2.0f;
             out.println("차분함 스킬 적용: 데미지 2배");
         }
         if (cracking) {
-            modifier *= 3.0f;
-            out.println("흐름 깨기 스킬 적용: 데미지 3배");
+            modifier *= 4.0f;
+            out.println("흐름 깨기 스킬 적용: 데미지 4배");
         }
-        if (stage) {
-            modifier *= 2.0f;
-            out.println("무대 스킬 적용: 데미지 2배");
+        if (stageTurn > 0) {
+            float stageBonus = Math.min(stageTurn * 0.7f, 5.0f);
+            modifier *= (1.0f + stageBonus);
+            out.printf("무대 스킬 적용: 데미지 %.1f배 (%d턴 지속)%n", 1.0f + stageBonus, stageTurn);
         }
         out.printf("총 배율: %s%n", modifier);
 

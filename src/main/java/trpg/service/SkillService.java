@@ -433,9 +433,11 @@ public class SkillService {
             case "ability" -> "적용 기술";
             case "preyEnabled" -> "사냥감 스킬 여부";
             case "isArrowReinforced" -> "화살 강화 여부";
+            case "arrowOverheatCount" -> "화살 과열 스택 (전 턴 기술 수)";
             case "calm" -> "차분함 여부";
             case "cracking" -> "흐름 깨기 여부";
             case "stage" -> "무대 여부";
+            case "stageTurn" -> "무대 지속 턴";
             case "assassinationTarget" -> "암살 대상 여부";
             case "powerOverLifeAndDeath" -> "생사여탈 여부";
             case "confirmKill" -> "확인 사살 여부";
