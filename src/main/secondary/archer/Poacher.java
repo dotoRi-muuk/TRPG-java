@@ -13,17 +13,18 @@ import java.io.PrintStream;
 public class Poacher {
 
     /**
-     * 덫 깔기 : 적이 공격 시도 시 판정을 시행합니다. 판정 성공 시 1D10의 데미지를 입히며, 해당 턴에 한하여 적의 공격 데미지가 75%로 감소합니다.
+     * 덫 깔기 : 적이 공격 시도 시 판정을 시행합니다. 판정 성공 시 3D10의 데미지를 입힙니다.
      *
      * @param stat                 사용할 스탯
      * @param damageTaken          상대에게 받은 데미지
-     * @param hunting              사냥 패시브 적용 여부 (디버프 대상 데미지 150%)
-     * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +2)
-     * @param contemptForTheWeak   약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
+     * @param hunting              사냥 패시브 적용 여부 (디버프 대상 데미지 200%)
+     * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +3)
+     * @param contemptForTheWeak   약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 300%)
+     * @param overwhelm            압도 스킬 적용 여부 (데미지 500%)
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result setTrap(int stat, int damageTaken, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, int precision, PrintStream out) {
+    public static Result setTrap(int stat, int damageTaken, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, PrintStream out) {
         int staminaChange = 3;
 
         out.println("밀렵꾼-덫 깔기 사용");
@@ -31,25 +32,29 @@ public class Poacher {
         int effectiveStat = stat;
 
         if (survivalOfTheFittest) {
-            out.println("약육강식 패시브 적용: 모든 스탯 +2");
-            effectiveStat += 2;
+            out.println("약육강식 패시브 적용: 모든 스탯 +3");
+            effectiveStat += 3;
         }
 
         int verdict = Main.verdict(effectiveStat, out);
 
         if (verdict <= 0) return new Result(damageTaken, 0, false, 0, staminaChange);
 
-        int baseDamage = Main.dice(1, 10, out);
+        int baseDamage = Main.dice(3, 10, out);
         float modifier = 1.0f;
         out.printf("기본 데미지 : %d\n", baseDamage);
 
         if (hunting) {
-            out.println("사냥 패시브 적용: 디버프 대상 데미지 1.5배");
-            modifier *= 1.5f;
+            out.println("사냥 패시브 적용: 디버프 대상 데미지 2배");
+            modifier *= 2.0f;
         }
         if (contemptForTheWeak) {
-            out.println("약자멸시 스킬 적용: 데미지 2배");
-            modifier *= 2.0f;
+            out.println("약자멸시 스킬 적용: 데미지 3배");
+            modifier *= 3.0f;
+        }
+        if (overwhelm) {
+            out.println("압도 스킬 적용: 데미지 5배");
+            modifier *= 5.0f;
         }
         int finalDamage = (int) (baseDamage * modifier);
         out.printf("최종 데미지 : %d\n", finalDamage);
@@ -59,20 +64,22 @@ public class Poacher {
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
-        return new Result((int) (damageTaken * 0.75), finalDamage, true, 0, staminaChange);
+        out.println("Defense Disabled");
+        return new Result(damageTaken, finalDamage, true, 0, staminaChange);
     }
 
     /**
-     * 머리찍기 : 대상에게 1D8의 피해를 입힙니다.
+     * 머리찍기 : 대상에게 3D8의 피해를 입힙니다.
      *
      * @param stat                 사용할 스탯
-     * @param hunting              사냥 패시브 적용 여부 (디버프 대상 데미지 150%)
-     * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +2)
-     * @param contemptForTheWeak   약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
+     * @param hunting              사냥 패시브 적용 여부 (디버프 대상 데미지 200%)
+     * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +3)
+     * @param contemptForTheWeak   약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 300%)
+     * @param overwhelm            압도 스킬 적용 여부 (데미지 500%)
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result headSmash(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, int precision, PrintStream out) {
+    public static Result headSmash(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, PrintStream out) {
         int staminaChange = 1;
 
         out.println("밀렵꾼-머리찍기 사용");
@@ -80,25 +87,29 @@ public class Poacher {
         int effectiveStat = stat;
 
         if (survivalOfTheFittest) {
-            out.println("약육강식 패시브 적용: 모든 스탯 +2");
-            effectiveStat += 2;
+            out.println("약육강식 패시브 적용: 모든 스탯 +3");
+            effectiveStat += 3;
         }
 
         int verdict = Main.verdict(effectiveStat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 0);
 
-        int baseDamage = Main.dice(2, 12, out);
+        int baseDamage = Main.dice(3, 8, out);
         float modifier = 1.0f;
         out.printf("기본 데미지 : %d\n", baseDamage);
 
         if (hunting) {
-            out.println("사냥 패시브 적용: 디버프 대상 데미지 1.5배");
-            modifier *= 1.5f;
+            out.println("사냥 패시브 적용: 디버프 대상 데미지 2배");
+            modifier *= 2.0f;
         }
         if (contemptForTheWeak) {
-            out.println("약자멸시 스킬 적용: 데미지 2배");
-            modifier *= 2.0f;
+            out.println("약자멸시 스킬 적용: 데미지 3배");
+            modifier *= 3.0f;
+        }
+        if (overwhelm) {
+            out.println("압도 스킬 적용: 데미지 5배");
+            modifier *= 5.0f;
         }
         int finalDamage = (int) (baseDamage * modifier);
         out.printf("최종 데미지 : %d\n", finalDamage);
@@ -112,16 +123,17 @@ public class Poacher {
     }
 
     /**
-     * 올가미 탄 : 대상에게 1D8의 피해를 입힙니다. 다음 턴까지 적에게 행동 불가를 부여합니다.
+     * 올가미 탄 : 대상에게 3D8의 피해를 입힙니다. 다음 턴까지 적에게 행동 불가를 부여합니다.
      *
      * @param stat                 사용할 스탯
-     * @param hunting              사냥 패시브 적용 여부 (디버프 대상 데미지 150%)
-     * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +2)
-     * @param contemptForTheWeak   약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
+     * @param hunting              사냥 패시브 적용 여부 (디버프 대상 데미지 200%)
+     * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +3)
+     * @param contemptForTheWeak   약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 300%)
+     * @param overwhelm            압도 스킬 적용 여부 (데미지 500%)
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result snareShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, int precision, PrintStream out) {
+    public static Result snareShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, PrintStream out) {
         int staminaChange = 8;
 
         out.println("밀렵꾼-올가미 탄 사용");
@@ -129,25 +141,29 @@ public class Poacher {
         int effectiveStat = stat;
 
         if (survivalOfTheFittest) {
-            out.println("약육강식 패시브 적용: 모든 스탯 +2");
-            effectiveStat += 2;
+            out.println("약육강식 패시브 적용: 모든 스탯 +3");
+            effectiveStat += 3;
         }
 
         int verdict = Main.verdict(effectiveStat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, staminaChange);
 
-        int baseDamage = Main.dice(1, 8, out);
+        int baseDamage = Main.dice(3, 8, out);
         float modifier = 1.0f;
         out.printf("기본 데미지 : %d\n", baseDamage);
 
         if (hunting) {
-            out.println("사냥 패시브 적용: 디버프 대상 데미지 1.5배");
-            modifier *= 1.5f;
+            out.println("사냥 패시브 적용: 디버프 대상 데미지 2배");
+            modifier *= 2.0f;
         }
         if (contemptForTheWeak) {
-            out.println("약자멸시 스킬 적용: 데미지 2배");
-            modifier *= 2.0f;
+            out.println("약자멸시 스킬 적용: 데미지 3배");
+            modifier *= 3.0f;
+        }
+        if (overwhelm) {
+            out.println("압도 스킬 적용: 데미지 5배");
+            modifier *= 5.0f;
         }
         int finalDamage = (int) (baseDamage * modifier);
         out.printf("배율 적용 데미지 : %d\n", finalDamage);
@@ -162,16 +178,17 @@ public class Poacher {
     }
 
     /**
-     * 헤드샷 : 대상에게 2D12의 피해를 입힙니다.
+     * 헤드샷 : 대상에게 5D12의 피해를 입힙니다.
      *
      * @param stat                 사용할 스탯
-     * @param hunting              사냥 패시브 적용 여부 (디버프 대상 데미지 150%)
-     * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +2)
-     * @param contemptForTheWeak   약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
+     * @param hunting              사냥 패시브 적용 여부 (디버프 대상 데미지 200%)
+     * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +3)
+     * @param contemptForTheWeak   약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 300%)
+     * @param overwhelm            압도 스킬 적용 여부 (데미지 500%)
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result headShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, int precision, PrintStream out) {
+    public static Result headShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, PrintStream out) {
         int staminaChange = 4;
 
         out.println("밀렵꾼-헤드샷 사용");
@@ -179,25 +196,29 @@ public class Poacher {
         int effectiveStat = stat;
 
         if (survivalOfTheFittest) {
-            out.println("약육강식 패시브 적용: 모든 스탯 +2");
-            effectiveStat += 2;
+            out.println("약육강식 패시브 적용: 모든 스탯 +3");
+            effectiveStat += 3;
         }
 
         int verdict = Main.verdict(effectiveStat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, staminaChange);
 
-        int baseDamage = Main.dice(2, 12, out);
+        int baseDamage = Main.dice(5, 12, out);
         float modifier = 1.0f;
         out.printf("기본 데미지 : %d\n", baseDamage);
 
         if (hunting) {
-            out.println("사냥 패시브 적용: 디버프 대상 데미지 1.5배");
-            modifier *= 1.5f;
+            out.println("사냥 패시브 적용: 디버프 대상 데미지 2배");
+            modifier *= 2.0f;
         }
         if (contemptForTheWeak) {
-            out.println("약자멸시 스킬 적용: 데미지 2배");
-            modifier *= 2.0f;
+            out.println("약자멸시 스킬 적용: 데미지 3배");
+            modifier *= 3.0f;
+        }
+        if (overwhelm) {
+            out.println("압도 스킬 적용: 데미지 5배");
+            modifier *= 5.0f;
         }
         int finalDamage = (int) (baseDamage * modifier);
         out.printf("최종 데미지 : %d\n", finalDamage);
@@ -211,17 +232,18 @@ public class Poacher {
     }
 
     /**
-     * 기본공격 : 대상에게 2D4의 데미지를 입힙니다. (산탄 패시브 적용됨)
+     * 기본공격 : 대상에게 4D4의 데미지를 입힙니다. (산탄 패시브 적용됨)
      *
      * @param stat                 사용할 스탯
-     * @param hunting              사냥 패시브 (디버프 대상 150%)
-     * @param survivalOfTheFittest 약육강식 패시브 (자신 체력% > 적 체력% 시 스탯 +2)
-     * @param contemptForTheWeak   약자멸시 스킬 ((자신 체력% - 적 체력%) >= 10% 시 데미지 200%)
-     * @param reload               장전 기술 (다음 턴 데미지 2D4->2D6, 2D8->2D12)
+     * @param hunting              사냥 패시브 (디버프 대상 200%)
+     * @param survivalOfTheFittest 약육강식 패시브 (자신 체력% > 적 체력% 시 스탯 +3)
+     * @param contemptForTheWeak   약자멸시 스킬 ((자신 체력% - 적 체력%) >= 10% 시 데미지 300%)
+     * @param overwhelm            압도 스킬 (데미지 500%)
+     * @param reload               장전 기술 (다음 턴 데미지 4D4->4D6, 4D8->4D12)
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean reload, int precision, PrintStream out) {
+    public static Result plain(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, boolean reload, int precision, PrintStream out) {
         int staminaChange = 0;
 
         out.println("밀렵꾼-기본공격 사용");
@@ -229,31 +251,31 @@ public class Poacher {
         int effectiveStat = stat;
 
         if (survivalOfTheFittest) {
-            out.println("약육강식 패시브 적용: 모든 스탯 +2");
-            effectiveStat += 2;
+            out.println("약육강식 패시브 적용: 모든 스탯 +3");
+            effectiveStat += 3;
         }
 
         int verdict = Main.verdict(effectiveStat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 0);
 
-        int dices = 2, sides = 4; // 기본값 2D4
+        int dices = 4, sides = 4; // 기본값 4D4
 
         int buckshot = Main.dice(1, 20, out);
         boolean buckshotApplied = false;
 
-        if (buckshot - stat >= 10) {
-            out.printf("산탄 패시브 적용: 데미지 주사위 2D8로 변경 (스탯 %d - 주사위 %d >= 10)\n", stat, buckshot);
+        if (stat - buckshot >= 10) {
+            out.printf("산탄 패시브 적용: 데미지 주사위 4D8로 변경 (스탯 %d - 주사위 %d >= 10)\n", stat, buckshot);
             sides = 8;
             buckshotApplied = true;
         }
         if (reload) {
-            staminaChange += 2;
+            staminaChange += 3;
             if (buckshotApplied) {
-                out.println("장전 기술 적용: 데미지 주사위 2D12로 변경");
+                out.println("장전 기술 적용: 데미지 주사위 4D12로 변경");
                 sides = 12;
             } else {
-                out.println("장전 기술 적용: 데미지 주사위 2D6로 변경");
+                out.println("장전 기술 적용: 데미지 주사위 4D6로 변경");
                 sides = 6;
             }
         }
@@ -263,12 +285,16 @@ public class Poacher {
         out.printf("기본 데미지 : %d\n", baseDamage);
 
         if (hunting) {
-            out.println("사냥 패시브 적용: 디버프 대상 데미지 1.5배");
-            modifier *= 1.5f;
+            out.println("사냥 패시브 적용: 디버프 대상 데미지 2배");
+            modifier *= 2.0f;
         }
         if (contemptForTheWeak) {
-            out.println("약자멸시 스킬 적용: 데미지 2배");
-            modifier *= 2.0f;
+            out.println("약자멸시 스킬 적용: 데미지 3배");
+            modifier *= 3.0f;
+        }
+        if (overwhelm) {
+            out.println("압도 스킬 적용: 데미지 5배");
+            modifier *= 5.0f;
         }
         int finalDamage = (int) (baseDamage * modifier);
         out.printf("최종 데미지 : %d\n", finalDamage);
@@ -279,6 +305,94 @@ public class Poacher {
         finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         return new Result(0, finalDamage, true, 0, staminaChange);
+    }
 
+    /**
+     * 사냥터 : 2턴 동안 덫이 확정적으로 적중합니다.
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체
+     */
+    public static Result huntingGround(PrintStream out) {
+        out.println("밀렵꾼-사냥터 사용");
+        out.println("Traps hit reliably for 2 turns");
+        return new Result(0, 0, true, 3, 0);
+    }
+
+    /**
+     * 지뢰 : 적의 공격에 반응하여 5D12의 데미지를 입힙니다.
+     *
+     * @param stat                 사용할 스탯
+     * @param damageTaken          상대에게 받은 데미지
+     * @param hunting              사냥 패시브 적용 여부 (디버프 대상 데미지 200%)
+     * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +3)
+     * @param contemptForTheWeak   약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 300%)
+     * @param overwhelm            압도 스킬 적용 여부 (데미지 500%)
+     * @param out                  출력 스트림
+     * @return 결과 객체
+     */
+    public static Result landmine(int stat, int damageTaken, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, PrintStream out) {
+        out.println("밀렵꾼-지뢰 사용");
+
+        int effectiveStat = stat;
+
+        if (survivalOfTheFittest) {
+            out.println("약육강식 패시브 적용: 모든 스탯 +3");
+            effectiveStat += 3;
+        }
+
+        int verdict = Main.verdict(effectiveStat, out);
+
+        if (verdict <= 0) return new Result(damageTaken, 0, false, 6, 0);
+
+        int baseDamage = Main.dice(5, 12, out);
+        float modifier = 1.0f;
+        out.printf("기본 데미지 : %d\n", baseDamage);
+
+        if (hunting) {
+            out.println("사냥 패시브 적용: 디버프 대상 데미지 2배");
+            modifier *= 2.0f;
+        }
+        if (contemptForTheWeak) {
+            out.println("약자멸시 스킬 적용: 데미지 3배");
+            modifier *= 3.0f;
+        }
+        if (overwhelm) {
+            out.println("압도 스킬 적용: 데미지 5배");
+            modifier *= 5.0f;
+        }
+        int finalDamage = (int) (baseDamage * modifier);
+        out.printf("최종 데미지 : %d\n", finalDamage);
+
+        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out);
+        finalDamage += sideDamage;
+        out.printf("데미지 보정치 : %d\n", sideDamage);
+        finalDamage = Main.criticalHit(precision, finalDamage, out);
+        out.printf("최종 데미지 : %d\n", finalDamage);
+        return new Result(damageTaken, finalDamage, true, 6, 0);
+    }
+
+    /**
+     * 압도 : 압도 버프를 활성화합니다. 데미지 5배 효과를 부여합니다.
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체
+     */
+    public static Result overwhelm(PrintStream out) {
+        out.println("밀렵꾼-압도 사용");
+        out.println("압도 버프 활성화: 데미지 5배 (1턴)");
+        return new Result(0, 0, true, 7, 0);
+    }
+
+    /**
+     * 전리품 : 전리품 효과를 적용합니다.
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체
+     */
+    public static Result loot(PrintStream out) {
+        out.println("밀렵꾼-전리품 사용");
+        out.println("전리품 획득");
+        return new Result(0, 0, true, 5, 0);
     }
 }
