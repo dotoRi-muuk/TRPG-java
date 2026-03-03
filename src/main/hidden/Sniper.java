@@ -23,8 +23,10 @@ public class Sniper {
      * @param stat             사용할 스탯
      * @param vitalAim         급소조준 적용 여부 (5턴 이상 공격받지 않을 시 최종 데미지 x2)
      * @param deathBullet      죽음의 탄환 적용 여부 (기본 공격 미사용 시 발사 데미지 +400%)
-     * @param assemble         조립 기술 적용 여부 (최종 데미지 x1.5)
-     * @param aim              조준 기술 적용 여부 (수비 무시)
+     * @param secure           확보 기술 적용 여부 (정조준 버프 카운트)
+     * @param assemble         조립 기술 적용 여부 (최종 데미지 x1.5, 정조준 버프 카운트)
+     * @param load             장전 기술 적용 여부 (정조준 버프 카운트)
+     * @param aim              조준 기술 적용 여부 (수비 무시, 정조준 버프 카운트)
      * @param sureHit          필즉 스킬 적용 여부 (확정 명중)
      * @param stabilize        안정화 스킬 적용 여부 (데미지 -50%, 주사위 복제)
      * @param immersion        몰입 스킬 적용 여부 (데미지 +100%)
@@ -37,11 +39,16 @@ public class Sniper {
      * @return 결과 객체
      */
     public static Result calculate(int dices, int sides, int stat, boolean vitalAim, boolean deathBullet,
-                                   boolean assemble, boolean aim, boolean sureHit, boolean stabilize,
+                                   boolean secure, boolean assemble, boolean load, boolean aim,
+                                   boolean sureHit, boolean stabilize,
                                    boolean immersion, boolean conviction, boolean heightenedSenses,
                                    int numBuffs, int precision, int staminaUsed, PrintStream out) {
         // 정조준: 버프 스킬 1개당 데미지 +50%
         int buffCount = numBuffs;
+        if (secure) buffCount++;
+        if (assemble) buffCount++;
+        if (load) buffCount++;
+        if (aim) buffCount++;
         if (sureHit) buffCount++;
         if (stabilize) buffCount++;
         if (immersion) buffCount++;
@@ -119,8 +126,10 @@ public class Sniper {
      *
      * @param stat             사용할 스탯
      * @param vitalAim         급소조준 적용 여부 (5턴 이상 공격받지 않을 시 최종 데미지 x2)
-     * @param assemble         조립 기술 적용 여부 (최종 데미지 x1.5)
-     * @param aim              조준 기술 적용 여부 (수비 무시)
+     * @param secure           확보 기술 적용 여부 (정조준 버프 카운트)
+     * @param assemble         조립 기술 적용 여부 (최종 데미지 x1.5, 정조준 버프 카운트)
+     * @param load             장전 기술 적용 여부 (정조준 버프 카운트)
+     * @param aim              조준 기술 적용 여부 (수비 무시, 정조준 버프 카운트)
      * @param sureHit          필즉 스킬 적용 여부 (확정 명중)
      * @param stabilize        안정화 스킬 적용 여부 (데미지 -50%, 주사위 복제)
      * @param immersion        몰입 스킬 적용 여부 (데미지 +100%)
@@ -131,7 +140,7 @@ public class Sniper {
      * @param out              출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, boolean vitalAim, boolean assemble, boolean aim,
+    public static Result plain(int stat, boolean vitalAim, boolean secure, boolean assemble, boolean load, boolean aim,
                                boolean sureHit, boolean stabilize, boolean immersion,
                                boolean conviction, boolean heightenedSenses, int numBuffs, int precision, PrintStream out) {
         out.println("저격수-기본공격 사용");
@@ -145,7 +154,7 @@ public class Sniper {
             }
         }
 
-        return calculate(1, 6, stat, vitalAim, false, assemble, aim,
+        return calculate(1, 6, stat, vitalAim, false, secure, assemble, load, aim,
                 sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, 0, out);
     }
 
@@ -155,8 +164,10 @@ public class Sniper {
      * @param stat             사용할 스탯
      * @param vitalAim         급소조준 적용 여부 (5턴 이상 공격받지 않을 시 최종 데미지 x2)
      * @param deathBullet      죽음의 탄환 적용 여부 (기본 공격 미사용 시 발사 데미지 +400%)
-     * @param assemble         조립 기술 적용 여부 (최종 데미지 x1.5)
-     * @param aim              조준 기술 적용 여부 (수비 무시)
+     * @param secure           확보 기술 적용 여부 (정조준 버프 카운트)
+     * @param assemble         조립 기술 적용 여부 (최종 데미지 x1.5, 정조준 버프 카운트)
+     * @param load             장전 기술 적용 여부 (정조준 버프 카운트)
+     * @param aim              조준 기술 적용 여부 (수비 무시, 정조준 버프 카운트)
      * @param sureHit          필즉 스킬 적용 여부 (확정 명중)
      * @param stabilize        안정화 스킬 적용 여부 (데미지 -50%, 주사위 복제)
      * @param immersion        몰입 스킬 적용 여부 (데미지 +100%)
@@ -167,8 +178,8 @@ public class Sniper {
      * @param out              출력 스트림
      * @return 결과 객체
      */
-    public static Result fire(int stat, boolean vitalAim, boolean deathBullet, boolean assemble, boolean aim,
-                              boolean sureHit, boolean stabilize, boolean immersion,
+    public static Result fire(int stat, boolean vitalAim, boolean deathBullet, boolean secure, boolean assemble,
+                              boolean load, boolean aim, boolean sureHit, boolean stabilize, boolean immersion,
                               boolean conviction, boolean heightenedSenses, int numBuffs, int precision, PrintStream out) {
         out.println("저격수-발사 사용");
 
@@ -182,7 +193,7 @@ public class Sniper {
         }
 
         out.println("발사 스킬 적용: 5D20 데미지");
-        return calculate(5, 20, stat, vitalAim, deathBullet, assemble, aim,
+        return calculate(5, 20, stat, vitalAim, deathBullet, secure, assemble, load, aim,
                 sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, 10, out);
     }
 }

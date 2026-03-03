@@ -26,7 +26,9 @@ public class DamageController {
         public int turnsSinceAttack;
         public int numBuffs;
         public boolean deathBullet;
+        public boolean secure;
         public boolean assemble;
+        public boolean load;
         public boolean aim;
         public boolean sureHit;
         public boolean stabilize;
@@ -40,7 +42,7 @@ public class DamageController {
      * Calculate Sniper plain attack damage (1D6).
      * POST /api/sniper/plain
      *
-     * @param req 요청 본문 (stat, turnsSinceAttack, numBuffs, assemble, aim, sureHit,
+     * @param req 요청 본문 (stat, turnsSinceAttack, numBuffs, secure, assemble, load, aim, sureHit,
      *            stabilize, immersion, conviction, heightenedSenses, precision)
      * @return 계산 결과 (damage, log, succeeded, staminaUsed)
      */
@@ -51,8 +53,8 @@ public class DamageController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        Result result = Sniper.plain(req.stat, vitalAim, req.assemble, req.aim, req.sureHit, req.stabilize,
-                req.immersion, req.conviction, req.heightenedSenses, req.numBuffs, req.precision, ps);
+        Result result = Sniper.plain(req.stat, vitalAim, req.secure, req.assemble, req.load, req.aim, req.sureHit,
+                req.stabilize, req.immersion, req.conviction, req.heightenedSenses, req.numBuffs, req.precision, ps);
         ps.flush();
 
         Map<String, Object> response = new LinkedHashMap<>();
@@ -67,7 +69,7 @@ public class DamageController {
      * Calculate Sniper fire attack damage (5D20, consumes bullet).
      * POST /api/sniper/fire
      *
-     * @param req 요청 본문 (stat, turnsSinceAttack, numBuffs, deathBullet, assemble, aim, sureHit,
+     * @param req 요청 본문 (stat, turnsSinceAttack, numBuffs, deathBullet, secure, assemble, load, aim, sureHit,
      *            stabilize, immersion, conviction, heightenedSenses, precision)
      * @return 계산 결과 (damage, log, succeeded, staminaUsed)
      */
@@ -78,8 +80,8 @@ public class DamageController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        Result result = Sniper.fire(req.stat, vitalAim, req.deathBullet, req.assemble, req.aim, req.sureHit,
-                req.stabilize, req.immersion, req.conviction, req.heightenedSenses, req.numBuffs, req.precision, ps);
+        Result result = Sniper.fire(req.stat, vitalAim, req.deathBullet, req.secure, req.assemble, req.load, req.aim,
+                req.sureHit, req.stabilize, req.immersion, req.conviction, req.heightenedSenses, req.numBuffs, req.precision, ps);
         ps.flush();
 
         Map<String, Object> response = new LinkedHashMap<>();
