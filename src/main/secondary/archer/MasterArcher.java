@@ -14,16 +14,20 @@ public class MasterArcher {
 
     /**
      * 기본공격 : 대상에게 1D6의 데미지를 입힙니다.
+     * <p>
+     * 데미지 계산식: [(기본 데미지) x (100 + 데미지)%] x (최종 데미지)% x (주사위 보정)
+     * - "데미지" 보너스는 합산(additive), "최종 데미지" 보너스는 곱연산(multiplicative).
      * @param stat 사용할 스탯 (오차 제거 패시브: +3)
      * @param isHeavyString 무거운 시위 패시브 (1D6 -> 2D8, 스태미나 1 소모)
-     * @param isFirstTarget 포착 패시브 (첫 대상 200%, 그외 50%)
+     * @param isFirstTarget 포착 패시브 (첫 대상 +100%, 그외 -50%)
      * @param isEmergency 긴급 사격 패시브 (기본 공격 연속 2회 사용)
      * @param ability 적용된 기술
-     * @param preyEnabled 사냥감 스킬 활성화 여부 (데미지 400%)
-     * @param arrowOverheatCount 화살 과열 스킬 스택 수 (전 턴 기술 수, 스택당 60% 증가)
-     * @param calm 차분함 스킬 활성화 여부 (데미지 200%)
-     * @param cracking 흐름 깨기 스킬 활성화 여부 (데미지 400%)
-     * @param stageTurn 무대 스킬 지속 턴 (턴당 70% 증가, 최대 +500%)
+     * @param preyEnabled 사냥감 스킬 활성화 여부 (데미지 +300%)
+     * @param arrowOverheatCount 화살 과열 스킬 스택 수 (전 턴 기술 수, 스택당 +60%)
+     * @param calm 차분함 스킬 활성화 여부 (데미지 +100%)
+     * @param cracking 흐름 깨기 스킬 활성화 여부 (데미지 +300%)
+     * @param stageTurn 무대 스킬 지속 턴 (최종 데미지 턴당 x70% 증가, 최대 +500%.
+     *                  데미지를 입히지 못하면 해제되며 다음 턴까지 행동불능. 마나 5 소모, 쿨타임 10턴)
      */
     public static Result plain(int stat, boolean isHeavyString, boolean isFirstTarget, boolean isEmergency, MasterArcherPassive ability, boolean preyEnabled, int arrowOverheatCount, boolean calm, boolean cracking, int stageTurn, int precision, PrintStream out) {
 
@@ -62,7 +66,8 @@ public class MasterArcher {
             out.println("긴급 사격 패시브 적용: 기본 공격 2회 사용");
         }
         int dices, sides;
-        float modifier = 1.0f;
+        float damageAdditive = 0.0f;
+        float finalDamageMultiplier = 1.0f;
         switch (ability) {
             case POWER_SHOT -> {
                 if (isHeavyString) {
@@ -98,8 +103,8 @@ public class MasterArcher {
                 }
             }
             case EXPLOSIVE_ARROW -> {
-                modifier *= 2.0f;
-                out.println("폭탄 화살 기술 적용: 데미지 2배");
+                damageAdditive += 1.0f;
+                out.println("폭탄 화살 기술 적용: 데미지 +100%");
                 if (isHeavyString) {
                     dices = 2;
                     sides = 8;
@@ -131,40 +136,40 @@ public class MasterArcher {
         }
 
         if (isFirstTarget) {
-            modifier *= 2.0f;
-            out.println("포착 패시브 적용: 첫 대상 데미지 2배");
+            damageAdditive += 1.0f;
+            out.println("포착 패시브 적용: 첫 대상 데미지 +100%");
         } else {
-            modifier *= 0.5f;
-            out.println("포착 패시브 적용: 첫 타격 이외 대상 데미지 50%");
+            damageAdditive -= 0.5f;
+            out.println("포착 패시브 적용: 첫 타격 이외 대상 데미지 -50%");
         }
         if (preyEnabled) {
-            modifier *= 4.0f;
-            out.println("사냥감 스킬 적용: 데미지 4배");
+            damageAdditive += 3.0f;
+            out.println("사냥감 스킬 적용: 데미지 +300%");
         }
         if (arrowOverheatCount > 0) {
-            modifier *= (1.0f + arrowOverheatCount * 0.6f);
-            out.printf("화살 과열 스킬 적용: 데미지 %.1f배 (스택 %d)%n", 1.0f + arrowOverheatCount * 0.6f, arrowOverheatCount);
+            damageAdditive += arrowOverheatCount * 0.6f;
+            out.printf("화살 과열 스킬 적용: 데미지 +%.0f%% (스택 %d)%n", arrowOverheatCount * 60.0f, arrowOverheatCount);
         }
         if (calm) {
-            modifier *= 2.0f;
-            out.println("차분함 스킬 적용: 데미지 2배");
+            damageAdditive += 1.0f;
+            out.println("차분함 스킬 적용: 데미지 +100%");
         }
         if (cracking) {
-            modifier *= 4.0f;
-            out.println("흐름 깨기 스킬 적용: 데미지 4배");
+            damageAdditive += 3.0f;
+            out.println("흐름 깨기 스킬 적용: 데미지 +300%");
         }
         if (stageTurn > 0) {
             float stageBonus = Math.min(stageTurn * 0.7f, 5.0f);
-            modifier *= (1.0f + stageBonus);
-            out.printf("무대 스킬 적용: 데미지 %.1f배 (%d턴 지속)%n", 1.0f + stageBonus, stageTurn);
+            finalDamageMultiplier *= (1.0f + stageBonus);
+            out.printf("무대 스킬 적용: 최종 데미지 %.1f배 (%d턴 지속)%n", 1.0f + stageBonus, stageTurn);
         }
-        out.printf("총 배율: %s%n", modifier);
+        out.printf("데미지 배율: %+.0f%%, 최종 데미지 배율: %.2f%n", damageAdditive * 100, finalDamageMultiplier);
 
         int damageDealt = 0;
         while (count-- > 0) {
             int defaultDamage = Main.dice(dices, sides, out);
             out.printf("기본 데미지: %d%n", defaultDamage);
-            int damageAfterPassives = (int) (defaultDamage * modifier);
+            int damageAfterPassives = (int) (defaultDamage * (1.0f + damageAdditive) * finalDamageMultiplier);
             out.printf("데미지 배율 적용 후 데미지: %d%n", damageAfterPassives);
             int sideDamage = Main.sideDamage(damageAfterPassives, effectiveStat, out);
             out.printf("추가 사이드 데미지: %d%n", sideDamage);
