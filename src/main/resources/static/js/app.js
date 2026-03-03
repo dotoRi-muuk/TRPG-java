@@ -465,12 +465,14 @@ async function calculateSniper(skill) {
     const numBuffs = parseInt(document.getElementById('sniper-numBuffs').value) || 0;
     const notAttackedFor5Turns = document.getElementById('sniper-notAttackedFor5Turns').checked;
     const noBasicAttackUsed = document.getElementById('sniper-noBasicAttackUsed').checked;
+    const isSecured = document.getElementById('sniper-isSecured')?.checked || false;
     const isSureHit = document.getElementById('sniper-isSureHit')?.checked || false;
     const isAssembled = document.getElementById('sniper-isAssembled')?.checked || false;
     const isAimed = document.getElementById('sniper-isAimed')?.checked || false;
     const isStabilized = document.getElementById('sniper-isStabilized')?.checked || false;
     const isImmersed = document.getElementById('sniper-isImmersed')?.checked || false;
     const isConfident = document.getElementById('sniper-isConfident')?.checked || false;
+    const isLoaded = document.getElementById('sniper-isLoaded')?.checked || false;
     const isNerveMax = document.getElementById('sniper-isNerveMax')?.checked || false;
 
     const turnsSinceAttack = notAttackedFor5Turns ? 5 : 0;
@@ -482,7 +484,9 @@ async function calculateSniper(skill) {
             body: JSON.stringify({
                 stat, numBuffs, turnsSinceAttack,
                 deathBullet: noBasicAttackUsed,
+                secure: isSecured,
                 assemble: isAssembled,
+                load: isLoaded,
                 aim: isAimed,
                 sureHit: isSureHit,
                 stabilize: isStabilized,
