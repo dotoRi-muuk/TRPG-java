@@ -29,8 +29,13 @@ public class Gambler {
         int damage = Main.dice(1, 6, out);
         out.printf("기본 데미지 : %d%n", damage);
 
-        int sideDmg = Main.sideDamage(damage, stat, out);
-        damage += sideDmg;
+        int statVerdict = Main.verdict(stat, out);
+        int statDice = stat - statVerdict;
+        double statFactor = 1.0 + (stat - statDice) * 0.1;
+        out.printf("스탯 보정: 1 + (%d - %d) * 0.1 = %.2f%n", stat, statDice, statFactor);
+        int corrected = (int) (damage * statFactor);
+        int sideDmg = corrected - damage;
+        damage = corrected;
         out.printf("데미지 보정치 : %d%n", sideDmg);
         out.printf("총 데미지 : %d%n", damage);
 
@@ -54,9 +59,12 @@ public class Gambler {
         int damage = Main.dice(1, 4, out);
         out.printf("기본 데미지 : %d%n", damage);
 
+        int statVerdict = Main.verdict(stat, out);
+        int statDice = stat - statVerdict;
+
         out.println("운 판정 시도");
         int luckVerdict = Main.verdict(luck, out);
-        int diceRoll = luck - luckVerdict;
+        int luckDice = luck - luckVerdict;
 
         if (luckVerdict >= 0) {
             int bonusDamage = Main.dice(1, 12, out);
@@ -71,8 +79,13 @@ public class Gambler {
             }
         }
 
-        int sideDmg = Main.sideDamage(damage, stat, out, diceRoll);
-        damage += sideDmg;
+        double statFactor = 1.0 + (stat - statDice) * 0.1;
+        out.printf("스탯 보정: 1 + (%d - %d) * 0.1 = %.2f%n", stat, statDice, statFactor);
+        double luckFactor = 1.0 + (luck - luckDice) * 0.1;
+        out.printf("운 보정: 1 + (%d - %d) * 0.1 = %.2f%n", luck, luckDice, luckFactor);
+        int corrected = (int) (damage * statFactor * luckFactor);
+        int sideDmg = corrected - damage;
+        damage = corrected;
         out.printf("데미지 보정치 : %d%n", sideDmg);
         out.printf("총 데미지 : %d%n", damage);
 
@@ -96,9 +109,12 @@ public class Gambler {
         int damage = Main.dice(1, 6, out);
         out.printf("기본 데미지 : %d%n", damage);
 
+        int statVerdict = Main.verdict(stat, out);
+        int statDice = stat - statVerdict;
+
         out.println("운 판정 시도");
         int luckVerdict = Main.verdict(luck, out);
-        int diceRoll = luck - luckVerdict;
+        int luckDice = luck - luckVerdict;
 
         if (luckVerdict >= 0) {
             int bonusDamage = Main.dice(2, 12, out);
@@ -113,8 +129,13 @@ public class Gambler {
             }
         }
 
-        int sideDmg = Main.sideDamage(damage, stat, out, diceRoll);
-        damage += sideDmg;
+        double statFactor = 1.0 + (stat - statDice) * 0.1;
+        out.printf("스탯 보정: 1 + (%d - %d) * 0.1 = %.2f%n", stat, statDice, statFactor);
+        double luckFactor = 1.0 + (luck - luckDice) * 0.1;
+        out.printf("운 보정: 1 + (%d - %d) * 0.1 = %.2f%n", luck, luckDice, luckFactor);
+        int corrected = (int) (damage * statFactor * luckFactor);
+        int sideDmg = corrected - damage;
+        damage = corrected;
         out.printf("데미지 보정치 : %d%n", sideDmg);
         out.printf("총 데미지 : %d%n", damage);
 
@@ -138,9 +159,12 @@ public class Gambler {
         int damage = Main.dice(1, 6, out);
         out.printf("기본 데미지 : %d%n", damage);
 
+        int statVerdict = Main.verdict(stat, out);
+        int statDice = stat - statVerdict;
+
         out.println("운 판정 시도");
         int luckVerdict = Main.verdict(luck, out);
-        int diceRoll = luck - luckVerdict;
+        int luckDice = luck - luckVerdict;
 
         if (luckVerdict >= 0) {
             int bonusDamage = Main.dice(3, 8, out);
@@ -155,8 +179,13 @@ public class Gambler {
             }
         }
 
-        int sideDmg = Main.sideDamage(damage, stat, out, diceRoll);
-        damage += sideDmg;
+        double statFactor = 1.0 + (stat - statDice) * 0.1;
+        out.printf("스탯 보정: 1 + (%d - %d) * 0.1 = %.2f%n", stat, statDice, statFactor);
+        double luckFactor = 1.0 + (luck - luckDice) * 0.1;
+        out.printf("운 보정: 1 + (%d - %d) * 0.1 = %.2f%n", luck, luckDice, luckFactor);
+        int corrected = (int) (damage * statFactor * luckFactor);
+        int sideDmg = corrected - damage;
+        damage = corrected;
         out.printf("데미지 보정치 : %d%n", sideDmg);
         out.printf("총 데미지 : %d%n", damage);
 
@@ -180,13 +209,16 @@ public class Gambler {
         int damage = Main.dice(1, 8, out);
         out.printf("기본 데미지 : %d%n", damage);
 
+        int statVerdict = Main.verdict(stat, out);
+        int statDice = stat - statVerdict;
+
         out.println("운 판정 시도 (1/2)");
         int luckVerdict1 = Main.verdict(luck, out);
-        int diceRoll1 = luck - luckVerdict1;
+        int luckDice1 = luck - luckVerdict1;
 
         out.println("운 판정 시도 (2/2)");
         int luckVerdict2 = Main.verdict(luck, out);
-        int diceRoll2 = luck - luckVerdict2;
+        int luckDice2 = luck - luckVerdict2;
 
         boolean allSuccess = luckVerdict1 >= 0 && luckVerdict2 >= 0;
 
@@ -203,11 +235,16 @@ public class Gambler {
             }
         }
 
-        int sideDmg1 = Main.sideDamage(damage, stat, out, diceRoll1);
-        int sideDmg2 = Main.sideDamage(damage, stat, out, diceRoll2);
-        int totalSideDmg = sideDmg1 + sideDmg2;
-        damage += totalSideDmg;
-        out.printf("데미지 보정치 : %d%n", totalSideDmg);
+        double statFactor = 1.0 + (stat - statDice) * 0.1;
+        out.printf("스탯 보정: 1 + (%d - %d) * 0.1 = %.2f%n", stat, statDice, statFactor);
+        double luckFactor1 = 1.0 + (luck - luckDice1) * 0.1;
+        out.printf("운 보정 (1/2): 1 + (%d - %d) * 0.1 = %.2f%n", luck, luckDice1, luckFactor1);
+        double luckFactor2 = 1.0 + (luck - luckDice2) * 0.1;
+        out.printf("운 보정 (2/2): 1 + (%d - %d) * 0.1 = %.2f%n", luck, luckDice2, luckFactor2);
+        int corrected = (int) (damage * statFactor * luckFactor1 * luckFactor2);
+        int sideDmg = corrected - damage;
+        damage = corrected;
+        out.printf("데미지 보정치 : %d%n", sideDmg);
         out.printf("총 데미지 : %d%n", damage);
 
         return new Result(0, damage, true, 0, 4);
@@ -230,17 +267,20 @@ public class Gambler {
         int damage = Main.dice(1, 4, out);
         out.printf("기본 데미지 : %d%n", damage);
 
+        int statVerdict = Main.verdict(stat, out);
+        int statDice = stat - statVerdict;
+
         out.println("운 판정 시도 (1/3)");
         int luckVerdict1 = Main.verdict(luck, out);
-        int diceRoll1 = luck - luckVerdict1;
+        int luckDice1 = luck - luckVerdict1;
 
         out.println("운 판정 시도 (2/3)");
         int luckVerdict2 = Main.verdict(luck, out);
-        int diceRoll2 = luck - luckVerdict2;
+        int luckDice2 = luck - luckVerdict2;
 
         out.println("운 판정 시도 (3/3)");
         int luckVerdict3 = Main.verdict(luck, out);
-        int diceRoll3 = luck - luckVerdict3;
+        int luckDice3 = luck - luckVerdict3;
 
         boolean allSuccess = luckVerdict1 >= 0 && luckVerdict2 >= 0 && luckVerdict3 >= 0;
 
@@ -257,12 +297,18 @@ public class Gambler {
             }
         }
 
-        int sideDmg1 = Main.sideDamage(damage, stat, out, diceRoll1);
-        int sideDmg2 = Main.sideDamage(damage, stat, out, diceRoll2);
-        int sideDmg3 = Main.sideDamage(damage, stat, out, diceRoll3);
-        int totalSideDmg = sideDmg1 + sideDmg2 + sideDmg3;
-        damage += totalSideDmg;
-        out.printf("데미지 보정치 : %d%n", totalSideDmg);
+        double statFactor = 1.0 + (stat - statDice) * 0.1;
+        out.printf("스탯 보정: 1 + (%d - %d) * 0.1 = %.2f%n", stat, statDice, statFactor);
+        double luckFactor1 = 1.0 + (luck - luckDice1) * 0.1;
+        out.printf("운 보정 (1/3): 1 + (%d - %d) * 0.1 = %.2f%n", luck, luckDice1, luckFactor1);
+        double luckFactor2 = 1.0 + (luck - luckDice2) * 0.1;
+        out.printf("운 보정 (2/3): 1 + (%d - %d) * 0.1 = %.2f%n", luck, luckDice2, luckFactor2);
+        double luckFactor3 = 1.0 + (luck - luckDice3) * 0.1;
+        out.printf("운 보정 (3/3): 1 + (%d - %d) * 0.1 = %.2f%n", luck, luckDice3, luckFactor3);
+        int corrected = (int) (damage * statFactor * luckFactor1 * luckFactor2 * luckFactor3);
+        int sideDmg = corrected - damage;
+        damage = corrected;
+        out.printf("데미지 보정치 : %d%n", sideDmg);
         out.printf("총 데미지 : %d%n", damage);
 
         return new Result(0, damage, true, 0, 7);
