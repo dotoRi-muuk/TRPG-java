@@ -39,6 +39,7 @@ public class Poacher {
         int verdict = Main.verdict(effectiveStat, out);
 
         if (verdict <= 0) return new Result(damageTaken, 0, false, 0, staminaChange);
+        int diceRoll = effectiveStat - verdict;
 
         int baseDamage = Main.dice(3, 10, out);
         float modifier = 1.0f;
@@ -59,7 +60,7 @@ public class Poacher {
         int finalDamage = (int) (baseDamage * modifier);
         out.printf("최종 데미지 : %d\n", finalDamage);
 
-        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out);
+        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out, diceRoll);
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
@@ -94,6 +95,7 @@ public class Poacher {
         int verdict = Main.verdict(effectiveStat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 0);
+        int diceRoll = effectiveStat - verdict;
 
         int baseDamage = Main.dice(3, 8, out);
         float modifier = 1.0f;
@@ -114,7 +116,7 @@ public class Poacher {
         int finalDamage = (int) (baseDamage * modifier);
         out.printf("최종 데미지 : %d\n", finalDamage);
 
-        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out);
+        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out, diceRoll);
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
@@ -148,6 +150,7 @@ public class Poacher {
         int verdict = Main.verdict(effectiveStat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, staminaChange);
+        int diceRoll = effectiveStat - verdict;
 
         int baseDamage = Main.dice(3, 8, out);
         float modifier = 1.0f;
@@ -168,7 +171,7 @@ public class Poacher {
         int finalDamage = (int) (baseDamage * modifier);
         out.printf("배율 적용 데미지 : %d\n", finalDamage);
 
-        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out);
+        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out, diceRoll);
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
@@ -203,6 +206,7 @@ public class Poacher {
         int verdict = Main.verdict(effectiveStat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, staminaChange);
+        int diceRoll = effectiveStat - verdict;
 
         int baseDamage = Main.dice(5, 12, out);
         float modifier = 1.0f;
@@ -223,7 +227,7 @@ public class Poacher {
         int finalDamage = (int) (baseDamage * modifier);
         out.printf("최종 데미지 : %d\n", finalDamage);
 
-        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out);
+        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out, diceRoll);
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
@@ -258,6 +262,7 @@ public class Poacher {
         int verdict = Main.verdict(effectiveStat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 0);
+        int diceRoll = effectiveStat - verdict;
 
         int dices = 4, sides = 4; // 기본값 4D4
 
@@ -299,7 +304,7 @@ public class Poacher {
         int finalDamage = (int) (baseDamage * modifier);
         out.printf("최종 데미지 : %d\n", finalDamage);
 
-        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out);
+        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out, diceRoll);
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
@@ -344,6 +349,7 @@ public class Poacher {
         int verdict = Main.verdict(effectiveStat, out);
 
         if (verdict <= 0) return new Result(damageTaken, 0, false, 6, 0);
+        int diceRoll = effectiveStat - verdict;
 
         int baseDamage = Main.dice(5, 12, out);
         float modifier = 1.0f;
@@ -364,7 +370,7 @@ public class Poacher {
         int finalDamage = (int) (baseDamage * modifier);
         out.printf("최종 데미지 : %d\n", finalDamage);
 
-        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out);
+        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out, diceRoll);
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);

@@ -186,9 +186,11 @@ class BladeMaster {
         out: PrintStream
     ): Result {
         out.println("무사 - 종점 사용")
-        if (Main.verdict(stat, out) <= 0) {
+        val verdict = Main.verdict(stat, out)
+        if (verdict <= 0) {
             return Result(0, 0, false, 0, 10)
         }
+        val diceRoll = stat - verdict
 
         var baseDamage = Main.dice(3, 20, out)
         out.println("기본 데미지 : $baseDamage")
@@ -232,7 +234,7 @@ class BladeMaster {
 
         val totalDamage = (baseDamage * damageMultiplier).toInt()
         out.println("배율 적용 데미지 : $totalDamage")
-        val sideDamage = Main.sideDamage(totalDamage, stat, out)
+        val sideDamage = Main.sideDamage(totalDamage, stat, out, diceRoll)
         out.println("데미지 보정치 : $sideDamage")
         val preCritDamage = totalDamage + sideDamage
         out.println("최종 데미지 : $preCritDamage")
@@ -500,9 +502,11 @@ class BladeMaster {
         precision: Int,
         out: PrintStream
     ): Result {
-        if (Main.verdict(stat, out) <= 0) {
+        val verdict = Main.verdict(stat, out)
+        if (verdict <= 0) {
             return Result(0, 0, false, 0, stamina)
         }
+        val diceRoll = stat - verdict
         val baseDamage = Main.dice(dices, sides, out)
         out.println("기본 데미지 : $baseDamage")
 
@@ -548,7 +552,7 @@ class BladeMaster {
 
         val totalDamage = (baseDamage * damageMultiplier).toInt()
         out.println("배율 적용 데미지 : $totalDamage")
-        val sideDamage = Main.sideDamage(totalDamage, stat, out)
+        val sideDamage = Main.sideDamage(totalDamage, stat, out, diceRoll)
         out.println("데미지 보정치 : $sideDamage")
         val preCritDamage = sideDamage + totalDamage
         out.println("최종 데미지 : $preCritDamage")

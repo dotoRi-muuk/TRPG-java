@@ -28,11 +28,12 @@ public class Ninja {
         if (verdict <= 0) {
             return new Result(0, 0, false, 0, 0);
         }
+        int diceRoll = stat - verdict;
         int baseDamage = Main.dice(1, 6, out);
-        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, true, 0, 0, precision, out);
+        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, true, 0, 0, precision, out, diceRoll);
     }
 
-    private static Result applyNinjaDamageLogic(int baseDamage, int stat, boolean illusion, boolean quickReflexes, boolean ideologySeal, boolean applyClone, int staminaChange, int manaChange, int precision, PrintStream out) {
+    private static Result applyNinjaDamageLogic(int baseDamage, int stat, boolean illusion, boolean quickReflexes, boolean ideologySeal, boolean applyClone, int staminaChange, int manaChange, int precision, PrintStream out, int diceRoll) {
         double damageMultiplier = 1.0;
         if (applyClone) {
             out.println("분신 패시브 적용: 데미지 75%로 감소");
@@ -53,7 +54,7 @@ public class Ninja {
         int damage = (int) Math.round(baseDamage * damageMultiplier);
         out.printf("배율 적용 데미지 : %d\n", damage);
 
-        int sideDamage = Main.sideDamage(damage, stat, out);
+        int sideDamage = Main.sideDamage(damage, stat, out, diceRoll);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         damage = Main.criticalHit(precision, damage, out);
@@ -76,8 +77,9 @@ public class Ninja {
         if (verdict <= 0) {
             return new Result(0, 0, false, 0, -2);
         }
+        int diceRoll = stat - verdict;
         int baseDamage = Main.dice(2, 6, out);
-        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, true, -2, 0, precision, out);
+        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, true, -2, 0, precision, out, diceRoll);
     }
 
     /**
@@ -95,8 +97,9 @@ public class Ninja {
         if (verdict <= 0) {
             return new Result(0, 0, false, 0, -4);
         }
+        int diceRoll = stat - verdict;
         int baseDamage = Main.dice(3, 8, out);
-        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, true, -4, 0, precision, out);
+        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, true, -4, 0, precision, out, diceRoll);
     }
 
     /**
@@ -115,8 +118,9 @@ public class Ninja {
         if (verdict <= 0) {
             return new Result(0, 0, false, 0, 0);
         }
+        int diceRoll = stat - verdict;
         int baseDamage = Main.dice(1, 8, out);
-        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, true, 0, 0, precision, out);
+        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, true, 0, 0, precision, out, diceRoll);
     }
 
     /**
@@ -140,9 +144,10 @@ public class Ninja {
         if (verdict <= 0) {
             return new Result(0, 0, false, 0, -4);
         }
+        int diceRoll = stat - verdict;
         int baseDamage = Main.dice(8, 6, out);
         // 분신 패시브 제거되므로 75% 감소 적용 안함 (applyClone = false)
-        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, false, -4, 0, precision, out);
+        return applyNinjaDamageLogic(baseDamage, stat, illusion, quickReflexes, ideologySeal, false, -4, 0, precision, out, diceRoll);
     }
 
     /**
@@ -167,8 +172,9 @@ public class Ninja {
             out.println("판정 실패 (민첩, 신속 모두 성공 필요)");
             return new Result(0, 0, false, -3, 0);
         }
+        int diceRoll = dex - verdict1;
         int baseDamage = Main.dice(numShurikens, 10, out);
-        return applyNinjaDamageLogic(baseDamage, dex, illusion, quickReflexes, ideologySeal, true, 0, -3, precision, out);
+        return applyNinjaDamageLogic(baseDamage, dex, illusion, quickReflexes, ideologySeal, true, 0, -3, precision, out, diceRoll);
     }
 
 }

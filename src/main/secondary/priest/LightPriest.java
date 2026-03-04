@@ -167,10 +167,11 @@ public class LightPriest {
         if (verdict <= 0) {
             return new Result(0, 0, false, mana, 0);
         }
+        int diceRoll = stat - verdict;
 
         int damage = main.Main.dice(dices, sides, out);
 
-        int sideDamage = main.Main.sideDamage(damage, stat, out);
+        int sideDamage = main.Main.sideDamage(damage, stat, out, diceRoll);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         damage = main.Main.criticalHit(precision, damage, out);

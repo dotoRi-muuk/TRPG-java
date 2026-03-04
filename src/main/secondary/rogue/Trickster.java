@@ -27,12 +27,13 @@ public class Trickster {
         out.println("트릭스터-페이크 단검 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result();
+        int diceRoll = stat - verdict;
 
         double modifier = getPassiveModifier(focusedFire, regularCustomer, fakeDagger, partyTime, greatScar, out);
         out.println("페이크 단검 데미지 최종 보정치: " + modifier + "배");
 
         int damage = Main.dice(1, 4, out);
-        damage = calculateFinalDamage(damage, modifier, stat, "페이크 단검", precision, out);
+        damage = calculateFinalDamage(damage, modifier, stat, "페이크 단검", precision, out, diceRoll);
 
         out.println("페이크 단검 효과 발동: 다음 턴의 공격 데미지가 1.5배로 증가합니다.");
         return new Result(0, damage, true, 0, 2);
@@ -53,12 +54,13 @@ public class Trickster {
         out.println("트릭스터-콩알탄 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result();
+        int diceRoll = stat - verdict;
 
         double modifier = getPassiveModifier(focusedFire, regularCustomer, fakeDagger, partyTime, greatScar, out);
         out.println("콩알탄 데미지 최종 보정치: " + modifier + "배");
 
         int damage = Main.dice(2, 6, out);
-        damage = calculateFinalDamage(damage, modifier, stat, "콩알탄", precision, out);
+        damage = calculateFinalDamage(damage, modifier, stat, "콩알탄", precision, out, diceRoll);
 
         return new Result(0, damage, true, 0, 2);
     }
@@ -78,12 +80,13 @@ public class Trickster {
         out.println("트릭스터-기름통 투척 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result();
+        int diceRoll = stat - verdict;
 
         double modifier = getPassiveModifier(focusedFire, regularCustomer, fakeDagger, partyTime, greatScar, out);
         out.println("기름통 투척 데미지 최종 보정치: " + modifier + "배");
 
         int damage = Main.dice(1, 4, out);
-        damage = calculateFinalDamage(damage, modifier, stat, "기름통 투척", precision, out);
+        damage = calculateFinalDamage(damage, modifier, stat, "기름통 투척", precision, out, diceRoll);
 
         return new Result(0, damage, true, 0, 2);
     }
@@ -104,6 +107,7 @@ public class Trickster {
         out.println("트릭스터-라이터 투척 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result();
+        int diceRoll = stat - verdict;
 
         double modifier = getPassiveModifier(focusedFire, regularCustomer, fakeDagger, partyTime, greatScar, out);
         out.println("라이터 투척 데미지 최종 보정치: " + modifier + "배");
@@ -113,7 +117,7 @@ public class Trickster {
             out.println("기름통 적중 확인: 3D6 추가 데미지");
             damage += Main.dice(3, 6, out);
         }
-        damage = calculateFinalDamage(damage, modifier, stat, "라이터 투척", precision, out);
+        damage = calculateFinalDamage(damage, modifier, stat, "라이터 투척", precision, out, diceRoll);
 
         return new Result(0, damage, true, 0, 2);
     }
@@ -133,12 +137,13 @@ public class Trickster {
         out.println("트릭스터-특대형 단검 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result();
+        int diceRoll = stat - verdict;
 
         double modifier = getPassiveModifier(focusedFire, regularCustomer, fakeDagger, partyTime, greatScar, out);
         out.println("특대형 단검 데미지 최종 보정치: " + modifier + "배");
 
         int damage = Main.dice(1, 20, out);
-        damage = calculateFinalDamage(damage, modifier, stat, "특대형 단검", precision, out);
+        damage = calculateFinalDamage(damage, modifier, stat, "특대형 단검", precision, out, diceRoll);
 
         return new Result(0, damage, true, 0, 3);
     }
@@ -184,6 +189,7 @@ public class Trickster {
         out.println("트릭스터-기본공격 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result();
+        int diceRoll = stat - verdict;
         int count = 0;
         double modifier = 1.0;
         int rapidFireVerdict = mainEvent ? 1 : 3;
@@ -231,7 +237,7 @@ public class Trickster {
                 break;
             }
         }
-        finalDamage = calculateFinalDamage(finalDamage, modifier, stat, "기본 공격", precision, out);
+        finalDamage = calculateFinalDamage(finalDamage, modifier, stat, "기본 공격", precision, out, diceRoll);
         return new Result(0, finalDamage, true, 0, 0);
     }
 
@@ -260,10 +266,10 @@ public class Trickster {
         return modifier;
     }
 
-    private static int calculateFinalDamage(int rawDamage, double modifier, int stat, String skillName, int precision, PrintStream out) {
+    private static int calculateFinalDamage(int rawDamage, double modifier, int stat, String skillName, int precision, PrintStream out, int diceRoll) {
         int damage = (int)(rawDamage * modifier);
         out.println("배율 적용 " + skillName + " 데미지: " + damage);
-        int sideDamage = Main.sideDamage(damage, stat, out);
+        int sideDamage = Main.sideDamage(damage, stat, out, diceRoll);
         damage += sideDamage;
         out.println("데미지 보정치: " + sideDamage);
         damage = Main.criticalHit(precision, damage, out);

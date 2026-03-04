@@ -341,9 +341,11 @@ class SpearMaster {
             stat + increase
         } else stat
         val effectiveAgi = if (isAccelerationActive) agi + linkSuccessCount / 2 else agi
-        if (main.Main.verdict(effectiveStat, out) <= 0) {
+        val verdict = main.Main.verdict(effectiveStat, out)
+        if (verdict <= 0) {
             return main.Result(0, 0, false, 0, staminaCost)
         }
+        val diceRoll = effectiveStat - verdict
         var damage = Main.dice(dices, sides, out)
         out.println("기본 데미지 : $damage")
         if (combo) {
@@ -369,7 +371,7 @@ class SpearMaster {
             out.println("추가 공격 데미지 : $extraDamage")
             damage += extraDamage
         }
-        val sideDamage = Main.sideDamage(damage, effectiveStat, out)
+        val sideDamage = Main.sideDamage(damage, effectiveStat, out, diceRoll)
         out.println("데미지 보정치 : $sideDamage")
         val totalDamage = damage + sideDamage
         out.println("최종 데미지 : $totalDamage")
