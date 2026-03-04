@@ -29,6 +29,13 @@ public class Main {
         return damage;
     }
 
+    public static int sideDamage(int finalDamage, int stat, PrintStream out, int diceRoll){
+        int statBonus = Math.max(0, stat - diceRoll);
+        int damage = (int)(finalDamage * statBonus * 0.1);
+        out.printf("데미지 보정 : %d * %d * 0.1 = %d\n", finalDamage, statBonus, damage);
+        return damage;
+    }
+
     public static int verdict(int stat, PrintStream out){
         out.println("판정 시도!");
         int dice = dice(1,20, out);
@@ -46,6 +53,16 @@ public class Main {
         int damage = dice(dices, sides, out);
         out.printf("기본 데미지 : %d\n", damage);
         int sideDamage = sideDamage(damage, stat, out);
+        damage += sideDamage;
+        out.printf("데미지 보정치 : %d\n", sideDamage);
+        out.printf("최종 데미지 : %d\n", damage);
+        return damage;
+    }
+
+    public static int normalCalculation(int stat, PrintStream out, int dices, int sides, int diceRoll) {
+        int damage = dice(dices, sides, out);
+        out.printf("기본 데미지 : %d\n", damage);
+        int sideDamage = sideDamage(damage, stat, out, diceRoll);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         out.printf("최종 데미지 : %d\n", damage);

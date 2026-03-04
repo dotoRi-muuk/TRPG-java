@@ -70,8 +70,9 @@ public class Gunslinger {
         int verdict = Main.verdict(stat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 4);
+        int diceRoll = stat - verdict;
 
-        return new Result(0, Main.criticalHit(precision, Main.normalCalculation(stat, out, 6, 6), out), true, 0, 4);
+        return new Result(0, Main.criticalHit(precision, Main.normalCalculation(stat, out, 6, 6, diceRoll), out), true, 0, 4);
     }
 
     /**
@@ -87,8 +88,9 @@ public class Gunslinger {
         int verdict = Main.verdict(stat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 3);
+        int diceRoll = stat - verdict;
 
-        return new Result(0, Main.criticalHit(precision, Main.normalCalculation(stat, out, 1, 20), out), true, 0, 3);
+        return new Result(0, Main.criticalHit(precision, Main.normalCalculation(stat, out, 1, 20, diceRoll), out), true, 0, 3);
     }
 
     /**
@@ -104,8 +106,9 @@ public class Gunslinger {
         int verdict = Main.verdict(stat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 2);
+        int diceRoll = stat - verdict;
 
-        return new Result(0, Main.criticalHit(precision, Main.normalCalculation(stat, out, 2, 6), out), true, 0, 2);
+        return new Result(0, Main.criticalHit(precision, Main.normalCalculation(stat, out, 2, 6, diceRoll), out), true, 0, 2);
     }
 
     /**
@@ -122,13 +125,14 @@ public class Gunslinger {
         int verdict = Main.verdict(stat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 1);
+        int diceRoll = stat - verdict;
 
         int dices = 1;
         if (prudence) {
             out.println("신중함 패시브 적용: D8 -> 4D8 적용");
             dices = 4;
         }
-        return new Result(0, Main.criticalHit(precision, Main.normalCalculation(stat, out, dices, 8), out), true, 0, 1);
+        return new Result(0, Main.criticalHit(precision, Main.normalCalculation(stat, out, dices, 8, diceRoll), out), true, 0, 1);
     }
 
     /**
@@ -149,6 +153,7 @@ public class Gunslinger {
         int verdict = Main.verdict(stat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 0);
+        int diceRoll = stat - verdict;
 
         int modifier = 1;
         if (prudence) {
@@ -178,7 +183,7 @@ public class Gunslinger {
             out.printf("심판자 패시브 적용: 추가 데미지 %d%% -> %d\n", judgeBonusPercent, judgeBonusDamage);
             finalDamage += judgeBonusDamage;
         }
-        int sideDamage = Main.sideDamage(finalDamage, stat, out);
+        int sideDamage = Main.sideDamage(finalDamage, stat, out, diceRoll);
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);

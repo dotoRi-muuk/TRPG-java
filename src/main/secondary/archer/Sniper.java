@@ -42,7 +42,7 @@ public class Sniper {
                                     boolean secure, boolean assemble, boolean load, boolean aim,
                                     boolean sureHit, boolean stabilize,
                                     boolean immersion, boolean conviction, boolean heightenedSenses,
-                                    int numBuffs, int precision, int staminaUsed, PrintStream out) {
+                                    int numBuffs, int precision, int staminaUsed, int diceRoll, PrintStream out) {
         // 정조준: 버프 스킬 1개당 데미지 +50%
         int buffCount = numBuffs;
         if (secure) buffCount++;
@@ -107,7 +107,7 @@ public class Sniper {
         damage = Main.calculateDamage(damage, flatBonus, finalDamageMultiplier, out);
 
         // 주사위 보정
-        int sideDmg = Main.sideDamage(damage, stat, out);
+        int sideDmg = Main.sideDamage(damage, stat, out, diceRoll);
         damage += sideDmg;
         out.printf("데미지 보정치 : %d\n", sideDmg);
 
@@ -146,6 +146,7 @@ public class Sniper {
         out.println("저격수-기본공격 사용");
 
         int verdict = Main.verdict(stat, out);
+        int diceRoll = stat - verdict;
         if (verdict <= 0) {
             if (sureHit) {
                 out.println("필즉 스킬 적용: 확정 명중");
@@ -155,7 +156,7 @@ public class Sniper {
         }
 
         return calculate(1, 6, stat, vitalAim, false, secure, assemble, load, aim,
-                sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, 0, out);
+                sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, 0, diceRoll, out);
     }
 
     /**
@@ -184,6 +185,7 @@ public class Sniper {
         out.println("저격수-발사 사용");
 
         int verdict = Main.verdict(stat, out);
+        int diceRoll = stat - verdict;
         if (verdict <= 0) {
             if (sureHit) {
                 out.println("필즉 스킬 적용: 확정 명중");
@@ -194,6 +196,6 @@ public class Sniper {
 
         out.println("발사 스킬 적용: 5D20 데미지");
         return calculate(5, 20, stat, vitalAim, deathBullet, secure, assemble, load, aim,
-                sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, 10, out);
+                sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, 10, diceRoll, out);
     }
 }
