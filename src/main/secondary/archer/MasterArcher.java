@@ -45,7 +45,6 @@ public class MasterArcher {
         int verdict = Main.verdict(effectiveStat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 0);
-        int diceRoll = effectiveStat - verdict;
 
 
         /*
@@ -172,7 +171,7 @@ public class MasterArcher {
             out.printf("기본 데미지: %d%n", defaultDamage);
             int damageAfterPassives = (int) (defaultDamage * (1.0f + damageAdditive) * finalDamageMultiplier);
             out.printf("데미지 배율 적용 후 데미지: %d%n", damageAfterPassives);
-            int sideDamage = Main.sideDamage(damageAfterPassives, effectiveStat, out, diceRoll);
+            int sideDamage = Main.sideDamage(damageAfterPassives, effectiveStat, out);
             out.printf("추가 사이드 데미지: %d%n", sideDamage);
             int totalDamage = damageAfterPassives + sideDamage;
             totalDamage = Main.criticalHit(precision, totalDamage, out);

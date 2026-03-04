@@ -233,7 +233,6 @@ class DarkPriest {
         if (verdict <= 0) {
             return Result(0, 0, false, mana, 0)
         }
-        val diceRoll = stat - verdict
         val baseDamage = Main.dice(dices, sides, out)
         var damageMultiplier = 1.0
         if (domination) {
@@ -258,7 +257,7 @@ class DarkPriest {
         }
         val damage = (baseDamage * damageMultiplier).roundToInt()
         out.printf("배율 적용 데미지 : %d%n", damage)
-        val sideDamage = Main.sideDamage(damage, stat, out, diceRoll)
+        val sideDamage = Main.sideDamage(damage, stat, out)
         out.printf("데미지 보정치 : %d%n", sideDamage)
         val finalDamage = Main.criticalHit(precision, damage + sideDamage, out)
         out.printf("최종 데미지 : %d%n", finalDamage)

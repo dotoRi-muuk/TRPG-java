@@ -133,7 +133,6 @@ public class Assassin {
         if (verdict < 0) {
             return new Result();
         }
-        int diceRoll = stat - verdict;
         int baseDamage = Main.dice(diceCount, diceFaces, out);
         out.printf("기본 데미지: %d\n", baseDamage);
 
@@ -141,7 +140,7 @@ public class Assassin {
             baseDamage = calculator.calculate(baseDamage);
         }
 
-        int sideDamage = Main.sideDamage(baseDamage, stat, out, diceRoll);
+        int sideDamage = Main.sideDamage(baseDamage, stat, out);
         baseDamage += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
         baseDamage = Main.criticalHit(precision, baseDamage, out);

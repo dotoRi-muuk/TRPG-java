@@ -74,7 +74,6 @@ public class Gambler {
         boolean misfortuneAversion = false;
 
         int verdict = Main.verdict(stat, out);
-        int diceRoll = stat - verdict;
         if (verdict <= 0) {
             out.print("행운아 패시브 발동: 운 판정 시도\n");
             int luckVerdict = Main.verdict(luckStat, out);
@@ -115,7 +114,7 @@ public class Gambler {
             out.printf("일확천금 추가 데미지: %d\n", windfallDamage);
             baseDamage += windfallDamage;
         }
-        int sideDamage = Main.sideDamage(baseDamage, stat, out, diceRoll);
+        int sideDamage = Main.sideDamage(baseDamage, stat, out);
         baseDamage += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
         baseDamage = Main.criticalHit(precision, baseDamage, out);
