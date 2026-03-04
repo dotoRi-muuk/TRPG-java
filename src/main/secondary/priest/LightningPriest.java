@@ -29,7 +29,6 @@ public class LightningPriest {
         if (verdict <= 0) {
             return new Result(0, 0, false, 0, 0, Map.of());
         }
-        int diceRoll = stat - verdict;
 
         int baseDamage = Main.dice(1, 6, out);
         double damageMultiplier = 1.0;
@@ -43,7 +42,7 @@ public class LightningPriest {
         }
         int damage = (int) Math.round(baseDamage * damageMultiplier);
         out.printf("배율 적용 데미지 : %d\n", damage);
-        int sideDamage = Main.sideDamage(damage, stat, out, diceRoll);
+        int sideDamage = Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         damage = Main.criticalHit(precision, damage, out);
@@ -67,7 +66,6 @@ public class LightningPriest {
         if (verdict <= 0) {
             return new Result(0, 0, false, 1, 0, Map.of());
         }
-        int diceRoll = stat - verdict;
 
         int baseDamage = Main.dice(2, 4, out);
         double damageMultiplier = 1.0;
@@ -81,7 +79,7 @@ public class LightningPriest {
         }
         int damage = (int) Math.round(baseDamage * damageMultiplier);
         out.printf("배율 적용 데미지 : %d\n", damage);
-        int sideDamage = Main.sideDamage(damage, stat, out, diceRoll);
+        int sideDamage = Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         damage = Main.criticalHit(precision, damage, out);
@@ -106,7 +104,6 @@ public class LightningPriest {
         if (verdict <= 0) {
             return new Result(0, 0, false, 3, 0, Map.of());
         }
-        int diceRoll = stat - verdict;
 
         // Enemy damage
         int baseDamage = Main.dice(2, 6, out);
@@ -121,7 +118,7 @@ public class LightningPriest {
         }
         int damage = (int) Math.round(baseDamage * damageMultiplier);
         out.printf("배율 적용 데미지 : %d\n", damage);
-        int sideDamage = Main.sideDamage(damage, stat, out, diceRoll);
+        int sideDamage = Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         damage = Main.criticalHit(precision, damage, out);
@@ -156,7 +153,6 @@ public class LightningPriest {
         if (verdict <= 0) {
             return new Result(0, 0, false, 8, 0, Map.of());
         }
-        int diceRoll = stat - verdict;
 
         // Damage calculation: (4 * max(chantTurns - 2, 0))D4
         int diceCount = 4 * Math.max(chantTurns - 2, 0);
@@ -178,7 +174,7 @@ public class LightningPriest {
         }
         int damage = (int) Math.round(baseDamage * damageMultiplier);
         out.printf("배율 적용 데미지 : %d\n", damage);
-        int sideDamage = Main.sideDamage(damage, stat, out, diceRoll);
+        int sideDamage = Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         damage = Main.criticalHit(precision, damage, out);
@@ -203,7 +199,6 @@ public class LightningPriest {
         if (verdict <= 0) {
             return new Result(0, 0, false, 2, 0, Map.of());
         }
-        int diceRoll = stat - verdict;
 
         int baseDamage = Main.dice(2, 8, out);
         double damageMultiplier = 1.0;
@@ -217,7 +212,7 @@ public class LightningPriest {
         }
         int damage = (int) Math.round(baseDamage * damageMultiplier);
         out.printf("배율 적용 데미지 : %d\n", damage);
-        int sideDamage = Main.sideDamage(damage, stat, out, diceRoll);
+        int sideDamage = Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         damage = Main.criticalHit(precision, damage, out);
@@ -241,7 +236,6 @@ public class LightningPriest {
         if (verdict <= 0) {
             return new Result(0, 0, false, 7, 0, Map.of());
         }
-        int diceRoll = stat - verdict;
 
         int baseDamage = Main.dice(3, 20, out);
         double damageMultiplier = 1.0;
@@ -255,7 +249,7 @@ public class LightningPriest {
         }
         int damage = (int) Math.round(baseDamage * damageMultiplier);
         out.printf("배율 적용 데미지 : %d\n", damage);
-        int sideDamage = Main.sideDamage(damage, stat, out, diceRoll);
+        int sideDamage = Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         damage = Main.criticalHit(precision, damage, out);

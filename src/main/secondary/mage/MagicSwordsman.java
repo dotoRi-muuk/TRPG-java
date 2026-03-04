@@ -134,7 +134,6 @@ public class MagicSwordsman {
         if (verdict <= 0) {
             return new Result(0, 0, false, manaUse, 0);
         }
-        int diceRoll = stat - verdict;
 
         int baseDamage = Main.dice(dices, sides, out);
         out.printf("기본 데미지 : %d%n", baseDamage);
@@ -170,7 +169,7 @@ public class MagicSwordsman {
 
         int damage = (int) Math.round(baseDamage * damageMultiplier);
         out.printf("배율 적용 데미지 : %d\n", damage);
-        int sideDamage = Main.sideDamage(damage, stat, out, diceRoll);
+        int sideDamage = Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         damage = Main.criticalHit(precision, damage, out);
@@ -204,7 +203,6 @@ public class MagicSwordsman {
         if (verdict <= 0) {
             return new Result(0, 0, false, 0, 0);
         }
-        int diceRoll = stat - verdict;
 
         int baseDamage = Main.dice(1, 6, out);
         out.printf("기본 데미지 : %d%n", baseDamage);
@@ -238,7 +236,7 @@ public class MagicSwordsman {
         int damage = (int) Math.round(baseDamage * damageMultiplier);
         out.printf("배율 적용 데미지 : %d\n", damage);
 
-        int sideDamage = Main.sideDamage(damage, stat, out, diceRoll);
+        int sideDamage = Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         damage = Main.criticalHit(precision, damage, out);

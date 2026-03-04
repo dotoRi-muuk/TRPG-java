@@ -29,13 +29,13 @@ public class Crossbowman {
      * @return 결과 객체
      */
     private static Result calculate(int dices, int sides, int stat, int flatBonus, double finalDamageMultiplier,
-                                    int precision, int staminaUsed, int diceRoll, PrintStream out) {
+                                    int precision, int staminaUsed, PrintStream out) {
         int basic = Main.dice(dices, sides, out);
         out.printf("기본 데미지 : %d\n", basic);
 
         int damage = Main.calculateDamage(basic, flatBonus, finalDamageMultiplier, out);
 
-        int sideDmg = Main.sideDamage(damage, stat, out, diceRoll);
+        int sideDmg = Main.sideDamage(damage, stat, out);
         damage += sideDmg;
         out.printf("데미지 보정치 : %d\n", sideDmg);
 
@@ -88,7 +88,6 @@ public class Crossbowman {
         // 판정 로직
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result(0, 0, false, 0, 0);
-        int diceRoll = stat - verdict;
 
         int dices = arrowCount;
         int sides = 6;
@@ -115,7 +114,7 @@ public class Crossbowman {
             }
         }
 
-        return calculate(dices, sides, stat, flatBonus, finalDamageMultiplier, precision, 0, diceRoll, out);
+        return calculate(dices, sides, stat, flatBonus, finalDamageMultiplier, precision, 0, out);
     }
 
     /**
@@ -131,9 +130,8 @@ public class Crossbowman {
 
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result(0, 0, false, 0, 0);
-        int diceRoll = stat - verdict;
 
-        return calculate(1, 6, stat, 0, 1.0, precision, 0, diceRoll, out);
+        return calculate(1, 6, stat, 0, 1.0, precision, 0, out);
     }
 
     /**
@@ -167,9 +165,8 @@ public class Crossbowman {
 
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result(0, 0, false, 0, 2);
-        int diceRoll = stat - verdict;
 
-        return calculate(1, 10, stat, 0, 1.0, precision, 2, diceRoll, out);
+        return calculate(1, 10, stat, 0, 1.0, precision, 2, out);
     }
 
     /**
@@ -192,10 +189,9 @@ public class Crossbowman {
 
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result(0, 0, false, 0, 4);
-        int diceRoll = stat - verdict;
 
         out.println("적중 시 다음 턴 적이 받는 최종 데미지 1.5배");
-        return calculate(2, 8, stat, 0, 1.0, precision, 4, diceRoll, out);
+        return calculate(2, 8, stat, 0, 1.0, precision, 4, out);
     }
 
     /**
@@ -218,7 +214,6 @@ public class Crossbowman {
 
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result(0, 0, false, 0, 6);
-        int diceRoll = stat - verdict;
 
         out.println("적중 시 다음 턴 적의 모든 스탯 2 감소");
         int dice1 = Main.dice(2, 8, out);
@@ -227,7 +222,7 @@ public class Crossbowman {
         out.printf("기본 데미지 : %d + %d = %d\n", dice1, dice2, basic);
 
         int damage = Main.calculateDamage(basic, 0, 1.0, out);
-        int sideDmg = Main.sideDamage(damage, stat, out, diceRoll);
+        int sideDmg = Main.sideDamage(damage, stat, out);
         damage += sideDmg;
         out.printf("데미지 보정치 : %d\n", sideDmg);
 

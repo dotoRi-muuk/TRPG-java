@@ -60,7 +60,6 @@ public class TimePriest {
         if (verdict <= 0) {
             return new Result(0, 0, false, mana, 0);
         }
-        int diceRoll = stat - verdict;
         int baseDamage = main.Main.dice(dices, sides, out);
         out.printf("기본 데미지 : %d%n", baseDamage);
         double damageMultiplier = 1.0;
@@ -75,7 +74,7 @@ public class TimePriest {
         }
         int damage = (int) Math.round(baseDamage * damageMultiplier);
         out.printf("배율 적용 데미지 : %d%n", damage);
-        int sideDamage = main.Main.sideDamage(damage, stat, out, diceRoll);
+        int sideDamage = main.Main.sideDamage(damage, stat, out);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
         damage = main.Main.criticalHit(precision, damage, out);
