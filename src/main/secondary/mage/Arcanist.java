@@ -98,6 +98,7 @@ public class Arcanist {
         if (annihilator) mana *= 2;
 
         if (verdict <= 0) return new Result(0, 0, false, mana, 0);
+        int diceRoll = stat - verdict;
 
         int baseDamage = Main.dice(dices, sides, out);
         out.printf("기본 데미지 : %d%n", baseDamage);
@@ -125,7 +126,7 @@ public class Arcanist {
             out.printf("마력의 범람 적용 데미지 : %d%n", baseDamage);
         }
 
-        int sideDamage = Main.sideDamage(baseDamage, stat, out);
+        int sideDamage = Main.sideDamage(baseDamage, stat, out, diceRoll);
         baseDamage += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
         baseDamage = Main.criticalHit(precision, baseDamage, out);
@@ -160,6 +161,7 @@ public class Arcanist {
         int verdict = Main.verdict(stat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 0);
+        int diceRoll = stat - verdict;
 
         int baseDamage = Main.dice(1, 6, out);
         out.printf("기본 데미지 : %d%n", baseDamage);
@@ -171,7 +173,7 @@ public class Arcanist {
             out.printf("어나일레이터 적용 데미지 : %d%n", baseDamage);
         }
 
-        int sideDamage = Main.sideDamage(baseDamage, stat, out);
+        int sideDamage = Main.sideDamage(baseDamage, stat, out, diceRoll);
         baseDamage += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
         baseDamage = Main.criticalHit(precision, baseDamage, out);
