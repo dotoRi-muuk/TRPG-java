@@ -2,297 +2,309 @@ package main.secondary.archer;
 
 import main.Main;
 import main.Result;
-import main.Stat;
 
 import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 석궁사수
  * <p>
- * 판정 사용 스탯 : 힘 또는 민첩
+ * 판정 사용 스탯 : 힘, 민첩
+ * <p>
+ * 데미지 공식: [(기본 데미지) x (100 + 데미지)%] x (최종 데미지)% x (주사위 보정)
  */
 public class Crossbowman {
 
     /**
-     * 던지기 : 대상에게 D6의 피해를 입힙니다. (스태미나 0 소모)
+     * 데미지 계산 공식 적용
+     * [(기본 데미지) x (100 + 데미지)%] x (최종 데미지)% x (주사위 보정)
      *
-     * @param stat           사용할 스탯
-     * @param loadedArrows   장전된 화살 개수
-     * @param calculateRange 비거리 계산 패시브 활성화 여부
-     * @param eliminateError 오차 제거 스킬 활성화 여부
-     * @param out            출력 스트림
+     * @param dices                주사위 수
+     * @param sides                주사위 면 수
+     * @param stat                 사용할 스탯
+     * @param flatBonus            추가 고정 데미지 (%)
+     * @param finalDamageMultiplier 최종 데미지 배율
+     * @param precision            정밀 스탯
+     * @param staminaUsed          소모 스태미나
+     * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result toss(int stat, int loadedArrows, boolean calculateRange, boolean eliminateError, int precision, PrintStream out) {
-        out.println("석궁사수-던지기 사용");
+    private static Result calculate(int dices, int sides, int stat, int flatBonus, double finalDamageMultiplier,
+                                    int precision, int staminaUsed, PrintStream out) {
+        int basic = Main.dice(dices, sides, out);
+        out.printf("기본 데미지 : %d\n", basic);
 
-        // 1. 판정 로직
-        int verdict = Main.verdict(stat, out);
-        if (verdict <= 0) return new Result(0, 0, false, 0, 0);
+        int damage = Main.calculateDamage(basic, flatBonus, finalDamageMultiplier, out);
 
-        // 비거리 계산 시 추가 판정
-        if (calculateRange) {
-            out.println("비거리 계산 적용: 추가 판정을 진행합니다.");
-            verdict = Main.verdict(stat, out);
-            if (verdict <= 0) return new Result(0, 0, false, 0, 0, new HashMap<>());
-        }
+        int sideDmg = Main.sideDamage(damage, stat, out);
+        damage += sideDmg;
+        out.printf("데미지 보정치 : %d\n", sideDmg);
 
-        // 2. 데미지 계산
-        int baseDamage = Main.dice(1, 6, out);
-        out.printf("기본 데미지 : %d\n", baseDamage);
+        damage = Main.criticalHit(precision, damage, out);
+        out.printf("최종 데미지 : %d\n", damage);
 
-        // 3. 집중 공격 및 오차 제거 배율
-        double focusModifier = 0.3;
-        if (eliminateError) {
-            focusModifier = 0.5;
-            out.println("오차 제거 적용: 집중 공격 데미지 증가 효과가 50%로 강화됩니다.");
-        }
-
-        double damageModifier = 1 + (focusModifier * loadedArrows);
-        out.printf("집중 공격 데미지 증가 배율 : %.1f * %d = %.1f\n", focusModifier, loadedArrows, damageModifier);
-
-        // 4. 비거리 계산 배율
-        if (calculateRange) {
-            out.println("비거리 계산 적용: 데미지 2배 증가");
-            damageModifier *= 2;
-        }
-
-        // 5. 최종 데미지 산출
-        int damageAfterModifier = (int) (baseDamage * damageModifier);
-        out.printf("배율 적용 후 데미지 : %d\n", damageAfterModifier);
-
-        int sideDamage = Main.sideDamage(damageAfterModifier, stat, out);
-        damageAfterModifier += sideDamage;
-        out.printf("데미지 보정치 : %d\n", sideDamage);
-        damageAfterModifier = Main.criticalHit(precision, damageAfterModifier, out);
-        out.printf("최종 데미지 : %d\n", damageAfterModifier);
-
-        return new Result(0, damageAfterModifier, true, 0, 0);
+        return new Result(0, damage, true, 0, staminaUsed);
     }
 
     /**
-     * 기본 공격 : 대상에게 1D6의 데미지를 입힙니다.
+     * 장전/발사 패시브 - 장전: 화살을 장전합니다.
      *
-     * @param stat               사용할 스탯
-     * @param loadedArrows       장전된 화살 개수
-     * @param executionArrows    처형 화살 개수
-     * @param indiscriminateFire 무차별 난사 패시브 활성화 여부
-     * @param calculateRange     비거리 계산 패시브 활성화 여부
-     * @param eliminateError     오차 제거 스킬 활성화 여부
-     * @param out                출력 스트림
+     * @param out 출력 스트림
+     * @return 장전된 화살 개수
+     */
+    public static int reload(PrintStream out) {
+        return Main.dice(1, 6, out);
+    }
+
+    /**
+     * 기본 공격 : 대상에게 화살을 발사하여 피해를 입힙니다.
+     *
+     * @param stat                사용할 스탯
+     * @param arrowCount          장전된 화살 개수
+     * @param focusedBarrage      집중 난사 스킬 활성화 여부
+     * @param executionArrow      처형 화살 스킬 활성화 여부
+     * @param distanceCalculation 비거리 계산 패시브 활성화 여부
+     * @param precision           정밀 스탯
+     * @param out                 출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, int loadedArrows, int executionArrows, boolean indiscriminateFire, boolean calculateRange, boolean eliminateError, int precision, PrintStream out) {
+    public static Result plain(int stat, int arrowCount, boolean focusedBarrage, boolean executionArrow,
+                               boolean distanceCalculation, int precision, PrintStream out) {
         out.println("석궁사수-기본공격 사용");
 
-        // 1. 판정 로직
-        int verdict = Main.verdict(stat, out);
-        if (verdict <= 0) return new Result(0, 0, false, 0, 0);
-
-        // 비거리 계산 시 추가 판정
-        if (calculateRange) {
-            out.println("비거리 계산 적용: 추가 판정을 진행합니다.");
-            verdict = Main.verdict(stat, out);
-            if (verdict <= 0) return new Result(0, 0, false, 0, 0);
-        }
-
-        // 2. 처형 화살 로직 (처형 화살이 있을 때만 수행)
-        if (executionArrows > 0) {
-            int executionChance = (executionArrows / 25) * 5;
+        // 처형 화살 로직
+        if (executionArrow) {
+            int executionChance = (arrowCount / 25) * 5;
             out.printf("처형 확률 : %d%%\n", executionChance);
-
-            // 확률이 존재할 때만 주사위 굴림
-            if (executionChance > 0) {
-                int random = (int) (Math.random() * 100) + 1;
-                if (executionChance >= random) {
-                    out.printf("처형 발동! (주사위 %d <= 확률 %d%%)\n", random, executionChance);
-                    return new Result(0, Integer.MAX_VALUE, true, 0, 0);
-                } else {
-                    out.printf("처형 미발동 (주사위 %d > 확률 %d%%)\n", random, executionChance);
-                }
+            int random = (int) (Math.random() * 100) + 1;
+            if (executionChance >= random) {
+                out.println("처형 발동!");
+                return new Result(0, 0, true, 0, 0);
+            } else {
+                out.printf("처형 미발동 (주사위 %d > 확률 %d%%)\n", random, executionChance);
+                return new Result(0, 0, false, 0, 0);
             }
         }
 
-        // 3. 무차별 난사 로그
-        if (indiscriminateFire) {
-            out.println("무차별 난사 적용: 기본 공격이 광역으로 적용됩니다.");
+        // 판정 로직
+        int verdict = Main.verdict(stat, out);
+        if (verdict <= 0) return new Result(0, 0, false, 0, 0);
+
+        int dices = arrowCount;
+        int sides = 6;
+
+        // 무차별 난사: 집중 난사 비활성화 && 화살 4개 이상
+        if (!focusedBarrage && arrowCount >= 4) {
+            out.println("무차별 난사 발동: 광역 공격");
         }
 
-        // 4. 데미지 계산
-        int baseDamage = Main.dice(1, 6, out);
-        out.printf("기본 데미지 : %d\n", baseDamage);
+        // 집중 공격 배율 계산
+        int multiplier = focusedBarrage ? 50 : 30;
+        int flatBonus = arrowCount * multiplier;
 
-        // 일반 화살 데미지 (처형 화살 유무와 무관하게 적용)
-        int arrowDamage = Main.dice(loadedArrows, 6, out);
-        out.printf("장전된 화살 (%d개) 데미지 : %d\n", loadedArrows, arrowDamage);
+        // 최종 데미지 배율
+        double finalDamageMultiplier = 1.0;
 
-        // 5. 집중 공격 및 오차 제거 배율
-        double focusModifier = 0.3;
-        if (eliminateError) {
-            focusModifier = 0.5;
-            out.println("오차 제거 적용: 집중 공격 데미지 증가 효과가 50%로 강화됩니다.");
+        // 비거리 계산
+        if (distanceCalculation) {
+            int v1 = Main.verdict(stat, out);
+            int v2 = Main.verdict(stat, out);
+            if (v1 >= 0 && v2 >= 0) {
+                finalDamageMultiplier *= 1.5;
+                out.println("비거리 계산 성공: 최종 데미지 1.5배");
+            }
         }
 
-        double damageModifier = 1 + (focusModifier * loadedArrows);
-        out.printf("집중 공격 데미지 증가 배율 : %.1f * %d = %.1f\n", focusModifier, loadedArrows, damageModifier);
-
-        // 6. 비거리 계산 배율
-        if (calculateRange) {
-            out.println("비거리 계산 적용: 데미지 2배 증가");
-            damageModifier *= 2;
-        }
-
-        // 7. 최종 데미지 산출
-        int damageAfterModifier = (int) ((baseDamage + arrowDamage) * damageModifier);
-        out.printf("배율 적용 후 데미지 : %d\n", damageAfterModifier);
-
-        int sideDamage = Main.sideDamage(damageAfterModifier, stat, out);
-        damageAfterModifier += sideDamage;
-        out.printf("데미지 보정치 : %d\n", sideDamage);
-        damageAfterModifier = Main.criticalHit(precision, damageAfterModifier, out);
-        out.printf("최종 데미지 : %d\n", damageAfterModifier);
-
-        return new Result(0, damageAfterModifier, true, 0, 0);
+        return calculate(dices, sides, stat, flatBonus, finalDamageMultiplier, precision, 0, out);
     }
 
     /**
-     * 단일사격 : 화살을 1개 소모하여 대상에게 D10의 피해를 입힙니다. (스태미나 2 소모)
+     * 던지기 : 대상에게 1D6의 피해를 입힙니다. (스태미나 0 소모)
      *
-     * @param stat         사용할 스탯
-     * @param loadedArrows 장전된 화살 개수
-     * @param out          출력 스트림
+     * @param stat      사용할 스탯
+     * @param precision 정밀 스탯
+     * @param out       출력 스트림
      * @return 결과 객체
      */
-    public static Result singleShot(int stat, int loadedArrows, int precision, PrintStream out) {
+    public static Result throwWeapon(int stat, int precision, PrintStream out) {
+        out.println("석궁사수-던지기 사용");
+
+        int verdict = Main.verdict(stat, out);
+        if (verdict <= 0) return new Result(0, 0, false, 0, 0);
+
+        return calculate(1, 6, stat, 0, 1.0, precision, 0, out);
+    }
+
+    /**
+     * 빠른 장전 : 화살 1개를 즉시 장전합니다. (스태미나 1 소모)
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체
+     */
+    public static Result quickReload(PrintStream out) {
+        out.println("석궁사수-빠른 장전 사용");
+        out.println("화살 1개 장전");
+        return new Result(0, 0, true, 0, 1);
+    }
+
+    /**
+     * 단일사격 : 화살을 1개 소모하여 대상에게 1D10의 피해를 입힙니다. (스태미나 2 소모)
+     *
+     * @param stat       사용할 스탯
+     * @param arrowCount 장전된 화살 개수
+     * @param precision  정밀 스탯
+     * @param out        출력 스트림
+     * @return 결과 객체
+     */
+    public static Result singleShot(int stat, int arrowCount, int precision, PrintStream out) {
         out.println("석궁사수-단일사격 사용");
 
-        if (loadedArrows < 1) {
+        if (arrowCount < 1) {
             out.println("화살이 부족합니다! (필요: 1)");
             return new Result(0, 0, false, 0, 0);
         }
 
         int verdict = Main.verdict(stat, out);
-        if (verdict <= 0) return new Result(0, 0, false, 0, 0);
+        if (verdict <= 0) return new Result(0, 0, false, 0, 2);
 
-        int baseDamage = Main.dice(1, 10, out);
-        out.printf("기본 데미지 : %d\n", baseDamage);
-
-        int sideDamage = Main.sideDamage(baseDamage, stat, out);
-        int finalDamage = baseDamage + sideDamage;
-        finalDamage = Main.criticalHit(precision, finalDamage, out);
-        out.printf("최종 데미지 : %d\n", finalDamage);
-
-        return new Result(0, finalDamage, true, 0, 2);
+        return calculate(1, 10, stat, 0, 1.0, precision, 2, out);
     }
 
     /**
-     * 발광 화살 : 화살을 2개 소모하여 대상에게 2D8의 피해를 입힙니다. 다음 턴까지 적이 받는 데미지를 1.5배로 증가시킵니다. (스태미나 4 소모)
+     * 발광 화살 : 화살을 2개 소모하여 대상에게 2D8의 피해를 입힙니다.
+     * 적중 시 다음 턴 적이 받는 최종 데미지 1.5배. (스태미나 4 소모)
      *
-     * @param stat         사용할 스탯
-     * @param loadedArrows 장전된 화살 개수
-     * @param out          출력 스트림
+     * @param stat       사용할 스탯
+     * @param arrowCount 장전된 화살 개수
+     * @param precision  정밀 스탯
+     * @param out        출력 스트림
      * @return 결과 객체
      */
-    public static Result luminousArrow(int stat, int loadedArrows, int precision, PrintStream out) {
+    public static Result flareArrow(int stat, int arrowCount, int precision, PrintStream out) {
         out.println("석궁사수-발광 화살 사용");
 
-        if (loadedArrows < 2) {
+        if (arrowCount < 2) {
             out.println("화살이 부족합니다! (필요: 2)");
             return new Result(0, 0, false, 0, 0);
         }
 
         int verdict = Main.verdict(stat, out);
-        if (verdict <= 0) return new Result(0, 0, false, 0, 0);
+        if (verdict <= 0) return new Result(0, 0, false, 0, 4);
 
-        int baseDamage = Main.dice(2, 8, out);
-        out.printf("기본 데미지 : %d\n", baseDamage);
-
-        int sideDamage = Main.sideDamage(baseDamage, stat, out);
-        int finalDamage = baseDamage + sideDamage;
-        finalDamage = Main.criticalHit(precision, finalDamage, out);
-        out.printf("최종 데미지 : %d\n", finalDamage);
-        out.println("효과: 다음 턴까지 적이 받는 데미지를 1.5배로 증가시킵니다.");
-
-        return new Result(0, finalDamage, true, 0, 4);
+        out.println("적중 시 다음 턴 적이 받는 최종 데미지 1.5배");
+        return calculate(2, 8, stat, 0, 1.0, precision, 4, out);
     }
 
     /**
-     * 마비 화살 : 화살을 1개 소모하여 대상에게 2D8 + D6의 피해를 입힙니다. 다음 턴까지 적의 모든 스탯을 2 감소시킵니다. (스태미나 6 소모)
+     * 마비 화살 : 화살을 1개 소모하여 대상에게 2D8 + 1D6의 피해를 입힙니다.
+     * 적중 시 다음 턴 적의 모든 스탯 2 감소. (스태미나 6 소모)
      *
-     * @param stat         사용할 스탯
-     * @param loadedArrows 장전된 화살 개수
-     * @param out          출력 스트림
+     * @param stat       사용할 스탯
+     * @param arrowCount 장전된 화살 개수
+     * @param precision  정밀 스탯
+     * @param out        출력 스트림
      * @return 결과 객체
      */
-    public static Result paralysisArrow(int stat, int loadedArrows, int precision, PrintStream out) {
+    public static Result paralysisArrow(int stat, int arrowCount, int precision, PrintStream out) {
         out.println("석궁사수-마비 화살 사용");
 
-        if (loadedArrows < 1) {
+        if (arrowCount < 1) {
             out.println("화살이 부족합니다! (필요: 1)");
             return new Result(0, 0, false, 0, 0);
         }
 
         int verdict = Main.verdict(stat, out);
-        if (verdict <= 0) return new Result(0, 0, false, 0, 0);
+        if (verdict <= 0) return new Result(0, 0, false, 0, 6);
 
+        out.println("적중 시 다음 턴 적의 모든 스탯 2 감소");
         int dice1 = Main.dice(2, 8, out);
         int dice2 = Main.dice(1, 6, out);
-        int baseDamage = dice1 + dice2;
-        out.printf("기본 데미지 : %d + %d = %d\n", dice1, dice2, baseDamage);
+        int basic = dice1 + dice2;
+        out.printf("기본 데미지 : %d + %d = %d\n", dice1, dice2, basic);
 
-        int sideDamage = Main.sideDamage(baseDamage, stat, out);
-        int finalDamage = baseDamage + sideDamage;
-        finalDamage = Main.criticalHit(precision, finalDamage, out);
-        out.printf("최종 데미지 : %d\n", finalDamage);
-        out.println("효과: 다음 턴까지 적의 모든 스탯을 2 감소시킵니다.");
+        int damage = Main.calculateDamage(basic, 0, 1.0, out);
+        int sideDmg = Main.sideDamage(damage, stat, out);
+        damage += sideDmg;
+        out.printf("데미지 보정치 : %d\n", sideDmg);
 
-        return new Result(0, finalDamage, true, 0, 6);
+        damage = Main.criticalHit(precision, damage, out);
+        out.printf("최종 데미지 : %d\n", damage);
+
+        return new Result(0, damage, true, 0, 6);
+    }
+
+    /**
+     * 복제화살 : 현재 장전된 화살을 2배로 복제합니다. (마나 10 소모)
+     *
+     * @param arrowCount 장전된 화살 개수
+     * @param out        출력 스트림
+     * @return 결과 객체
+     */
+    public static Result duplicateArrow(int arrowCount, PrintStream out) {
+        out.println("석궁사수-복제화살 사용");
+        out.println("장전된 화살 2배 복제");
+        out.printf("화살 %d개 -> %d개\n", arrowCount, arrowCount * 2);
+        return new Result(0, 0, true, 10, 0);
+    }
+
+    /**
+     * 재빠른 손놀림 : 매 턴 화살 1개를 추가로 장전합니다. (마나 5 소모)
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체
+     */
+    public static Result quickHands(PrintStream out) {
+        out.println("석궁사수-재빠른 손놀림 사용");
+        out.println("재빠른 손놀림: 매 턴 화살 1개 추가 장전 (민첩 판정 지속)");
+        return new Result(0, 0, true, 5, 0);
+    }
+
+    /**
+     * 처형 화살 : 처형 화살을 장전합니다. 데미지 0, 25발당 5% 처형 확률. (마나 8 소모)
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체
+     */
+    public static Result executionArrowSkill(PrintStream out) {
+        out.println("석궁사수-처형 화살 사용");
+        out.println("처형 화살 장전: 데미지 0, 25발당 5% 처형 확률");
+        return new Result(0, 0, true, 8, 0);
+    }
+
+    /**
+     * 집중 난사 : 무차별 난사를 비활성화하고 집중 공격 효과를 50%로 강화합니다. (마나 6 소모)
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체
+     */
+    public static Result focusedBarrageSkill(PrintStream out) {
+        out.println("석궁사수-집중 난사 사용");
+        out.println("집중 난사: 무차별 난사 비활성화, 집중 공격 효과 50%로 강화");
+        return new Result(0, 0, true, 6, 0);
     }
 
     /**
      * 화살 꺾기 : (6 * 소모 화살) 만큼 받는 데미지가 감소합니다. (스태미나 3 소모)
      *
-     * @param stat           사용할 스탯
-     * @param damageTaken    받은 데미지
      * @param consumedArrows 소모할 화살 개수
      * @param out            출력 스트림
      * @return 결과 객체
      */
-    public static Result arrowBreak(int stat, int damageTaken, int consumedArrows, PrintStream out) {
+    public static Result breakArrow(int consumedArrows, PrintStream out) {
         out.println("석궁사수-화살 꺾기 사용");
-
-        int verdict = Main.verdict(stat, out);
-        if (verdict <= 0) return new Result(damageTaken, 0, false, 0, 3);
-
         int reduction = 6 * consumedArrows;
-        out.printf("데미지 감소량 : 6 * %d = %d\n", consumedArrows, reduction);
-
-        int finalDamage = Math.max(0, damageTaken - reduction);
-        out.printf("최종 받는 데미지 : %d - %d = %d\n", damageTaken, reduction, finalDamage);
-
-        return new Result(finalDamage, 0, true, 0, 3);
+        out.println("화살 꺾기: 받는 데미지 " + reduction + " 감소");
+        return new Result(0, 0, true, 0, 3);
     }
 
     /**
      * 이럴 때 일수록! : 받은 데미지 4마다 화살 1개를 장전합니다. (스태미나 9 소모)
      *
-     * @param stat        사용할 스탯
-     * @param damageTaken 받은 데미지
-     * @param out         출력 스트림
+     * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result crisisReload(int stat, int damageTaken, PrintStream out) {
+    public static Result inTheseTimes(PrintStream out) {
         out.println("석궁사수-이럴 때 일수록! 사용");
-
-        int verdict = Main.verdict(stat, out);
-        if (verdict <= 0) return new Result(damageTaken, 0, false, 0, 9);
-
-        int reloadAmount = damageTaken / 4;
-        out.printf("받은 데미지 : %d\n", damageTaken);
-        out.printf("장전할 화살 개수 : %d / 4 = %d\n", damageTaken, reloadAmount);
-
-        return new Result(damageTaken, 0, true, 0, 9);
+        out.println("받은 데미지 4마다 화살 1개 장전");
+        return new Result(0, 0, true, 0, 9);
     }
 }
