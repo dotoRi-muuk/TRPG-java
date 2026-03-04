@@ -61,6 +61,7 @@ public class BarrierMaster {
         int verdict = Main.verdict(stat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 0);
+        int diceRoll = stat - verdict;
 
         int baseDamage = Main.dice(1, 6, out);
         out.printf("기본 데미지 : %d%n", baseDamage);
@@ -114,7 +115,7 @@ public class BarrierMaster {
 
         int damageAfterModifier = (int) (baseDamage * damageModifier);
         out.printf("배율 적용 후 데미지 : %d%n", damageAfterModifier);
-        int sideDamage = Main.sideDamage(damageAfterModifier, stat, out);
+        int sideDamage = Main.sideDamage(damageAfterModifier, stat, out, diceRoll);
         damageAfterModifier += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
         damageAfterModifier = Main.criticalHit(precision, damageAfterModifier, out);

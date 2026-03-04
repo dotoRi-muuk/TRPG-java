@@ -215,9 +215,11 @@ class Berserker {
             return main.Result(0, 0, false, 0, 0)
         }
 
-        if (Main.verdict(stat, out) <= 0) {
+        val verdictResult = Main.verdict(stat, out)
+        if (verdictResult <= 0) {
             return main.Result(0, 0, false, 0, currentStamina)
         }
+        val diceRoll = stat - verdictResult
 
         val baseDamage = Main.dice(4, 20, out)
         out.println("기본 데미지 : $baseDamage")
@@ -230,7 +232,7 @@ class Berserker {
         if (euphoriaActive) out.println("희열 패시브 적용: 가하는 데미지 150% 증가")
 
         val damageAfterPassives = Main.calculateDamage(baseDamage, rageBonus + euphoriaOutBonus, 1.0, out)
-        val sideDamage = Main.sideDamage(damageAfterPassives, stat, out)
+        val sideDamage = Main.sideDamage(damageAfterPassives, stat, out, diceRoll)
         val totalDamage = damageAfterPassives + sideDamage
         out.println("데미지 보정치 : $sideDamage")
         out.println("최종 데미지 : $totalDamage")
@@ -330,9 +332,11 @@ class Berserker {
         precision: Int,
         out: PrintStream
     ): main.Result {
-        if (Main.verdict(stat, out) <= 0) {
+        val verdictResult = Main.verdict(stat, out)
+        if (verdictResult <= 0) {
             return main.Result(0, 0, false, 0, stamina)
         }
+        val diceRoll = stat - verdictResult
         val baseDamage = Main.dice(dices, sides, out)
         out.println("기본 데미지 : $baseDamage")
 
@@ -349,7 +353,7 @@ class Berserker {
         if (euphoriaActive) out.println("희열 패시브 적용: 스태미나 소모 50% 감소 ($stamina -> $effectiveStamina)")
 
         val damageAfterPassives = Main.calculateDamage(baseDamage, rageBonus + euphoriaOutBonus, 1.0, out)
-        val sideDamage = Main.sideDamage(damageAfterPassives, stat, out)
+        val sideDamage = Main.sideDamage(damageAfterPassives, stat, out, diceRoll)
         val totalDamage = damageAfterPassives + sideDamage
         out.println("데미지 보정치 : $sideDamage")
         out.println("최종 데미지 : $totalDamage")

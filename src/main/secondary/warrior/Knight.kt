@@ -122,6 +122,7 @@ class Knight {
         if (verdict <= 0) {
             return Result(0, 0, false, 0, stamina)
         }
+        val diceRoll = stat - verdict
 
         var baseDamage = Main.dice(dices, sides, out)
         out.println("기본 데미지 : $baseDamage")
@@ -130,7 +131,7 @@ class Knight {
             baseDamage = (baseDamage * 0.7).toInt()
             out.println("계수 적용 후 데미지: $baseDamage")
         }
-        val sideDamage = Main.sideDamage(baseDamage, stat, out)
+        val sideDamage = Main.sideDamage(baseDamage, stat, out, diceRoll)
         out.println("데미지 보정치: $sideDamage")
         val totalDamage = sideDamage + baseDamage
         out.println("최종 데미지: $totalDamage")

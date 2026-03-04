@@ -46,8 +46,8 @@ public class Summoner {
 
         int damage = Main.dice(1, 10, out);
         out.printf("기본 데미지 : %d%n", damage);
-
-        int sideDamage = Main.sideDamage(damage, stat, out);
+        int diceRoll = stat - verdict;
+        int sideDamage = Main.sideDamage(damage, stat, out, diceRoll);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
         damage = Main.criticalHit(precision, damage, out);
@@ -71,8 +71,8 @@ public class Summoner {
 
         int damage = Main.dice(1, 10, out);
         out.printf("기본 데미지 : %d%n", damage);
-
-        int sideDamage = Main.sideDamage(damage, stat, out);
+        int diceRoll = stat - verdict;
+        int sideDamage = Main.sideDamage(damage, stat, out, diceRoll);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
         damage = Main.criticalHit(precision, damage, out);
@@ -97,8 +97,8 @@ public class Summoner {
 
         int damage = Main.dice(1, 6, out);
         out.printf("기본 데미지 : %d%n", damage);
-
-        int sideDamage = Main.sideDamage(damage, stat, out);
+        int diceRoll = stat - verdict;
+        int sideDamage = Main.sideDamage(damage, stat, out, diceRoll);
         damage += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
         damage = Main.criticalHit(precision, damage, out);
