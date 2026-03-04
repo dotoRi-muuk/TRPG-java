@@ -5,6 +5,8 @@ import main.Result;
 import main.Stat;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -88,6 +90,7 @@ public class Gambler {
         int baseDamage = Main.dice(1, baseDiceSide, out);
         out.printf("기본 데미지: %d\n", baseDamage);
 
+        List<Integer> luckyDiceRolls = new ArrayList<>();
         if (requiredLuckSuccesses > 0) {
             int successCount = 0;
             for (int i = 0; i < requiredLuckSuccesses; i++) {
@@ -96,6 +99,7 @@ public class Gambler {
                 if (v > 0) {
                     successCount++;
                     misfortuneAversion = true;
+                    luckyDiceRolls.add(luckStat - v);
                 }
             }
 
@@ -106,16 +110,12 @@ public class Gambler {
             }
         }
 
-        int lucky = Main.verdict(luckStat, out);
-        if (decreasedLuck > 0 && lucky > 0) {
-            misfortuneAversion = true;
-            double modifier = (decreasedLuck * 0.5);
-            out.printf("일확천금 패시브 적용: 데미지 %.2f배\n", modifier);
-            int windfallDamage = (int) (baseDamage * modifier);
-            out.printf("일확천금 추가 데미지: %d\n", windfallDamage);
-            baseDamage += windfallDamage;
+        int sideDamage = 0;
+        double statFactor = 1.0 + (stat - diceRoll / 2.0) * 0.1;
+        for (int luckDice : luckyDiceRolls) {
+            double luckFactor = 1.0 + (luckStat - luckDice / 18.0) * 0.1;
+            sideDamage += (int) (baseDamage / (double) baseDiceSide * statFactor * luckFactor);
         }
-        int sideDamage = Main.sideDamage(baseDamage, stat, out, diceRoll);
         baseDamage += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
         baseDamage = Main.criticalHit(precision, baseDamage, out);
