@@ -110,13 +110,16 @@ public class Gambler {
             }
         }
 
-        int sideDamage = 0;
-        double statFactor = 1.0 + (stat - diceRoll / 2.0) * 0.1;
+        double correction = 1.0 + (stat - diceRoll) * 0.1;
+        out.printf("스탯 보정: 1 + (%d - %d) * 0.1 = %.2f%n", stat, diceRoll, correction);
         for (int luckDice : luckyDiceRolls) {
-            double luckFactor = 1.0 + (luckStat - luckDice / 18.0) * 0.1;
-            sideDamage += (int) (baseDamage / (double) baseDiceSide * statFactor * luckFactor);
+            double luckFactor = 1.0 + (luckStat - luckDice) * 0.1;
+            out.printf("운 보정: 1 + (%d - %d) * 0.1 = %.2f%n", luckStat, luckDice, luckFactor);
+            correction *= luckFactor;
         }
-        baseDamage += sideDamage;
+        int correctedDamage = (int) (baseDamage * correction);
+        int sideDamage = correctedDamage - baseDamage;
+        baseDamage = correctedDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
         baseDamage = Main.criticalHit(precision, baseDamage, out);
         out.printf("최종 데미지 : %d%n", baseDamage);
