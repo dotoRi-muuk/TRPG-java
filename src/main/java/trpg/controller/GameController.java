@@ -29,6 +29,14 @@ public class GameController {
     }
 
     /**
+     * Display the damage calculator page.
+     */
+    @GetMapping("/calc")
+    public String calc() {
+        return "index";
+    }
+
+    /**
      * Roll dice and return result.
      */
     @PostMapping("/roll-dice")

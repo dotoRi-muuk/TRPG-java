@@ -410,20 +410,22 @@ async function calculateKnight(skill) {
 
 // Ninja calculations
 async function calculateNinja(skill) {
-    const stat = parseInt(document.getElementById('ninja-stat').value) || 10;
+    const str = parseInt(document.getElementById('ninja-str').value) || 10;
+    const dex = parseInt(document.getElementById('ninja-dex').value) || 10;
+    const speed = parseInt(document.getElementById('ninja-speed').value) || 10;
     const shurikenCount = parseInt(document.getElementById('ninja-shurikenCount').value) || 1;
-    const isIllusionTurn = document.getElementById('ninja-isIllusionTurn').checked;
-    const isCloneActive = document.getElementById('ninja-isCloneActive').checked;
-    const isReflexActive = document.getElementById('ninja-isReflexActive').checked;
-    const isIdeologySealActive = document.getElementById('ninja-isIdeologySealActive').checked;
-    
+    const stealthActive = document.getElementById('ninja-stealthActive').checked;
+    const doppelgangerActive = document.getElementById('ninja-doppelgangerActive').checked;
+    const ideologySealActive = document.getElementById('ninja-ideologySealActive').checked;
+    const resistanceType = document.getElementById('ninja-resistanceType').value;
+
     try {
         const response = await fetch(`${API_BASE}/ninja/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat, shurikenCount, isIllusionTurn, isCloneActive, isReflexActive, isIdeologySealActive })
+            body: JSON.stringify({ str, dex, speed, shurikenCount, stealthActive, doppelgangerActive, ideologySealActive, resistanceType })
         });
-        
+
         const data = await response.json();
         showDamageResult(data.damage, '닌자 - ' + getSkillName('ninja', skill));
         addLog(`🥷 닌자 - ${getSkillName('ninja', skill)}`, data.log);
@@ -977,12 +979,11 @@ function getSkillName(job, skill) {
             'critical-strike': '일격'
         },
         ninja: {
-            'plain': '기본공격',
             'strike': '일격',
-            'chaos': '난도',
-            'throw-shuriken': '투척 표창',
-            'illusion-barrage': '환영난무',
-            'focus-throw': '일점투척'
+            'mangle': '난도',
+            'throw': '투척 표창',
+            'phantom-dance': '환영난무',
+            'focused-throw': '일점투척'
         },
         gunslinger: {
             'plain': '기본공격',

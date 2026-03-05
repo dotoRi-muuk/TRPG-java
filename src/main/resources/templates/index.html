@@ -590,8 +590,16 @@
                 <div id="ninja-skills" class="skill-form" style="display: none;">
                     <div class="stat-inputs">
                         <div class="form-group">
-                            <label for="ninja-stat">스탯 (민첩)</label>
-                            <input type="number" id="ninja-stat" value="10" min="1">
+                            <label for="ninja-str">힘 (일격/난도)</label>
+                            <input type="number" id="ninja-str" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="ninja-dex">민첩 (표창/환영난무/일점투척)</label>
+                            <input type="number" id="ninja-dex" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="ninja-speed">신속 (일점투척 판정)</label>
+                            <input type="number" id="ninja-speed" value="10" min="1">
                         </div>
                         <div class="form-group">
                             <label for="ninja-shurikenCount">보유 표창 (일점투척)</label>
@@ -599,37 +607,38 @@
                         </div>
                         <div class="form-group checkbox-group">
                             <label>
-                                <input type="checkbox" id="ninja-isIllusionTurn">
-                                환영 (3n턴, 150%)
+                                <input type="checkbox" id="ninja-stealthActive">
+                                은신 활성화 - 환영 패시브 (최종 데미지 x2)
                             </label>
                         </div>
                         <div class="form-group checkbox-group">
                             <label>
-                                <input type="checkbox" id="ninja-isCloneActive">
-                                분신 (75%)
+                                <input type="checkbox" id="ninja-doppelgangerActive" checked>
+                                분신 패시브 활성화 (데미지 x0.75)
                             </label>
                         </div>
                         <div class="form-group checkbox-group">
                             <label>
-                                <input type="checkbox" id="ninja-isReflexActive">
-                                순발력 (75%)
+                                <input type="checkbox" id="ninja-ideologySealActive">
+                                이념 봉인 활성화 (데미지 +500%, 분신 무시)
                             </label>
                         </div>
-                        <div class="form-group checkbox-group">
-                            <label>
-                                <input type="checkbox" id="ninja-isIdeologySealActive">
-                                이념 봉인 (환영 항상, 분신 무시, 300%)
-                            </label>
+                        <div class="form-group">
+                            <label for="ninja-resistanceType">내성 종류</label>
+                            <select id="ninja-resistanceType">
+                                <option value="none">없음</option>
+                                <option value="pain">고통 내성</option>
+                                <option value="fear">공포 내성 (최종 데미지 x2)</option>
+                            </select>
                         </div>
                     </div>
-                    <p class="note" style="font-size: 0.9em; color: #666;">※ 이념 봉인 활성화 시: 환영(150%) × 이념봉인(300%) = 450%</p>
+                    <p class="note" style="font-size: 0.9em; color: #666;">※ 이념 봉인 활성화 시 분신 패시브 감소 무시. 은신(x2) + 공포내성(x2) 중첩 적용.</p>
                     <div class="skill-buttons">
-                        <button onclick="calculateNinja('plain')" class="btn btn-skill">기본공격 (D6)</button>
                         <button onclick="calculateNinja('strike')" class="btn btn-skill">일격 (2D6)</button>
-                        <button onclick="calculateNinja('chaos')" class="btn btn-skill">난도 (3D8)</button>
-                        <button onclick="calculateNinja('throw-shuriken')" class="btn btn-skill">투척 표창 (D8)</button>
-                        <button onclick="calculateNinja('illusion-barrage')" class="btn btn-skill">환영난무 (8D6)</button>
-                        <button onclick="calculateNinja('focus-throw')" class="btn btn-skill">일점투척 (표창D10)</button>
+                        <button onclick="calculateNinja('mangle')" class="btn btn-skill">난도 (3D8)</button>
+                        <button onclick="calculateNinja('throw')" class="btn btn-skill">투척 표창 (D8)</button>
+                        <button onclick="calculateNinja('phantom-dance')" class="btn btn-skill">환영난무 (8D6)</button>
+                        <button onclick="calculateNinja('focused-throw')" class="btn btn-skill">일점투척 (표창D10)</button>
                     </div>
                 </div>
 
