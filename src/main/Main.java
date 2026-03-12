@@ -70,21 +70,35 @@ public class Main {
     }
 
     /**
-     * 새로운 데미지 계산 공식
-     * 최종 데미지 = 기본 주사위 데미지 * { (100 + 추가 고정 데미지) * 배율 } %
-     * 
+     * 데미지 계산 공식
+     * 최종 데미지 = [(기본 데미지) x (100 + 데미지 증가)%] x (최종 데미지)% x (주사위 보정)
+     *
+     * @param baseDamage      주사위로 굴린 기본 데미지
+     * @param flatBonus       데미지 증가 (덧셈 퍼센트 보정, 예: 버프/스탯 보너스)
+     * @param finalMultiplier 최종 데미지 배율 (곱셈 보정, 예: 패시브 400% = 4.0)
+     * @param diceModifier    주사위 보정 배율 (주사위 결과에 적용되는 배율)
+     * @param out             출력 스트림
+     * @return 최종 계산된 데미지
+     */
+    public static int calculateDamage(int baseDamage, int flatBonus, double finalMultiplier, double diceModifier, PrintStream out) {
+        int finalDamage = (int)(baseDamage * ((100.0 + flatBonus) / 100.0) * finalMultiplier * diceModifier);
+        out.printf("데미지 계산: [(기본 %d) x (100 + %d)%%] x (최종 %.2f) x (주사위 보정 %.2f) = %d\n",
+                baseDamage, flatBonus, finalMultiplier, diceModifier, finalDamage);
+        return finalDamage;
+    }
+
+    /**
+     * 데미지 계산 공식 (주사위 보정 없음)
+     * 최종 데미지 = [(기본 데미지) x (100 + 데미지 증가)%] x (최종 데미지)%
+     *
      * @param baseDamage 주사위로 굴린 기본 데미지
-     * @param flatBonus  추가할 고정 데미지 (현재는 0, 추후 스킬/아이템 등에서 추가)
-     * @param multiplier 스킬/패시브 배율 (기본 1.0)
+     * @param flatBonus  데미지 증가 (덧셈 퍼센트 보정)
+     * @param multiplier 최종 데미지 배율 (곱셈 보정, 기본 1.0)
      * @param out        출력 스트림
      * @return 최종 계산된 데미지
      */
     public static int calculateDamage(int baseDamage, int flatBonus, double multiplier, PrintStream out) {
-        double percent = (100 + flatBonus) * multiplier;
-        int finalDamage = (int)(baseDamage * (percent / 100.0));
-        out.printf("데미지 계산: %d * { (100 + %d) * %.2f }%% = %d\n", 
-                baseDamage, flatBonus, multiplier, finalDamage);
-        return finalDamage;
+        return calculateDamage(baseDamage, flatBonus, multiplier, 1.0, out);
     }
 
     /**
