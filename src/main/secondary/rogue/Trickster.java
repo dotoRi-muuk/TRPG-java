@@ -211,16 +211,17 @@ public class Trickster {
         double finalDamageMultiplier = getFinalDamageMultiplier(focusedFire, regularCustomer, partyTime, greatScar, out);
 
         out.println("기본 공격 데미지 증가 합계: " + damageIncreasePercent + "%, 최종 데미지 배율: " + finalDamageMultiplier + "배");
-        int totalBaseDamage = 0;
+        int totalFinalDamage = 0;
         while (true) {
             int damage = Main.dice(1, 6, out);
-            totalBaseDamage += damage;
             count++;
             out.println("기본 공격 " + count + "회차: " + damage + "데미지");
+            totalFinalDamage += calculateFinalDamage(damage, damageIncreasePercent, finalDamageMultiplier, stat, "기본 공격", precision, out, diceRoll);
             int rapidFireCheck = stat - Main.dice(1, 20, out);
             int currentVerdict = rapidFireVerdict * count;
             if (rapidFireCheck >= currentVerdict) {
                 out.println("난사 발동: 추가 공격 가능 (난사 판정치 " + currentVerdict + " 달성)");
+                diceRoll = rapidFireCheck;
                 if (!mainEvent && count >= 10) {
                     out.println("기본 공격 최대 횟수 도달: 10회");
                     break;
@@ -230,8 +231,7 @@ public class Trickster {
                 break;
             }
         }
-        int finalDamage = calculateFinalDamage(totalBaseDamage, damageIncreasePercent, finalDamageMultiplier, stat, "기본 공격", precision, out, diceRoll);
-        return new Result(0, finalDamage, true, 0, 0);
+        return new Result(0, totalFinalDamage, true, 0, 0);
     }
 
     /**
