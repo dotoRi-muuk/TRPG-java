@@ -217,11 +217,12 @@ public class Trickster {
             count++;
             out.println("기본 공격 " + count + "회차: " + damage + "데미지");
             totalFinalDamage += calculateFinalDamage(damage, damageIncreasePercent, finalDamageMultiplier, stat, "기본 공격", precision, out, diceRoll);
-            int rapidFireCheck = stat - Main.dice(1, 20, out);
+            int rapidFireDice = Main.dice(1, 20, out);
+            int rapidFireCheck = stat - rapidFireDice;
             int currentVerdict = rapidFireVerdict * count;
             if (rapidFireCheck >= currentVerdict) {
                 out.println("난사 발동: 추가 공격 가능 (난사 판정치 " + currentVerdict + " 달성)");
-                diceRoll = rapidFireCheck;
+                diceRoll = rapidFireDice;
                 if (!mainEvent && count >= 10) {
                     out.println("기본 공격 최대 횟수 도달: 10회");
                     break;
