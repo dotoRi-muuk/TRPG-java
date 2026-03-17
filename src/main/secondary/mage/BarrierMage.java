@@ -14,7 +14,7 @@ import java.io.PrintStream;
  * - 결계 확장: '결계' 스킬을 자유롭게 영창. 영창 시간만큼 결계 효과를 대상에게 추가 부여 (적 100%, 아군 50%).
  * - 견고한 결계: 공격하지 않는 스킬도 판정 진행. 결계 효과는 다음 결계 시전 시도까지 지속.
  * - 전개: 스킬 영창 중 기본 공격 사용 가능. 적중 시 다음 전개 마나 소모 없음.
- * - 영역: (전개된 결계의 영창 시간 합계) * 50% 만큼 최종 데미지 증가.
+ * - 영역: (전개된 결계의 영창 시간 합계) * 150% 만큼 최종 데미지 증가.
  * <p>
  * 데미지 공식: [(기본 데미지) x (100 + 데미지)%] x (최종 데미지)% x (주사위 보정)
  */
@@ -24,7 +24,7 @@ public class BarrierMage {
      * 기본 공격: 대상에게 1D6의 데미지를 입힙니다.
      *
      * @param stat                 지능 스탯
-     * @param castSum              전개된 결계의 영창 시간 합계 (영역 패시브: castSum * 50% 최종 데미지 증가)
+     * @param castSum              전개된 결계의 영창 시간 합계 (영역 패시브: castSum * 150% 최종 데미지 증가)
      * @param reinforceBarrier     강화 결계 활성화 여부 (데미지 + reinforceBarrierCast * 40%)
      * @param reinforceBarrierCast 강화 결계 영창 시간
      * @param sealBarrier          봉인 결계 활성화 여부 (최종 데미지 +100%)
@@ -56,7 +56,7 @@ public class BarrierMage {
         // (최종 데미지)% — 영역, 봉인 결계, 분신 결계 적용
         double finalMultiplier = 1.0;
         if (castSum > 0) {
-            double domainBonus = castSum * 0.5;
+            double domainBonus = castSum * 1.5;
             out.printf("영역 패시브 적용: 최종 데미지 +%.0f%%%n", domainBonus * 100);
             finalMultiplier += domainBonus;
         }
