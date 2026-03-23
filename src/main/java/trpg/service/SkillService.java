@@ -321,7 +321,7 @@ public class SkillService {
             case "forceFieldBarrier" -> "역장 결계";
             case "manaSlash" -> "마나 슬래쉬";
             case "manaStrike" -> "마나 스트라이크";
-            case "manaSphere" -> "마나 스피어";
+            case "manaSpear" -> "마나 스피어";
             case "spinChrist" -> "스핀 크라이스트";
             case "tripleSlain" -> "트리플 슬레인";
             case "etherealImperio" -> "에테리얼 임페리오";
