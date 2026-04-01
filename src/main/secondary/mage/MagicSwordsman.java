@@ -244,7 +244,7 @@ public class MagicSwordsman {
 
         damage = Main.criticalHit(precision, damage, out);
         damage = (int) (damage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double) level * level), damage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, damage);
         out.printf("최종 데미지 : %d%n", damage);
 
         if (shiftLifter) {
@@ -326,7 +326,7 @@ public class MagicSwordsman {
 
         damage = Main.criticalHit(precision, damage, out);
         damage = (int) (damage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double) level * level), damage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, damage);
         out.printf("최종 데미지 : %d%n", damage);
 
         // 마나 오라 패시브: 이전 턴에 마나를 소모했다면 마나 회복

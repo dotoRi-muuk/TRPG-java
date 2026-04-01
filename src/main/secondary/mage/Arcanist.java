@@ -131,7 +131,7 @@ public class Arcanist {
         out.printf("데미지 보정치 : %d%n", sideDamage);
         baseDamage = Main.criticalHit(precision, baseDamage, out);
         baseDamage = (int) (baseDamage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double) level * level), baseDamage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, baseDamage);
         out.printf("최종 데미지 : %d%n", baseDamage);
 
         //마도학 패시브
@@ -180,7 +180,7 @@ public class Arcanist {
         out.printf("데미지 보정치 : %d%n", sideDamage);
         baseDamage = Main.criticalHit(precision, baseDamage, out);
         baseDamage = (int) (baseDamage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double) level * level), baseDamage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, baseDamage);
         out.printf("최종 데미지 : %d%n", baseDamage);
 
         return new Result(baseDamage, 0, true, 0, 0);

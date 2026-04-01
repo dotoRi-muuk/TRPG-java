@@ -52,7 +52,7 @@ public class Summoner {
         out.printf("데미지 보정치 : %d%n", sideDamage);
         damage = Main.criticalHit(precision, damage, out);
         damage = (int) (damage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double) level * level), damage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, damage);
         out.printf("최종 데미지 : %d%n", damage);
 
         return new Result(damage, 0, true, 0, 2);
@@ -79,7 +79,7 @@ public class Summoner {
         out.printf("데미지 보정치 : %d%n", sideDamage);
         damage = Main.criticalHit(precision, damage, out);
         damage = (int) (damage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double) level * level), damage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, damage);
         out.printf("최종 데미지 : %d%n", damage);
 
         return new Result(damage, 0, true, 0, 3);
@@ -107,7 +107,7 @@ public class Summoner {
         out.printf("데미지 보정치 : %d%n", sideDamage);
         damage = Main.criticalHit(precision, damage, out);
         damage = (int) (damage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double) level * level), damage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, damage);
         out.printf("최종 데미지 : %d%n", damage);
 
         return new Result(damage, 0, true, 0, 0);
