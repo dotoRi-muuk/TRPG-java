@@ -30,6 +30,7 @@ public class NinjaController {
         public boolean doppelgangerActive;
         public boolean ideologySealActive;
         public String resistanceType; // "none", "pain", "fear"
+        public int level = 1;
     }
 
     /**
@@ -72,7 +73,7 @@ public class NinjaController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Result result = Ninja.strike(req.str, req.stealthActive, resolveDoppelganger(req),
-                req.ideologySealActive, resolveResistance(req), ps);
+                req.ideologySealActive, resolveResistance(req), req.level, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -91,7 +92,7 @@ public class NinjaController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Result result = Ninja.mangle(req.str, req.stealthActive, resolveDoppelganger(req),
-                req.ideologySealActive, resolveResistance(req), ps);
+                req.ideologySealActive, resolveResistance(req), req.level, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -110,7 +111,7 @@ public class NinjaController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Result result = Ninja.throwShuriken(req.dex, req.stealthActive, resolveDoppelganger(req),
-                req.ideologySealActive, resolveResistance(req), ps);
+                req.ideologySealActive, resolveResistance(req), req.level, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -129,7 +130,7 @@ public class NinjaController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Result result = Ninja.phantomDance(req.dex, req.stealthActive,
-                req.ideologySealActive, resolveResistance(req), ps);
+                req.ideologySealActive, resolveResistance(req), req.level, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -150,7 +151,7 @@ public class NinjaController {
         int shurikens = Math.max(1, req.shurikenCount);
 
         Result result = Ninja.focusedThrow(req.dex, req.speed, shurikens, req.stealthActive,
-                resolveDoppelganger(req), req.ideologySealActive, resolveResistance(req), ps);
+                resolveDoppelganger(req), req.ideologySealActive, resolveResistance(req), req.level, ps);
         ps.flush();
 
         return buildResponse(result, baos);

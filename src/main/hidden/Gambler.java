@@ -23,7 +23,7 @@ public class Gambler {
      * @param out           출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, int reducedLuck, boolean jackpotActive, PrintStream out) {
+    public static Result plain(int stat, int reducedLuck, boolean jackpotActive, int level, PrintStream out) {
         out.println("겜블러-기본공격 사용");
 
         int damage = Main.dice(1, 6, out);
@@ -38,6 +38,8 @@ public class Gambler {
         damage = corrected;
         out.printf("데미지 보정치 : %d%n", sideDmg);
         out.printf("총 데미지 : %d%n", damage);
+        damage = (int)(damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
 
         return new Result(0, damage, true, 0, 0);
     }
@@ -52,7 +54,7 @@ public class Gambler {
      * @param out           출력 스트림
      * @return 결과 객체
      */
-    public static Result coinToss(int stat, int luck, int reducedLuck, boolean jackpotActive, PrintStream out) {
+    public static Result coinToss(int stat, int luck, int reducedLuck, boolean jackpotActive, int level, PrintStream out) {
         out.println("겜블러-코인 토스 사용");
         out.println("스태미나 1 소모");
 
@@ -88,6 +90,8 @@ public class Gambler {
         damage = corrected;
         out.printf("데미지 보정치 : %d%n", sideDmg);
         out.printf("총 데미지 : %d%n", damage);
+        damage = (int)(damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
 
         return new Result(0, damage, true, 0, 1);
     }
@@ -102,7 +106,7 @@ public class Gambler {
      * @param out           출력 스트림
      * @return 결과 객체
      */
-    public static Result jokerCard(int stat, int luck, int reducedLuck, boolean jackpotActive, PrintStream out) {
+    public static Result jokerCard(int stat, int luck, int reducedLuck, boolean jackpotActive, int level, PrintStream out) {
         out.println("겜블러-조커 카드 사용");
         out.println("스태미나 3 소모");
 
@@ -138,6 +142,8 @@ public class Gambler {
         damage = corrected;
         out.printf("데미지 보정치 : %d%n", sideDmg);
         out.printf("총 데미지 : %d%n", damage);
+        damage = (int)(damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
 
         return new Result(0, damage, true, 0, 3);
     }
@@ -152,7 +158,7 @@ public class Gambler {
      * @param out           출력 스트림
      * @return 결과 객체
      */
-    public static Result blackjack(int stat, int luck, int reducedLuck, boolean jackpotActive, PrintStream out) {
+    public static Result blackjack(int stat, int luck, int reducedLuck, boolean jackpotActive, int level, PrintStream out) {
         out.println("겜블러-블랙잭 사용");
         out.println("스태미나 3 소모");
 
@@ -188,6 +194,8 @@ public class Gambler {
         damage = corrected;
         out.printf("데미지 보정치 : %d%n", sideDmg);
         out.printf("총 데미지 : %d%n", damage);
+        damage = (int)(damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
 
         return new Result(0, damage, true, 0, 3);
     }
@@ -202,7 +210,7 @@ public class Gambler {
      * @param out           출력 스트림
      * @return 결과 객체
      */
-    public static Result yatzyDice(int stat, int luck, int reducedLuck, boolean jackpotActive, PrintStream out) {
+    public static Result yatzyDice(int stat, int luck, int reducedLuck, boolean jackpotActive, int level, PrintStream out) {
         out.println("겜블러-야추 다이스 사용");
         out.println("스태미나 4 소모");
 
@@ -246,6 +254,8 @@ public class Gambler {
         damage = corrected;
         out.printf("데미지 보정치 : %d%n", sideDmg);
         out.printf("총 데미지 : %d%n", damage);
+        damage = (int)(damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
 
         return new Result(0, damage, true, 0, 4);
     }
@@ -260,7 +270,7 @@ public class Gambler {
      * @param out           출력 스트림
      * @return 결과 객체
      */
-    public static Result royalFlush(int stat, int luck, int reducedLuck, boolean jackpotActive, PrintStream out) {
+    public static Result royalFlush(int stat, int luck, int reducedLuck, boolean jackpotActive, int level, PrintStream out) {
         out.println("겜블러-로얄 플러쉬 사용");
         out.println("스태미나 7 소모");
 
@@ -310,6 +320,8 @@ public class Gambler {
         damage = corrected;
         out.printf("데미지 보정치 : %d%n", sideDmg);
         out.printf("총 데미지 : %d%n", damage);
+        damage = (int)(damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
 
         return new Result(0, damage, true, 0, 7);
     }

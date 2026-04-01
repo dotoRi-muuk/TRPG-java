@@ -32,7 +32,7 @@ public class Ninja {
     public static Result calculate(int dices, int sides, int stat,
                                    boolean stealthActive, boolean doppelgangerActive,
                                    boolean ideologySealActive, String resistanceType,
-                                   int staminaUsed, PrintStream out) {
+                                   int staminaUsed, int level, PrintStream out) {
         int damage = Main.dice(dices, sides, out);
         out.printf("기본 데미지 : %d\n", damage);
 
@@ -66,6 +66,8 @@ public class Ninja {
         damage += sideDmg;
         out.printf("데미지 보정치 : %d\n", sideDmg);
         out.printf("최종 데미지 : %d\n", damage);
+        damage = (int)(damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
 
         return new Result(0, damage, true, 0, staminaUsed);
     }
@@ -84,7 +86,7 @@ public class Ninja {
      * @return 결과 객체
      */
     public static Result strike(int str, boolean stealthActive, boolean doppelgangerActive,
-                                boolean ideologySealActive, String resistanceType, PrintStream out) {
+                                boolean ideologySealActive, String resistanceType, int level, PrintStream out) {
         out.println("닌자-일격 사용");
         out.println("스태미나 2 소모");
 
@@ -93,7 +95,7 @@ public class Ninja {
             return new Result(0, 0, false, 0, 2);
         }
 
-        return calculate(2, 6, str, stealthActive, doppelgangerActive, ideologySealActive, resistanceType, 2, out);
+        return calculate(2, 6, str, stealthActive, doppelgangerActive, ideologySealActive, resistanceType, 2, level, out);
     }
 
     /**
@@ -110,7 +112,7 @@ public class Ninja {
      * @return 결과 객체
      */
     public static Result mangle(int str, boolean stealthActive, boolean doppelgangerActive,
-                                boolean ideologySealActive, String resistanceType, PrintStream out) {
+                                boolean ideologySealActive, String resistanceType, int level, PrintStream out) {
         out.println("닌자-난도 사용");
         out.println("스태미나 4 소모");
 
@@ -119,7 +121,7 @@ public class Ninja {
             return new Result(0, 0, false, 0, 4);
         }
 
-        return calculate(3, 8, str, stealthActive, doppelgangerActive, ideologySealActive, resistanceType, 4, out);
+        return calculate(3, 8, str, stealthActive, doppelgangerActive, ideologySealActive, resistanceType, 4, level, out);
     }
 
     /**
@@ -136,7 +138,7 @@ public class Ninja {
      * @return 결과 객체
      */
     public static Result throwShuriken(int dex, boolean stealthActive, boolean doppelgangerActive,
-                                       boolean ideologySealActive, String resistanceType, PrintStream out) {
+                                       boolean ideologySealActive, String resistanceType, int level, PrintStream out) {
         out.println("닌자-투척 표창 사용 (표창 1개 소모)");
         out.println("!턴 소모 없음!");
 
@@ -145,7 +147,7 @@ public class Ninja {
             return new Result(0, 0, false, 0, 0);
         }
 
-        return calculate(1, 8, dex, stealthActive, doppelgangerActive, ideologySealActive, resistanceType, 0, out);
+        return calculate(1, 8, dex, stealthActive, doppelgangerActive, ideologySealActive, resistanceType, 0, level, out);
     }
 
     /**
@@ -162,7 +164,7 @@ public class Ninja {
      * @return 결과 객체
      */
     public static Result phantomDance(int dex, boolean stealthActive,
-                                      boolean ideologySealActive, String resistanceType, PrintStream out) {
+                                      boolean ideologySealActive, String resistanceType, int level, PrintStream out) {
         out.println("닌자-환영난무 사용");
         out.println("스태미나 4 소모");
 
@@ -178,7 +180,7 @@ public class Ninja {
         }
 
         // 환영난무는 분신 패시브 감소 효과를 제거하므로 doppelgangerActive = false
-        return calculate(8, 6, dex, stealthActive, false, ideologySealActive, resistanceType, 4, out);
+        return calculate(8, 6, dex, stealthActive, false, ideologySealActive, resistanceType, 4, level, out);
     }
 
     /**
@@ -197,7 +199,7 @@ public class Ninja {
      */
     public static Result focusedThrow(int dex, int speed, int numShurikens,
                                       boolean stealthActive, boolean doppelgangerActive,
-                                      boolean ideologySealActive, String resistanceType, PrintStream out) {
+                                      boolean ideologySealActive, String resistanceType, int level, PrintStream out) {
         out.println("닌자-일점투척 사용");
         out.printf("표창 %d개 전량 소모\n", numShurikens);
         out.println("마나 3 소모");
@@ -241,6 +243,8 @@ public class Ninja {
         damage += sideDmg;
         out.printf("데미지 보정치 : %d\n", sideDmg);
         out.printf("최종 데미지 : %d\n", damage);
+        damage = (int)(damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
 
         return new Result(0, damage, true, -3, 0);
     }

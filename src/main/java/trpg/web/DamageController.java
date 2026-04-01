@@ -36,6 +36,7 @@ public class DamageController {
         public boolean conviction;
         public boolean heightenedSenses;
         public int precision;
+        public int level = 1;
     }
 
     /**
@@ -54,7 +55,7 @@ public class DamageController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Result result = Sniper.plain(req.stat, vitalAim, req.secure, req.assemble, req.load, req.aim, req.sureHit,
-                req.stabilize, req.immersion, req.conviction, req.heightenedSenses, req.numBuffs, req.precision, ps);
+                req.stabilize, req.immersion, req.conviction, req.heightenedSenses, req.numBuffs, req.precision, req.level, ps);
         ps.flush();
 
         Map<String, Object> response = new LinkedHashMap<>();
@@ -81,7 +82,7 @@ public class DamageController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Result result = Sniper.fire(req.stat, vitalAim, req.deathBullet, req.secure, req.assemble, req.load, req.aim,
-                req.sureHit, req.stabilize, req.immersion, req.conviction, req.heightenedSenses, req.numBuffs, req.precision, ps);
+                req.sureHit, req.stabilize, req.immersion, req.conviction, req.heightenedSenses, req.numBuffs, req.precision, req.level, ps);
         ps.flush();
 
         Map<String, Object> response = new LinkedHashMap<>();

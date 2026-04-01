@@ -42,7 +42,7 @@ public class Sniper {
                                    boolean secure, boolean assemble, boolean load, boolean aim,
                                    boolean sureHit, boolean stabilize,
                                    boolean immersion, boolean conviction, boolean heightenedSenses,
-                                   int numBuffs, int precision, int staminaUsed, PrintStream out) {
+                                   int numBuffs, int precision, int staminaUsed, int level, PrintStream out) {
         // 정조준: 버프 스킬 1개당 데미지 +50%
         int buffCount = numBuffs;
         if (secure) buffCount++;
@@ -113,6 +113,8 @@ public class Sniper {
 
         damage = Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d\n", damage);
+        damage = (int)(damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
 
         if (aim) {
             out.println("조준 기술 적용: 수비를 무시합니다.");
@@ -142,7 +144,7 @@ public class Sniper {
      */
     public static Result plain(int stat, boolean vitalAim, boolean secure, boolean assemble, boolean load, boolean aim,
                                boolean sureHit, boolean stabilize, boolean immersion,
-                               boolean conviction, boolean heightenedSenses, int numBuffs, int precision, PrintStream out) {
+                               boolean conviction, boolean heightenedSenses, int numBuffs, int precision, int level, PrintStream out) {
         out.println("저격수-기본공격 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -155,7 +157,7 @@ public class Sniper {
         }
 
         return calculate(1, 6, stat, vitalAim, false, secure, assemble, load, aim,
-                sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, 0, out);
+                sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, 0, level, out);
     }
 
     /**
@@ -180,7 +182,7 @@ public class Sniper {
      */
     public static Result fire(int stat, boolean vitalAim, boolean deathBullet, boolean secure, boolean assemble,
                               boolean load, boolean aim, boolean sureHit, boolean stabilize, boolean immersion,
-                              boolean conviction, boolean heightenedSenses, int numBuffs, int precision, PrintStream out) {
+                              boolean conviction, boolean heightenedSenses, int numBuffs, int precision, int level, PrintStream out) {
         out.println("저격수-발사 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -194,6 +196,6 @@ public class Sniper {
 
         out.println("발사 스킬 적용: 5D20 데미지");
         return calculate(5, 20, stat, vitalAim, deathBullet, secure, assemble, load, aim,
-                sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, 10, out);
+                sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, 10, level, out);
     }
 }
