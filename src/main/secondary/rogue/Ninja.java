@@ -43,7 +43,7 @@ public class Ninja {
                                                 boolean ideologySeal, boolean applyClone,
                                                 String resistanceType, int staminaChange,
                                                 int manaChange, int precision,
-                                                PrintStream out, int diceRoll) {
+                                                PrintStream out, int diceRoll, int level) {
         // (100 + 데미지)% — 가산 보너스
         int flatBonus = 0;
         if (ideologySeal) {
@@ -76,6 +76,8 @@ public class Ninja {
 
         // 치명타 판정
         damage = Main.criticalHit(precision, damage, out);
+        damage = (int)(damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
         out.printf("최종 데미지 : %d\n", damage);
         return new Result(0, damage, true, manaChange, staminaChange);
     }
@@ -93,7 +95,7 @@ public class Ninja {
      */
     public static Result plain(int stat, boolean illusion,
                                boolean ideologySeal, String resistanceType,
-                               int precision, PrintStream out) {
+                               int precision, int level, PrintStream out) {
         out.println("닌자-기본공격 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -103,7 +105,7 @@ public class Ninja {
         int diceRoll = stat - verdict;
         int baseDamage = Main.dice(1, 6, out);
         return applyNinjaDamageLogic(baseDamage, stat, illusion, ideologySeal, true,
-                resistanceType, 0, 0, precision, out, diceRoll);
+                resistanceType, 0, 0, precision, out, diceRoll, level);
     }
 
     /**
@@ -119,7 +121,7 @@ public class Ninja {
      */
     public static Result strike(int stat, boolean illusion,
                                 boolean ideologySeal, String resistanceType,
-                                int precision, PrintStream out) {
+                                int precision, int level, PrintStream out) {
         out.println("닌자-일격 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) {
@@ -128,7 +130,7 @@ public class Ninja {
         int diceRoll = stat - verdict;
         int baseDamage = Main.dice(2, 6, out);
         return applyNinjaDamageLogic(baseDamage, stat, illusion, ideologySeal, true,
-                resistanceType, -2, 0, precision, out, diceRoll);
+                resistanceType, -2, 0, precision, out, diceRoll, level);
     }
 
     /**
@@ -144,7 +146,7 @@ public class Ninja {
      */
     public static Result slash(int stat, boolean illusion,
                                boolean ideologySeal, String resistanceType,
-                               int precision, PrintStream out) {
+                               int precision, int level, PrintStream out) {
         out.println("닌자-난도 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) {
@@ -153,7 +155,7 @@ public class Ninja {
         int diceRoll = stat - verdict;
         int baseDamage = Main.dice(3, 8, out);
         return applyNinjaDamageLogic(baseDamage, stat, illusion, ideologySeal, true,
-                resistanceType, -4, 0, precision, out, diceRoll);
+                resistanceType, -4, 0, precision, out, diceRoll, level);
     }
 
     /**
@@ -169,7 +171,7 @@ public class Ninja {
      */
     public static Result throwShuriken(int stat, boolean illusion,
                                        boolean ideologySeal, String resistanceType,
-                                       int precision, PrintStream out) {
+                                       int precision, int level, PrintStream out) {
         out.println("닌자-투척 표창 사용 (표창 1개 소모)");
         out.println("!턴 소모 없음!");
         int verdict = Main.verdict(stat, out);
@@ -179,7 +181,7 @@ public class Ninja {
         int diceRoll = stat - verdict;
         int baseDamage = Main.dice(1, 8, out);
         return applyNinjaDamageLogic(baseDamage, stat, illusion, ideologySeal, true,
-                resistanceType, 0, 0, precision, out, diceRoll);
+                resistanceType, 0, 0, precision, out, diceRoll, level);
     }
 
     /**
@@ -196,7 +198,7 @@ public class Ninja {
      */
     public static Result phantomDance(int stat, boolean illusion,
                                       boolean ideologySeal, String resistanceType,
-                                      int precision, PrintStream out) {
+                                      int precision, int level, PrintStream out) {
         out.println("닌자-환영난무 사용");
         if (!illusion) {
             out.println("실패: 환영(은신) 상태가 아님");
@@ -212,7 +214,7 @@ public class Ninja {
         int baseDamage = Main.dice(8, 6, out);
         // 환영난무는 분신 패시브 감소 효과를 제거하므로 applyClone = false
         return applyNinjaDamageLogic(baseDamage, stat, illusion, ideologySeal, false,
-                resistanceType, -4, 0, precision, out, diceRoll);
+                resistanceType, -4, 0, precision, out, diceRoll, level);
     }
 
     /**
@@ -232,7 +234,7 @@ public class Ninja {
     public static Result allOutThrow(int dex, int speed, int numShurikens,
                                      boolean illusion,
                                      boolean ideologySeal, String resistanceType,
-                                     int precision, PrintStream out) {
+                                     int precision, int level, PrintStream out) {
         out.println("닌자-일점투척 사용");
         out.printf("표창 %d개 전량 소모\n", numShurikens);
 
@@ -246,7 +248,7 @@ public class Ninja {
         int diceRoll = dex - verdict1;
         int baseDamage = Main.dice(numShurikens, 10, out);
         return applyNinjaDamageLogic(baseDamage, dex, illusion, ideologySeal, true,
-                resistanceType, 0, -3, precision, out, diceRoll);
+                resistanceType, 0, -3, precision, out, diceRoll, level);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -265,7 +267,7 @@ public class Ninja {
      * @param out 출력 스트림
      * @return 결과 객체 (마나 15 소모)
      */
-    public static Result ideologySealBuff(PrintStream out) {
+    public static Result ideologySealBuff(int level, PrintStream out) {
         out.println("닌자-이념 봉인 발동");
         out.println("3턴간 적용: 데미지 +300%, 받는 데미지 50%, 분신 감소 효과 제거, 어그로 강제");
         out.println("마나 15 소모");
@@ -279,7 +281,7 @@ public class Ninja {
      * @param out   출력 스트림
      * @return 결과 객체 (마나 3+count 소모)
      */
-    public static Result manaShuriken(int count, PrintStream out) {
+    public static Result manaShuriken(int count, int level, PrintStream out) {
         int manaCost = 3 + count;
         out.printf("닌자-마나 표창 사용: 표창 %d개 생성\n", count);
         out.printf("마나 %d 소모\n", manaCost);
@@ -292,7 +294,7 @@ public class Ninja {
      * @param out 출력 스트림
      * @return 결과 객체 (마나 1 소모)
      */
-    public static Result cloneEnhance(PrintStream out) {
+    public static Result cloneEnhance(int level, PrintStream out) {
         out.println("닌자-분신 강화 사용");
         out.println("이번 턴 분신 패시브 데미지 감소 효과 제거");
         out.println("마나 1 소모");
@@ -305,7 +307,7 @@ public class Ninja {
      * @param out 출력 스트림
      * @return 결과 객체 (마나 1 소모)
      */
-    public static Result flowControl(PrintStream out) {
+    public static Result flowControl(int level, PrintStream out) {
         out.println("닌자-흐름 조절 사용");
         out.println("순발력 패시브 회복량 변경: 3 → 10 스태미나/마나");
         out.println("마나 1 소모");
@@ -319,7 +321,7 @@ public class Ninja {
      * @param out         출력 스트림
      * @return 결과 객체 (마나 6 소모)
      */
-    public static Result flowCatch(int reflexCount, PrintStream out) {
+    public static Result flowCatch(int reflexCount, int level, PrintStream out) {
         out.println("닌자-흐름 잡기 사용");
         out.printf("순발력 발동 횟수 %d회 기반 스탯 버프 적용\n", reflexCount);
         out.println("마나 6 소모");
@@ -332,7 +334,7 @@ public class Ninja {
      * @param out 출력 스트림
      * @return 결과 객체 (마나 4 소모)
      */
-    public static Result cloneFlurry(PrintStream out) {
+    public static Result cloneFlurry(int level, PrintStream out) {
         out.println("닌자-분신난무 사용");
         out.println("분신 패시브: 행동 횟수 2 → 3");
         out.println("순발력 패시브: 추가 행동 1 → 2");

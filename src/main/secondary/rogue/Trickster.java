@@ -23,7 +23,7 @@ public class Trickster {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result fakeDagger(int stat, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, int precision, PrintStream out) {
+    public static Result fakeDagger(int stat, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, int precision, int level, PrintStream out) {
         out.println("트릭스터-페이크 단검 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result();
@@ -34,6 +34,8 @@ public class Trickster {
 
         int damage = Main.dice(1, 4, out);
         damage = calculateFinalDamage(damage, damageIncreasePercent, finalDamageMultiplier, stat, "페이크 단검", precision, out, diceRoll);
+        damage = (int)(damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
 
         out.println("페이크 단검 효과 발동: 이번 턴의 공격 데미지가 1.5배로 증가합니다.");
         return new Result(0, damage, true, 0, 2);
@@ -50,7 +52,7 @@ public class Trickster {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result beanBomb(int stat, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, int precision, PrintStream out) {
+    public static Result beanBomb(int stat, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, int precision, int level, PrintStream out) {
         out.println("트릭스터-콩알탄 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result();
@@ -61,6 +63,8 @@ public class Trickster {
 
         int damage = Main.dice(2, 6, out);
         damage = calculateFinalDamage(damage, damageIncreasePercent, finalDamageMultiplier, stat, "콩알탄", precision, out, diceRoll);
+        damage = (int)(damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
 
         return new Result(0, damage, true, 0, 2);
     }
@@ -76,7 +80,7 @@ public class Trickster {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result oilBarrel(int stat, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, int precision, PrintStream out) {
+    public static Result oilBarrel(int stat, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, int precision, int level, PrintStream out) {
         out.println("트릭스터-기름통 투척 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result();
@@ -87,6 +91,8 @@ public class Trickster {
 
         int damage = Main.dice(1, 4, out);
         damage = calculateFinalDamage(damage, damageIncreasePercent, finalDamageMultiplier, stat, "기름통 투척", precision, out, diceRoll);
+        damage = (int)(damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
 
         return new Result(0, damage, true, 0, 2);
     }
@@ -103,7 +109,7 @@ public class Trickster {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result lighterThrow(int stat, boolean oilHit, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, int precision, PrintStream out) {
+    public static Result lighterThrow(int stat, boolean oilHit, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, int precision, int level, PrintStream out) {
         out.println("트릭스터-라이터 투척 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result();
@@ -118,6 +124,8 @@ public class Trickster {
             damage += Main.dice(3, 6, out);
         }
         damage = calculateFinalDamage(damage, damageIncreasePercent, finalDamageMultiplier, stat, "라이터 투척", precision, out, diceRoll);
+        damage = (int)(damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
 
         return new Result(0, damage, true, 0, 2);
     }
@@ -133,7 +141,7 @@ public class Trickster {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result xlDagger(int stat, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, int precision, PrintStream out) {
+    public static Result xlDagger(int stat, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean greatScar, int precision, int level, PrintStream out) {
         out.println("트릭스터-특대형 단검 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result();
@@ -144,6 +152,8 @@ public class Trickster {
 
         int damage = Main.dice(1, 20, out);
         damage = calculateFinalDamage(damage, damageIncreasePercent, finalDamageMultiplier, stat, "특대형 단검", precision, out, diceRoll);
+        damage = (int)(damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
 
         return new Result(0, damage, true, 0, 3);
     }
@@ -154,7 +164,7 @@ public class Trickster {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result waitingTime(int stat, PrintStream out) {
+    public static Result waitingTime(int stat, int level, PrintStream out) {
         out.println("트릭스터-대기 시간 사용 (전용 수비)");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) {
@@ -186,7 +196,7 @@ public class Trickster {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, int suddenEvent, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean eventPreparation, boolean greatScar, boolean mainEvent, int precision, PrintStream out) {
+    public static Result plain(int stat, int suddenEvent, boolean focusedFire, boolean regularCustomer, boolean fakeDagger, boolean partyTime, boolean eventPreparation, boolean greatScar, boolean mainEvent, int precision, int level, PrintStream out) {
         out.println("트릭스터-기본공격 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result();
@@ -232,6 +242,8 @@ public class Trickster {
                 break;
             }
         }
+        totalFinalDamage = (int)(totalFinalDamage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), totalFinalDamage);
         return new Result(0, totalFinalDamage, true, 0, 0);
     }
 
