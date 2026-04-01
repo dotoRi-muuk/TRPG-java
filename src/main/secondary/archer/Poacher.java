@@ -67,7 +67,7 @@ public class Poacher {
         out.printf("최종 데미지 : %d\n", finalDamage);
         out.println("Defense Disabled");
         int levelAdjustedDamage = (int)(finalDamage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), levelAdjustedDamage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
         return new Result(damageTaken, levelAdjustedDamage, true, 0, staminaChange);
     }
 
@@ -124,7 +124,7 @@ public class Poacher {
         finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         int levelAdjustedDamage = (int)(finalDamage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), levelAdjustedDamage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
         return new Result(0, levelAdjustedDamage, true, 0, staminaChange);
     }
 
@@ -182,7 +182,7 @@ public class Poacher {
         out.printf("최종 데미지 : %d\n", finalDamage);
         out.println("적에게 행동 불가 부여 (다음 턴까지)");
         int levelAdjustedDamage = (int)(finalDamage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), levelAdjustedDamage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
         return new Result(0, levelAdjustedDamage, true, 0, staminaChange);
     }
 
@@ -239,7 +239,7 @@ public class Poacher {
         finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         int levelAdjustedDamage = (int)(finalDamage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), levelAdjustedDamage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
         return new Result(0, levelAdjustedDamage, true, 0, staminaChange);
     }
 
@@ -318,7 +318,7 @@ public class Poacher {
         finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         int levelAdjustedDamage = (int)(finalDamage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), levelAdjustedDamage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
         return new Result(0, levelAdjustedDamage, true, 0, staminaChange);
     }
 
@@ -386,7 +386,7 @@ public class Poacher {
         finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         int levelAdjustedDamage = (int)(finalDamage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), levelAdjustedDamage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
         return new Result(damageTaken, levelAdjustedDamage, true, 6, 0);
     }
 

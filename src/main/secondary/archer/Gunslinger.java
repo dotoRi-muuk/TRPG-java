@@ -33,7 +33,7 @@ public class Gunslinger {
         finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         int levelAdjustedDamage = (int)(finalDamage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), levelAdjustedDamage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
         return new Result(0, levelAdjustedDamage, true, 0, 3);
     }
 
@@ -57,7 +57,7 @@ public class Gunslinger {
         finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         int levelAdjustedDamage = (int)(finalDamage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), levelAdjustedDamage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
         return new Result(0, levelAdjustedDamage, true, 0, 0);
     }
 
@@ -77,7 +77,7 @@ public class Gunslinger {
         int diceRoll = stat - verdict;
         int damage = Main.criticalHit(precision, Main.normalCalculation(stat, out, 6, 6, diceRoll), out);
         int levelAdjustedDamage = (int)(damage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), levelAdjustedDamage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
         return new Result(0, levelAdjustedDamage, true, 0, 4);
     }
 
@@ -97,7 +97,7 @@ public class Gunslinger {
         int diceRoll = stat - verdict;
         int damage = Main.criticalHit(precision, Main.normalCalculation(stat, out, 1, 20, diceRoll), out);
         int levelAdjustedDamage = (int)(damage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), levelAdjustedDamage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
         return new Result(0, levelAdjustedDamage, true, 0, 3);
     }
 
@@ -117,7 +117,7 @@ public class Gunslinger {
         int diceRoll = stat - verdict;
         int damage = Main.criticalHit(precision, Main.normalCalculation(stat, out, 2, 6, diceRoll), out);
         int levelAdjustedDamage = (int)(damage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), levelAdjustedDamage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
         return new Result(0, levelAdjustedDamage, true, 0, 2);
     }
 
@@ -143,7 +143,7 @@ public class Gunslinger {
         }
         int damage = Main.criticalHit(precision, Main.normalCalculation(stat, out, dices, 8, diceRoll), out);
         int levelAdjustedDamage = (int)(damage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), levelAdjustedDamage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
         return new Result(0, levelAdjustedDamage, true, 0, 1);
     }
 
@@ -201,7 +201,7 @@ public class Gunslinger {
         finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         int levelAdjustedDamage = (int)(finalDamage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), levelAdjustedDamage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
         return new Result(0, levelAdjustedDamage, true, 0, 0);
     }
 }

@@ -43,7 +43,7 @@ public class Crossbowman {
         out.printf("최종 데미지 : %d\n", damage);
 
         int levelAdjustedDamage = (int)(damage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), levelAdjustedDamage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
         return new Result(0, levelAdjustedDamage, true, 0, staminaUsed);
     }
 
@@ -234,7 +234,7 @@ public class Crossbowman {
         out.printf("최종 데미지 : %d\n", damage);
 
         int levelAdjustedDamage = (int)(damage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), levelAdjustedDamage);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
         return new Result(0, levelAdjustedDamage, true, 0, 6);
     }
 
