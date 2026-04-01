@@ -26,6 +26,7 @@ public class GamblerController {
         public int luck;
         public int reducedLuck;
         public boolean jackpotActive;
+        public int level = 1;
     }
 
     /**
@@ -40,7 +41,7 @@ public class GamblerController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        Result result = Gambler.plain(req.stat, req.reducedLuck, req.jackpotActive, ps);
+        Result result = Gambler.plain(req.stat, req.reducedLuck, req.jackpotActive, req.level, ps);
         ps.flush();
 
         Map<String, Object> response = new LinkedHashMap<>();
@@ -63,7 +64,7 @@ public class GamblerController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        Result result = Gambler.coinToss(req.stat, req.luck, req.reducedLuck, req.jackpotActive, ps);
+        Result result = Gambler.coinToss(req.stat, req.luck, req.reducedLuck, req.jackpotActive, req.level, ps);
         ps.flush();
 
         Map<String, Object> response = new LinkedHashMap<>();
@@ -86,7 +87,7 @@ public class GamblerController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        Result result = Gambler.jokerCard(req.stat, req.luck, req.reducedLuck, req.jackpotActive, ps);
+        Result result = Gambler.jokerCard(req.stat, req.luck, req.reducedLuck, req.jackpotActive, req.level, ps);
         ps.flush();
 
         Map<String, Object> response = new LinkedHashMap<>();
@@ -109,7 +110,7 @@ public class GamblerController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        Result result = Gambler.blackjack(req.stat, req.luck, req.reducedLuck, req.jackpotActive, ps);
+        Result result = Gambler.blackjack(req.stat, req.luck, req.reducedLuck, req.jackpotActive, req.level, ps);
         ps.flush();
 
         Map<String, Object> response = new LinkedHashMap<>();
@@ -132,7 +133,7 @@ public class GamblerController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        Result result = Gambler.yatzyDice(req.stat, req.luck, req.reducedLuck, req.jackpotActive, ps);
+        Result result = Gambler.yatzyDice(req.stat, req.luck, req.reducedLuck, req.jackpotActive, req.level, ps);
         ps.flush();
 
         Map<String, Object> response = new LinkedHashMap<>();
@@ -155,7 +156,7 @@ public class GamblerController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        Result result = Gambler.royalFlush(req.stat, req.luck, req.reducedLuck, req.jackpotActive, ps);
+        Result result = Gambler.royalFlush(req.stat, req.luck, req.reducedLuck, req.jackpotActive, req.level, ps);
         ps.flush();
 
         Map<String, Object> response = new LinkedHashMap<>();

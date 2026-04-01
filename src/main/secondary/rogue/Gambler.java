@@ -24,7 +24,7 @@ public class Gambler {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result luckyMoment(int damageTaken, int luckStat, PrintStream out) {
+    public static Result luckyMoment(int damageTaken, int luckStat, int level, PrintStream out) {
         out.println("겜블러-럭키 모먼트 사용");
 
         int verdict = Main.verdict(luckStat, out);
@@ -41,7 +41,7 @@ public class Gambler {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result flow(int luckStat, PrintStream out) {
+    public static Result flow(int luckStat, int level, PrintStream out) {
         out.println("겜블러-흐름 사용");
         int verdict = Main.verdict(luckStat, out);
         if (verdict <= 0) {
@@ -136,8 +136,13 @@ public class Gambler {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result coinToss(int stat, int luckStat, int decreasedLuck, int precision, PrintStream out) {
-        return executeSkill("코인 토스", stat, luckStat, decreasedLuck, precision, out, 4, 1, 12, 1, 1);
+    public static Result coinToss(int stat, int luckStat, int decreasedLuck, int precision, int level, PrintStream out) {
+        Result result = executeSkill("코인 토스", stat, luckStat, decreasedLuck, precision, out, 4, 1, 12, 1, 1);
+        if (!result.succeeded()) return result;
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
+        return new Result(0, damage, true, 0, result.staminaUsed(), result.statChanges());
     }
 
     /**
@@ -148,8 +153,13 @@ public class Gambler {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result jokerCard(int stat, int luckStat, int decreasedLuck, int precision, PrintStream out) {
-        return executeSkill("조커 카드", stat, luckStat, decreasedLuck, precision, out, 6, 2, 12, 1, 3);
+    public static Result jokerCard(int stat, int luckStat, int decreasedLuck, int precision, int level, PrintStream out) {
+        Result result = executeSkill("조커 카드", stat, luckStat, decreasedLuck, precision, out, 6, 2, 12, 1, 3);
+        if (!result.succeeded()) return result;
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
+        return new Result(0, damage, true, 0, result.staminaUsed(), result.statChanges());
     }
 
     /**
@@ -160,8 +170,13 @@ public class Gambler {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result blackJack(int stat, int luckStat, int decreasedLuck, int precision, PrintStream out) {
-        return executeSkill("블랙잭", stat, luckStat, decreasedLuck, precision, out, 6, 3, 8, 1, 3);
+    public static Result blackJack(int stat, int luckStat, int decreasedLuck, int precision, int level, PrintStream out) {
+        Result result = executeSkill("블랙잭", stat, luckStat, decreasedLuck, precision, out, 6, 3, 8, 1, 3);
+        if (!result.succeeded()) return result;
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
+        return new Result(0, damage, true, 0, result.staminaUsed(), result.statChanges());
     }
 
     /**
@@ -172,8 +187,13 @@ public class Gambler {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result yachtDice(int stat, int luckStat, int decreasedLuck, int precision, PrintStream out) {
-        return executeSkill("야추 다이스", stat, luckStat, decreasedLuck, precision, out, 8, 2, 20, 2, 4);
+    public static Result yachtDice(int stat, int luckStat, int decreasedLuck, int precision, int level, PrintStream out) {
+        Result result = executeSkill("야추 다이스", stat, luckStat, decreasedLuck, precision, out, 8, 2, 20, 2, 4);
+        if (!result.succeeded()) return result;
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
+        return new Result(0, damage, true, 0, result.staminaUsed(), result.statChanges());
     }
 
     /**
@@ -184,8 +204,13 @@ public class Gambler {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result royalFlush(int stat, int luckStat, int decreasedLuck, int precision, PrintStream out) {
-        return executeSkill("로얄 플러쉬", stat, luckStat, decreasedLuck, precision, out, 4, 4, 20, 3, 7);
+    public static Result royalFlush(int stat, int luckStat, int decreasedLuck, int precision, int level, PrintStream out) {
+        Result result = executeSkill("로얄 플러쉬", stat, luckStat, decreasedLuck, precision, out, 4, 4, 20, 3, 7);
+        if (!result.succeeded()) return result;
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
+        return new Result(0, damage, true, 0, result.staminaUsed(), result.statChanges());
     }
 
     /**
@@ -196,8 +221,13 @@ public class Gambler {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, int luckStat, int decreasedLuck, int precision, PrintStream out) {
-        return executeSkill("기본공격", stat, luckStat, decreasedLuck, precision, out, 6, 0, 0, 0, 0);
+    public static Result plain(int stat, int luckStat, int decreasedLuck, int precision, int level, PrintStream out) {
+        Result result = executeSkill("기본공격", stat, luckStat, decreasedLuck, precision, out, 6, 0, 0, 0, 0);
+        if (!result.succeeded()) return result;
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
+        return new Result(0, damage, true, 0, result.staminaUsed(), result.statChanges());
     }
 
 }

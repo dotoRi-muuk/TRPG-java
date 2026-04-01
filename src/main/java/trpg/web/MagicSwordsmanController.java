@@ -114,7 +114,7 @@ public class MagicSwordsmanController {
 
         int[] mana = resolveMana(req);
         Result result = MagicSwordsman.manaSlash(req.intelligence, mana[0], mana[1],
-                req.overload, req.ethailSolar, req.shiftLifter, req.precision, ps);
+                req.overload, req.ethailSolar, req.shiftLifter, req.precision, req.level, ps);
         ps.flush();
         return buildResponse(result, baos);
     }
@@ -130,7 +130,7 @@ public class MagicSwordsmanController {
 
         int[] mana = resolveMana(req);
         Result result = MagicSwordsman.manaStrike(req.intelligence, mana[0], mana[1],
-                req.overload, req.ethailSolar, req.shiftLifter, req.precision, ps);
+                req.overload, req.ethailSolar, req.shiftLifter, req.precision, req.level, ps);
         ps.flush();
         return buildResponse(result, baos);
     }
@@ -146,7 +146,7 @@ public class MagicSwordsmanController {
 
         int[] mana = resolveMana(req);
         Result result = MagicSwordsman.manaSphere(req.intelligence, mana[0], mana[1],
-                req.overload, req.ethailSolar, req.shiftLifter, req.precision, ps);
+                req.overload, req.ethailSolar, req.shiftLifter, req.precision, req.level, ps);
         ps.flush();
         return buildResponse(result, baos);
     }
@@ -162,7 +162,7 @@ public class MagicSwordsmanController {
 
         int[] mana = resolveMana(req);
         Result result = MagicSwordsman.spinChrist(req.intelligence, mana[0], mana[1],
-                req.overload, req.ethailSolar, req.shiftLifter, req.precision, ps);
+                req.overload, req.ethailSolar, req.shiftLifter, req.precision, req.level, ps);
         ps.flush();
         return buildResponse(result, baos);
     }
@@ -178,7 +178,7 @@ public class MagicSwordsmanController {
 
         int[] mana = resolveMana(req);
         Result result = MagicSwordsman.tripleSlain(req.intelligence, mana[0], mana[1],
-                req.overload, req.ethailSolar, req.shiftLifter, req.precision, ps);
+                req.overload, req.ethailSolar, req.shiftLifter, req.precision, req.level, ps);
         ps.flush();
         return buildResponse(result, baos);
     }
@@ -194,7 +194,7 @@ public class MagicSwordsmanController {
 
         int[] mana = resolveMana(req);
         Result result = MagicSwordsman.etherealImperio(req.intelligence, mana[0], mana[1],
-                req.overload, req.ethailSolar, req.shiftLifter, req.precision, ps);
+                req.overload, req.ethailSolar, req.shiftLifter, req.precision, req.level, ps);
         ps.flush();
         return buildResponse(result, baos);
     }
@@ -208,7 +208,7 @@ public class MagicSwordsmanController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        Result result = MagicSwordsman.speedDrain(req.intelligence, ps);
+        Result result = MagicSwordsman.speedDrain(req.intelligence, req.level, ps);
         ps.flush();
         return buildResponse(result, baos);
     }
@@ -226,7 +226,7 @@ public class MagicSwordsmanController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         int manaSpent = resolveManaSpent(req);
-        Result result = MagicSwordsman.flowAura(manaSpent, req.damageTaken, ps);
+        Result result = MagicSwordsman.flowAura(manaSpent, req.damageTaken, req.level, ps);
         ps.flush();
 
         Map<String, Object> response = new LinkedHashMap<>();

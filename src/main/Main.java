@@ -123,6 +123,17 @@ public class Main {
         }
     }
 
+    /**
+     * 레벨 배율 계산
+     * 최종 데미지 배율 = (100 + 레벨^2) / 100.0
+     *
+     * @param level 캐릭터 레벨
+     * @return 레벨 기반 최종 데미지 배율
+     */
+    public static double levelMultiplier(int level) {
+        return (100.0 + (double) level * level) / 100.0;
+    }
+
     public static void main(String[] args) {
     }
 }

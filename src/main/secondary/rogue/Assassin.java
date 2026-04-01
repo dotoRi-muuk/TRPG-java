@@ -89,7 +89,7 @@ public class Assassin {
      * @return 결과 객체
      */
     public static Result assassinate(int stat, boolean assassinationTarget, boolean powerOverLifeAndDeath,
-                                     boolean confirmKill, boolean targetLocked, int precision, PrintStream out) {
+                                     boolean confirmKill, boolean targetLocked, int precision, int level, PrintStream out) {
         double finalMultiplier = 1.0;
         if (assassinationTarget) {
             out.println("'암살 대상' 패시브 적용: 최종 데미지 x4 (400%)");
@@ -107,7 +107,12 @@ public class Assassin {
             out.println("'포착' 버프 적용: 최종 데미지 x2.5 (250%)");
             finalMultiplier *= 2.5;
         }
-        return commonAttack("암살", stat, 4, 20, precision, 0, finalMultiplier, 44, out);
+        Result result = commonAttack("암살", stat, 4, 20, precision, 0, finalMultiplier, 44, out);
+        if (!result.succeeded()) return result;
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
+        return new Result(0, damage, true, 0, result.staminaUsed());
     }
 
     /**
@@ -119,13 +124,18 @@ public class Assassin {
      * @param out                 출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, boolean assassinationTarget, int precision, PrintStream out) {
+    public static Result plain(int stat, boolean assassinationTarget, int precision, int level, PrintStream out) {
         double finalMultiplier = 1.0;
         if (assassinationTarget) {
             out.println("'암살 대상' 패시브 적용: 최종 데미지 x4 (400%)");
             finalMultiplier = 4.0;
         }
-        return commonAttack("기본 공격", stat, 1, 6, precision, 0, finalMultiplier, 0, out);
+        Result result = commonAttack("기본 공격", stat, 1, 6, precision, 0, finalMultiplier, 0, out);
+        if (!result.succeeded()) return result;
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
+        return new Result(0, damage, true, 0, result.staminaUsed());
     }
 
     /**
@@ -137,13 +147,18 @@ public class Assassin {
      * @param out                 출력 스트림
      * @return 결과 객체
      */
-    public static Result vitalPointStab(int stat, boolean assassinationTarget, int precision, PrintStream out) {
+    public static Result vitalPointStab(int stat, boolean assassinationTarget, int precision, int level, PrintStream out) {
         double finalMultiplier = 1.0;
         if (assassinationTarget) {
             out.println("'암살 대상' 패시브 적용: 최종 데미지 x4 (400%)");
             finalMultiplier = 4.0;
         }
-        return commonAttack("급소 찌르기", stat, 4, 12, precision, 0, finalMultiplier, 13, out);
+        Result result = commonAttack("급소 찌르기", stat, 4, 12, precision, 0, finalMultiplier, 13, out);
+        if (!result.succeeded()) return result;
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
+        return new Result(0, damage, true, 0, result.staminaUsed());
     }
 
     /**
@@ -155,13 +170,18 @@ public class Assassin {
      * @param out                 출력 스트림
      * @return 결과 객체
      */
-    public static Result throatSlit(int stat, boolean assassinationTarget, int precision, PrintStream out) {
+    public static Result throatSlit(int stat, boolean assassinationTarget, int precision, int level, PrintStream out) {
         double finalMultiplier = 1.0;
         if (assassinationTarget) {
             out.println("'암살 대상' 패시브 적용: 최종 데미지 x4 (400%)");
             finalMultiplier = 4.0;
         }
-        return commonAttack("목 긋기", stat, 1, 20, precision, 0, finalMultiplier, 3, out);
+        Result result = commonAttack("목 긋기", stat, 1, 20, precision, 0, finalMultiplier, 3, out);
+        if (!result.succeeded()) return result;
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
+        return new Result(0, damage, true, 0, result.staminaUsed());
     }
 
     /**
@@ -173,13 +193,18 @@ public class Assassin {
      * @param out                 출력 스트림
      * @return 결과 객체
      */
-    public static Result wristSlit(int stat, boolean assassinationTarget, int precision, PrintStream out) {
+    public static Result wristSlit(int stat, boolean assassinationTarget, int precision, int level, PrintStream out) {
         double finalMultiplier = 1.0;
         if (assassinationTarget) {
             out.println("'암살 대상' 패시브 적용: 최종 데미지 x4 (400%)");
             finalMultiplier = 4.0;
         }
-        return commonAttack("손목 긋기", stat, 4, 8, precision, 0, finalMultiplier, 10, out);
+        Result result = commonAttack("손목 긋기", stat, 4, 8, precision, 0, finalMultiplier, 10, out);
+        if (!result.succeeded()) return result;
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
+        return new Result(0, damage, true, 0, result.staminaUsed());
     }
 
     /**
@@ -191,13 +216,18 @@ public class Assassin {
      * @param out                 출력 스트림
      * @return 결과 객체
      */
-    public static Result backStab(int stat, boolean assassinationTarget, int precision, PrintStream out) {
+    public static Result backStab(int stat, boolean assassinationTarget, int precision, int level, PrintStream out) {
         double finalMultiplier = 1.0;
         if (assassinationTarget) {
             out.println("'암살 대상' 패시브 적용: 최종 데미지 x4 (400%)");
             finalMultiplier = 4.0;
         }
-        return commonAttack("후방 공격", stat, 3, 12, precision, 0, finalMultiplier, 12, out);
+        Result result = commonAttack("후방 공격", stat, 3, 12, precision, 0, finalMultiplier, 12, out);
+        if (!result.succeeded()) return result;
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
+        return new Result(0, damage, true, 0, result.staminaUsed());
     }
 
     /**
@@ -209,7 +239,7 @@ public class Assassin {
      * @param out   출력 스트림
      * @return 결과 객체 (성공 시 적 행동 불가 + 전장 이탈, 마나 4 소모)
      */
-    public static Result smokeScreen(int speed, PrintStream out) {
+    public static Result smokeScreen(int speed, int level, PrintStream out) {
         out.println("암살자-연막 사용");
         int verdict = Main.verdict(speed, out);
         if (verdict < 0) {
@@ -229,7 +259,7 @@ public class Assassin {
      * @param out       출력 스트림
      * @return 결과 객체 (성공 시 스태미나 20 회복, 마나 20 회복)
      */
-    public static Result preparation(boolean inStealth, PrintStream out) {
+    public static Result preparation(boolean inStealth, int level, PrintStream out) {
         out.println("암살자-암살준비 사용");
         if (!inStealth) {
             out.println("전장 이탈 상태가 아님: 암살준비 사용 불가");
@@ -248,7 +278,7 @@ public class Assassin {
      * @param out 출력 스트림
      * @return 결과 객체 (마나 4 소모, 전장 복귀 강제, [포착] 부여)
      */
-    public static Result targetLock(PrintStream out) {
+    public static Result targetLock(int level, PrintStream out) {
         out.println("암살자-타겟 포착 사용");
         out.println("다음 턴 전장 복귀 강제. 대상에게 [포착] 부여: 다음 턴 [암살] 최종 데미지 x2.5 (250%)");
         return new Result(0, 0, true, 4, 0);
@@ -261,7 +291,7 @@ public class Assassin {
      * @param out 출력 스트림
      * @return 결과 객체 (마나 3 소모, 전장 이탈, 3턴 후 강제 복귀)
      */
-    public static Result tacticalRetreat(PrintStream out) {
+    public static Result tacticalRetreat(int level, PrintStream out) {
         out.println("암살자-전략적 후퇴 사용");
         out.println("전장 이탈. 3턴 이내 강제 전장 복귀.");
         return new Result(0, 0, true, 3, 0);
@@ -275,7 +305,7 @@ public class Assassin {
      * @param out 출력 스트림
      * @return 결과 객체 (마나 2 소모, 다음 암살 데미지 x2)
      */
-    public static Result confirmKill(PrintStream out) {
+    public static Result confirmKill(int level, PrintStream out) {
         out.println("암살자-확인 사살 사용");
         out.println("다음 '암살' 데미지 x2.");
         return new Result(0, 0, true, 2, 0);
@@ -291,7 +321,7 @@ public class Assassin {
      * @param out    출력 스트림
      * @return 결과 객체 (마나 7 소모)
      */
-    public static Result camouflage(int agiDex, int speed, PrintStream out) {
+    public static Result camouflage(int agiDex, int speed, int level, PrintStream out) {
         out.println("암살자-위장 사용");
 
         int verdict = Main.verdict(agiDex, out);

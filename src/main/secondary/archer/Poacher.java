@@ -24,7 +24,7 @@ public class Poacher {
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result setTrap(int stat, int damageTaken, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, PrintStream out) {
+    public static Result setTrap(int stat, int damageTaken, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, int level, PrintStream out) {
         int staminaChange = 3;
 
         out.println("밀렵꾼-덫 깔기 사용");
@@ -66,7 +66,9 @@ public class Poacher {
         finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         out.println("Defense Disabled");
-        return new Result(damageTaken, finalDamage, true, 0, staminaChange);
+        int levelAdjustedDamage = (int)(finalDamage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
+        return new Result(damageTaken, levelAdjustedDamage, true, 0, staminaChange);
     }
 
     /**
@@ -80,7 +82,7 @@ public class Poacher {
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result headSmash(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, PrintStream out) {
+    public static Result headSmash(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, int level, PrintStream out) {
         int staminaChange = 1;
 
         out.println("밀렵꾼-머리찍기 사용");
@@ -121,7 +123,9 @@ public class Poacher {
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
-        return new Result(0, finalDamage, true, 0, staminaChange);
+        int levelAdjustedDamage = (int)(finalDamage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
+        return new Result(0, levelAdjustedDamage, true, 0, staminaChange);
     }
 
     /**
@@ -135,7 +139,7 @@ public class Poacher {
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result snareShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, PrintStream out) {
+    public static Result snareShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, int level, PrintStream out) {
         int staminaChange = 8;
 
         out.println("밀렵꾼-올가미 탄 사용");
@@ -177,7 +181,9 @@ public class Poacher {
         finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         out.println("적에게 행동 불가 부여 (다음 턴까지)");
-        return new Result(0, finalDamage, true, 0, staminaChange);
+        int levelAdjustedDamage = (int)(finalDamage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
+        return new Result(0, levelAdjustedDamage, true, 0, staminaChange);
     }
 
     /**
@@ -191,7 +197,7 @@ public class Poacher {
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result headShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, PrintStream out) {
+    public static Result headShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, int level, PrintStream out) {
         int staminaChange = 4;
 
         out.println("밀렵꾼-헤드샷 사용");
@@ -232,7 +238,9 @@ public class Poacher {
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
-        return new Result(0, finalDamage, true, 0, staminaChange);
+        int levelAdjustedDamage = (int)(finalDamage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
+        return new Result(0, levelAdjustedDamage, true, 0, staminaChange);
     }
 
     /**
@@ -247,7 +255,7 @@ public class Poacher {
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, boolean reload, int precision, PrintStream out) {
+    public static Result plain(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, boolean reload, int precision, int level, PrintStream out) {
         int staminaChange = 0;
 
         out.println("밀렵꾼-기본공격 사용");
@@ -309,7 +317,9 @@ public class Poacher {
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
-        return new Result(0, finalDamage, true, 0, staminaChange);
+        int levelAdjustedDamage = (int)(finalDamage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
+        return new Result(0, levelAdjustedDamage, true, 0, staminaChange);
     }
 
     /**
@@ -318,7 +328,7 @@ public class Poacher {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result huntingGround(PrintStream out) {
+    public static Result huntingGround(int level, PrintStream out) {
         out.println("밀렵꾼-사냥터 사용");
         out.println("Traps hit reliably for 2 turns");
         return new Result(0, 0, true, 3, 0);
@@ -336,7 +346,7 @@ public class Poacher {
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result landmine(int stat, int damageTaken, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, PrintStream out) {
+    public static Result landmine(int stat, int damageTaken, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, int level, PrintStream out) {
         out.println("밀렵꾼-지뢰 사용");
 
         int effectiveStat = stat;
@@ -375,7 +385,9 @@ public class Poacher {
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
-        return new Result(damageTaken, finalDamage, true, 6, 0);
+        int levelAdjustedDamage = (int)(finalDamage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, Main.levelMultiplier(level) * 100.0, levelAdjustedDamage);
+        return new Result(damageTaken, levelAdjustedDamage, true, 6, 0);
     }
 
     /**
@@ -384,7 +396,7 @@ public class Poacher {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result overwhelm(PrintStream out) {
+    public static Result overwhelm(int level, PrintStream out) {
         out.println("밀렵꾼-압도 사용");
         out.println("압도 버프 활성화: 데미지 5배 (1턴)");
         return new Result(0, 0, true, 7, 0);
@@ -396,7 +408,7 @@ public class Poacher {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result loot(PrintStream out) {
+    public static Result loot(int level, PrintStream out) {
         out.println("밀렵꾼-전리품 사용");
         out.println("전리품 획득");
         return new Result(0, 0, true, 5, 0);
