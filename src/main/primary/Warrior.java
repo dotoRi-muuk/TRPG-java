@@ -6,7 +6,7 @@ import java.io.PrintStream;
 
 public class Warrior {
 
-    public static int strike(int power, int maxHealth, int curHealth, int precision, PrintStream out) {
+    public static int strike(int power, int maxHealth, int curHealth, int precision, int level, PrintStream out) {
         out.println("전사-강타 사용");
         int defaultDamage = Main.dice(1, 10, out);
         int frenzyDamage = frenzy(maxHealth, curHealth, out);
@@ -14,7 +14,8 @@ public class Warrior {
         int sideDamage = Main.sideDamage(baseDamage, power, out);
         int totalDamage = baseDamage + sideDamage;
         out.printf("총 데미지 : %d + %d + %d = %d%n", defaultDamage, frenzyDamage, sideDamage, totalDamage);
-        return Main.criticalHit(precision, totalDamage, out);
+        int criticalDamage = Main.criticalHit(precision, totalDamage, out);
+        return applyLevelMultiplier(criticalDamage, level, out);
     }
 
     private static int frenzy(int maxHealth, int curHealth, PrintStream out) {
@@ -25,7 +26,14 @@ public class Warrior {
         return (maxHealth-curHealth)/5;
     }
 
-    public static int side(int power, int maxHealth, int curHealth, int precision, PrintStream out) {
+    private static int applyLevelMultiplier(int damage, int level, PrintStream out) {
+        int multiplier = 100 + level * level;
+        int levelDamage = damage * multiplier / 100;
+        out.printf("레벨 배율 적용 (레벨 %d, %d%%) : %d -> %d%n", level, multiplier, damage, levelDamage);
+        return levelDamage;
+    }
+
+    public static int side(int power, int maxHealth, int curHealth, int precision, int level, PrintStream out) {
         out.println("전사-가로베기 사용");
         int defaultDamage = Main.dice(1, 8, out);
         int frenzyDamage = frenzy(maxHealth, curHealth, out);
@@ -33,10 +41,11 @@ public class Warrior {
         int sideDamage = Main.sideDamage(baseDamage, power, out);
         int totalDamage = baseDamage + sideDamage;
         out.printf("총 데미지 : %d + %d + %d = %d%n", defaultDamage, frenzyDamage, sideDamage, totalDamage);
-        return Main.criticalHit(precision, totalDamage, out);
+        int criticalDamage = Main.criticalHit(precision, totalDamage, out);
+        return applyLevelMultiplier(criticalDamage, level, out);
     }
 
-    public static int plain(int power, int maxHealth, int curHealth, int precision, PrintStream out) {
+    public static int plain(int power, int maxHealth, int curHealth, int precision, int level, PrintStream out) {
         out.println("전사-기본공격 사용");
         int defaultDamage = Main.dice(1, 6, out);
         int frenzyDamage = frenzy(maxHealth, curHealth, out);
@@ -44,7 +53,8 @@ public class Warrior {
         int sideDamage = Main.sideDamage(baseDamage, power, out);
         int totalDamage = baseDamage + sideDamage;
         out.printf("총 데미지 : %d + %d + %d = %d%n", defaultDamage, frenzyDamage, sideDamage, totalDamage);
-        return Main.criticalHit(precision, totalDamage, out);
+        int criticalDamage = Main.criticalHit(precision, totalDamage, out);
+        return applyLevelMultiplier(criticalDamage, level, out);
     }
 
     public static int shield(int damageTaken, PrintStream out) {
