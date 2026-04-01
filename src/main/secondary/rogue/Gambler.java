@@ -139,8 +139,9 @@ public class Gambler {
     public static Result coinToss(int stat, int luckStat, int decreasedLuck, int precision, int level, PrintStream out) {
         Result result = executeSkill("코인 토스", stat, luckStat, decreasedLuck, precision, out, 4, 1, 12, 1, 1);
         if (!result.succeeded()) return result;
-        int damage = (int)(result.damageDealt() * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
         return new Result(0, damage, true, 0, result.staminaUsed(), result.statChanges());
     }
 
@@ -155,8 +156,9 @@ public class Gambler {
     public static Result jokerCard(int stat, int luckStat, int decreasedLuck, int precision, int level, PrintStream out) {
         Result result = executeSkill("조커 카드", stat, luckStat, decreasedLuck, precision, out, 6, 2, 12, 1, 3);
         if (!result.succeeded()) return result;
-        int damage = (int)(result.damageDealt() * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
         return new Result(0, damage, true, 0, result.staminaUsed(), result.statChanges());
     }
 
@@ -171,8 +173,9 @@ public class Gambler {
     public static Result blackJack(int stat, int luckStat, int decreasedLuck, int precision, int level, PrintStream out) {
         Result result = executeSkill("블랙잭", stat, luckStat, decreasedLuck, precision, out, 6, 3, 8, 1, 3);
         if (!result.succeeded()) return result;
-        int damage = (int)(result.damageDealt() * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
         return new Result(0, damage, true, 0, result.staminaUsed(), result.statChanges());
     }
 
@@ -187,8 +190,9 @@ public class Gambler {
     public static Result yachtDice(int stat, int luckStat, int decreasedLuck, int precision, int level, PrintStream out) {
         Result result = executeSkill("야추 다이스", stat, luckStat, decreasedLuck, precision, out, 8, 2, 20, 2, 4);
         if (!result.succeeded()) return result;
-        int damage = (int)(result.damageDealt() * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
         return new Result(0, damage, true, 0, result.staminaUsed(), result.statChanges());
     }
 
@@ -203,8 +207,9 @@ public class Gambler {
     public static Result royalFlush(int stat, int luckStat, int decreasedLuck, int precision, int level, PrintStream out) {
         Result result = executeSkill("로얄 플러쉬", stat, luckStat, decreasedLuck, precision, out, 4, 4, 20, 3, 7);
         if (!result.succeeded()) return result;
-        int damage = (int)(result.damageDealt() * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
         return new Result(0, damage, true, 0, result.staminaUsed(), result.statChanges());
     }
 
@@ -219,8 +224,9 @@ public class Gambler {
     public static Result plain(int stat, int luckStat, int decreasedLuck, int precision, int level, PrintStream out) {
         Result result = executeSkill("기본공격", stat, luckStat, decreasedLuck, precision, out, 6, 0, 0, 0, 0);
         if (!result.succeeded()) return result;
-        int damage = (int)(result.damageDealt() * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
         return new Result(0, damage, true, 0, result.staminaUsed(), result.statChanges());
     }
 

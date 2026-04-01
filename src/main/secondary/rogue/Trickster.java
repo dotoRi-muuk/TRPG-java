@@ -34,8 +34,9 @@ public class Trickster {
 
         int damage = Main.dice(1, 4, out);
         damage = calculateFinalDamage(damage, damageIncreasePercent, finalDamageMultiplier, stat, "페이크 단검", precision, out, diceRoll);
-        damage = (int)(damage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
+        double levelMult = Main.levelMultiplier(level);
+        damage = (int)(damage * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
 
         out.println("페이크 단검 효과 발동: 이번 턴의 공격 데미지가 1.5배로 증가합니다.");
         return new Result(0, damage, true, 0, 2);
@@ -63,8 +64,9 @@ public class Trickster {
 
         int damage = Main.dice(2, 6, out);
         damage = calculateFinalDamage(damage, damageIncreasePercent, finalDamageMultiplier, stat, "콩알탄", precision, out, diceRoll);
-        damage = (int)(damage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
+        double levelMult = Main.levelMultiplier(level);
+        damage = (int)(damage * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
 
         return new Result(0, damage, true, 0, 2);
     }
@@ -91,8 +93,9 @@ public class Trickster {
 
         int damage = Main.dice(1, 4, out);
         damage = calculateFinalDamage(damage, damageIncreasePercent, finalDamageMultiplier, stat, "기름통 투척", precision, out, diceRoll);
-        damage = (int)(damage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
+        double levelMult = Main.levelMultiplier(level);
+        damage = (int)(damage * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
 
         return new Result(0, damage, true, 0, 2);
     }
@@ -124,8 +127,9 @@ public class Trickster {
             damage += Main.dice(3, 6, out);
         }
         damage = calculateFinalDamage(damage, damageIncreasePercent, finalDamageMultiplier, stat, "라이터 투척", precision, out, diceRoll);
-        damage = (int)(damage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
+        double levelMult = Main.levelMultiplier(level);
+        damage = (int)(damage * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
 
         return new Result(0, damage, true, 0, 2);
     }
@@ -152,8 +156,9 @@ public class Trickster {
 
         int damage = Main.dice(1, 20, out);
         damage = calculateFinalDamage(damage, damageIncreasePercent, finalDamageMultiplier, stat, "특대형 단검", precision, out, diceRoll);
-        damage = (int)(damage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
+        double levelMult = Main.levelMultiplier(level);
+        damage = (int)(damage * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
 
         return new Result(0, damage, true, 0, 3);
     }
@@ -242,8 +247,9 @@ public class Trickster {
                 break;
             }
         }
-        totalFinalDamage = (int)(totalFinalDamage * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), totalFinalDamage);
+        double levelMult = Main.levelMultiplier(level);
+        totalFinalDamage = (int)(totalFinalDamage * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, totalFinalDamage);
         return new Result(0, totalFinalDamage, true, 0, 0);
     }
 

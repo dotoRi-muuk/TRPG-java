@@ -109,8 +109,9 @@ public class Assassin {
         }
         Result result = commonAttack("암살", stat, 4, 20, precision, 0, finalMultiplier, 44, out);
         if (!result.succeeded()) return result;
-        int damage = (int)(result.damageDealt() * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
         return new Result(0, damage, true, 0, result.staminaUsed());
     }
 
@@ -131,8 +132,9 @@ public class Assassin {
         }
         Result result = commonAttack("기본 공격", stat, 1, 6, precision, 0, finalMultiplier, 0, out);
         if (!result.succeeded()) return result;
-        int damage = (int)(result.damageDealt() * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
         return new Result(0, damage, true, 0, result.staminaUsed());
     }
 
@@ -153,8 +155,9 @@ public class Assassin {
         }
         Result result = commonAttack("급소 찌르기", stat, 4, 12, precision, 0, finalMultiplier, 13, out);
         if (!result.succeeded()) return result;
-        int damage = (int)(result.damageDealt() * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
         return new Result(0, damage, true, 0, result.staminaUsed());
     }
 
@@ -175,8 +178,9 @@ public class Assassin {
         }
         Result result = commonAttack("목 긋기", stat, 1, 20, precision, 0, finalMultiplier, 3, out);
         if (!result.succeeded()) return result;
-        int damage = (int)(result.damageDealt() * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
         return new Result(0, damage, true, 0, result.staminaUsed());
     }
 
@@ -197,8 +201,9 @@ public class Assassin {
         }
         Result result = commonAttack("손목 긋기", stat, 4, 8, precision, 0, finalMultiplier, 10, out);
         if (!result.succeeded()) return result;
-        int damage = (int)(result.damageDealt() * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
         return new Result(0, damage, true, 0, result.staminaUsed());
     }
 
@@ -219,8 +224,9 @@ public class Assassin {
         }
         Result result = commonAttack("후방 공격", stat, 3, 12, precision, 0, finalMultiplier, 12, out);
         if (!result.succeeded()) return result;
-        int damage = (int)(result.damageDealt() * Main.levelMultiplier(level));
-        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), damage);
+        double levelMult = Main.levelMultiplier(level);
+        int damage = (int)(result.damageDealt() * levelMult);
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, levelMult * 100.0, damage);
         return new Result(0, damage, true, 0, result.staminaUsed());
     }
 
