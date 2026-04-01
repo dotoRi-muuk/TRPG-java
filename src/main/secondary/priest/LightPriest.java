@@ -18,7 +18,7 @@ public class LightPriest {
      * @param out  출력 스트림
      * @return 결과 객체
      */
-    public static Result heavensDoor(int stat, PrintStream out) {
+    public static Result heavensDoor(int stat, int level, PrintStream out) {
         out.println("빛의 사제-헤븐즈 도어 사용");
         int verdict = main.Main.verdict(stat, out);
         if (verdict <= 0) {
@@ -41,7 +41,7 @@ public class LightPriest {
      * @param out        출력 스트림
      * @return 결과 객체
      */
-    public static Result prayer(int stat, boolean mercy, boolean favoritism, boolean transfer, boolean piety, int chantTurns, PrintStream out) {
+    public static Result prayer(int stat, boolean mercy, boolean favoritism, boolean transfer, boolean piety, int chantTurns, int level, PrintStream out) {
         out.println("빛의 사제-기도 사용");
         return normalHeal(stat, chantTurns, 6, 4, mercy, favoritism, transfer, piety, out);
     }
@@ -53,7 +53,7 @@ public class LightPriest {
      * @param out  출력 스트림
      * @return 결과 객체
      */
-    public static Result invocation(int stat, PrintStream out) {
+    public static Result invocation(int stat, int level, PrintStream out) {
         out.println("빛의 사제-기원 사용");
         int verdict = main.Main.verdict(stat, out);
         if (verdict <= 0) {
@@ -64,7 +64,7 @@ public class LightPriest {
         return new Result(0, 0, true, 4, 0);
     }
 
-    public static Result holyGrailOfLight(int stat, boolean mercy, boolean favoritism, boolean transfer, boolean piety, PrintStream out) {
+    public static Result holyGrailOfLight(int stat, boolean mercy, boolean favoritism, boolean transfer, boolean piety, int level, PrintStream out) {
         out.println("빛의 사제-빛의 성배 사용");
         return normalHeal(stat, 5, 4, 3, mercy, favoritism, transfer, piety, out);
     }
@@ -80,7 +80,7 @@ public class LightPriest {
      * @param out        출력 스트림
      * @return 결과 객체
      */
-    public static Result heal(int stat, boolean mercy, boolean favoritism, boolean transfer, boolean piety, PrintStream out) {
+    public static Result heal(int stat, boolean mercy, boolean favoritism, boolean transfer, boolean piety, int level, PrintStream out) {
         out.println("빛의 사제-힐 사용");
         return normalHeal(stat, 1, 6, 1, mercy, favoritism, transfer, piety, out);
     }
@@ -137,9 +137,9 @@ public class LightPriest {
      * @param out  출력 스트림
      * @return 결과 객체
      */
-    public static Result healingWind(int stat, int precision, PrintStream out) {
+    public static Result healingWind(int stat, int precision, int level, PrintStream out) {
         out.println("빛의 사제-치유의 바람 사용");
-        return normalAttack(stat, 2, 6, 2, precision, out);
+        return normalAttack(stat, 2, 6, 2, precision, level, out);
     }
 
     /**
@@ -149,9 +149,9 @@ public class LightPriest {
      * @param out  출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, int precision, PrintStream out) {
+    public static Result plain(int stat, int precision, int level, PrintStream out) {
         out.println("빛의 사제-기본공격 사용");
-        return normalAttack(stat, 1, 6, 0, precision, out);
+        return normalAttack(stat, 1, 6, 0, precision, level, out);
     }
 
     /**
@@ -162,7 +162,7 @@ public class LightPriest {
      * @param mana 소모 마나
      * @return 결과 객체
      */
-    private static Result normalAttack(int stat, int dices, int sides, int mana, int precision, PrintStream out) {
+    private static Result normalAttack(int stat, int dices, int sides, int mana, int precision, int level, PrintStream out) {
         int verdict = main.Main.verdict(stat, out);
         if (verdict <= 0) {
             return new Result(0, 0, false, mana, 0);
@@ -175,6 +175,8 @@ public class LightPriest {
         damage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         damage = main.Main.criticalHit(precision, damage, out);
+        damage = (int) Math.round(damage * main.Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double) level * level), damage);
         out.printf("최종 데미지 : %d\n", damage);
         return new Result(0, damage, true, mana, 0);
     }
