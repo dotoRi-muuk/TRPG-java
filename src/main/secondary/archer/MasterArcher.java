@@ -29,7 +29,7 @@ public class MasterArcher {
      * @param stageTurn 무대 스킬 지속 턴 (최종 데미지 턴당 x70% 증가, 최대 +500%.
      *                  데미지를 입히지 못하면 해제되며 다음 턴까지 행동불능. 마나 5 소모, 쿨타임 10턴)
      */
-    public static Result plain(int stat, boolean isHeavyString, boolean isFirstTarget, boolean isEmergency, MasterArcherPassive ability, boolean preyEnabled, int arrowOverheatCount, boolean calm, boolean cracking, int stageTurn, int precision, PrintStream out) {
+    public static Result plain(int stat, boolean isHeavyString, boolean isFirstTarget, boolean isEmergency, MasterArcherPassive ability, boolean preyEnabled, int arrowOverheatCount, boolean calm, boolean cracking, int stageTurn, int precision, int level, PrintStream out) {
 
         if (isEmergency && isHeavyString) {
             out.println("긴급 사격과 무거운 시위는 동시에 사용할 수 없습니다!");
@@ -179,7 +179,9 @@ public class MasterArcher {
             out.printf("총 데미지 : %d%n", totalDamage);
             damageDealt += totalDamage;
         }
-        return new Result(0, damageDealt, true, 0, 0);
+        int levelAdjustedDamage = (int)(damageDealt * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), levelAdjustedDamage);
+        return new Result(0, levelAdjustedDamage, true, 0, 0);
     }
 
 }

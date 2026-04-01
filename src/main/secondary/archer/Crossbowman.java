@@ -29,7 +29,7 @@ public class Crossbowman {
      * @return 결과 객체
      */
     private static Result calculate(int dices, int sides, int stat, int flatBonus, double finalDamageMultiplier,
-                                    int precision, int staminaUsed, PrintStream out, int diceRoll) {
+                                    int precision, int staminaUsed, PrintStream out, int diceRoll, int level) {
         int basic = Main.dice(dices, sides, out);
         out.printf("기본 데미지 : %d\n", basic);
 
@@ -42,7 +42,9 @@ public class Crossbowman {
         damage = Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d\n", damage);
 
-        return new Result(0, damage, true, 0, staminaUsed);
+        int levelAdjustedDamage = (int)(damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), levelAdjustedDamage);
+        return new Result(0, levelAdjustedDamage, true, 0, staminaUsed);
     }
 
     /**
@@ -51,7 +53,7 @@ public class Crossbowman {
      * @param out 출력 스트림
      * @return 장전된 화살 개수
      */
-    public static int reload(PrintStream out) {
+    public static int reload(int level, PrintStream out) {
         return Main.dice(1, 6, out);
     }
 
@@ -68,7 +70,7 @@ public class Crossbowman {
      * @return 결과 객체
      */
     public static Result plain(int stat, int arrowCount, boolean focusedBarrage, boolean executionArrow,
-                               boolean distanceCalculation, int precision, PrintStream out) {
+                               boolean distanceCalculation, int precision, int level, PrintStream out) {
         out.println("석궁사수-기본공격 사용");
 
         // 처형 화살 로직
@@ -115,7 +117,7 @@ public class Crossbowman {
             }
         }
 
-        return calculate(dices, sides, stat, flatBonus, finalDamageMultiplier, precision, 0, out, diceRoll);
+        return calculate(dices, sides, stat, flatBonus, finalDamageMultiplier, precision, 0, out, diceRoll, level);
     }
 
     /**
@@ -126,13 +128,13 @@ public class Crossbowman {
      * @param out       출력 스트림
      * @return 결과 객체
      */
-    public static Result throwWeapon(int stat, int precision, PrintStream out) {
+    public static Result throwWeapon(int stat, int precision, int level, PrintStream out) {
         out.println("석궁사수-던지기 사용");
 
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result(0, 0, false, 0, 0);
         int diceRoll = stat - verdict;
-        return calculate(1, 6, stat, 0, 1.0, precision, 0, out, diceRoll);
+        return calculate(1, 6, stat, 0, 1.0, precision, 0, out, diceRoll, level);
     }
 
     /**
@@ -141,7 +143,7 @@ public class Crossbowman {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result quickReload(PrintStream out) {
+    public static Result quickReload(int level, PrintStream out) {
         out.println("석궁사수-빠른 장전 사용");
         out.println("화살 1개 장전");
         return new Result(0, 0, true, 0, 1);
@@ -156,7 +158,7 @@ public class Crossbowman {
      * @param out        출력 스트림
      * @return 결과 객체
      */
-    public static Result singleShot(int stat, int arrowCount, int precision, PrintStream out) {
+    public static Result singleShot(int stat, int arrowCount, int precision, int level, PrintStream out) {
         out.println("석궁사수-단일사격 사용");
 
         if (arrowCount < 1) {
@@ -167,7 +169,7 @@ public class Crossbowman {
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) return new Result(0, 0, false, 0, 2);
         int diceRoll = stat - verdict;
-        return calculate(1, 10, stat, 0, 1.0, precision, 2, out, diceRoll);
+        return calculate(1, 10, stat, 0, 1.0, precision, 2, out, diceRoll, level);
     }
 
     /**
@@ -180,7 +182,7 @@ public class Crossbowman {
      * @param out        출력 스트림
      * @return 결과 객체
      */
-    public static Result flareArrow(int stat, int arrowCount, int precision, PrintStream out) {
+    public static Result flareArrow(int stat, int arrowCount, int precision, int level, PrintStream out) {
         out.println("석궁사수-발광 화살 사용");
 
         if (arrowCount < 2) {
@@ -192,7 +194,7 @@ public class Crossbowman {
         if (verdict <= 0) return new Result(0, 0, false, 0, 4);
         int diceRoll = stat - verdict;
         out.println("적중 시 다음 턴 적이 받는 최종 데미지 1.5배");
-        return calculate(2, 8, stat, 0, 1.0, precision, 4, out, diceRoll);
+        return calculate(2, 8, stat, 0, 1.0, precision, 4, out, diceRoll, level);
     }
 
     /**
@@ -205,7 +207,7 @@ public class Crossbowman {
      * @param out        출력 스트림
      * @return 결과 객체
      */
-    public static Result paralysisArrow(int stat, int arrowCount, int precision, PrintStream out) {
+    public static Result paralysisArrow(int stat, int arrowCount, int precision, int level, PrintStream out) {
         out.println("석궁사수-마비 화살 사용");
 
         if (arrowCount < 1) {
@@ -231,7 +233,9 @@ public class Crossbowman {
         damage = Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d\n", damage);
 
-        return new Result(0, damage, true, 0, 6);
+        int levelAdjustedDamage = (int)(damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double)level*level), levelAdjustedDamage);
+        return new Result(0, levelAdjustedDamage, true, 0, 6);
     }
 
     /**
@@ -241,7 +245,7 @@ public class Crossbowman {
      * @param out        출력 스트림
      * @return 결과 객체
      */
-    public static Result duplicateArrow(int arrowCount, PrintStream out) {
+    public static Result duplicateArrow(int arrowCount, int level, PrintStream out) {
         out.println("석궁사수-복제화살 사용");
         out.println("장전된 화살 2배 복제");
         out.printf("화살 %d개 -> %d개\n", arrowCount, arrowCount * 2);
@@ -254,7 +258,7 @@ public class Crossbowman {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result quickHands(PrintStream out) {
+    public static Result quickHands(int level, PrintStream out) {
         out.println("석궁사수-재빠른 손놀림 사용");
         out.println("재빠른 손놀림: 매 턴 화살 1개 추가 장전 (민첩 판정 지속)");
         return new Result(0, 0, true, 5, 0);
@@ -266,7 +270,7 @@ public class Crossbowman {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result executionArrowSkill(PrintStream out) {
+    public static Result executionArrowSkill(int level, PrintStream out) {
         out.println("석궁사수-처형 화살 사용");
         out.println("처형 화살 장전: 데미지 0, 25발당 5% 처형 확률");
         return new Result(0, 0, true, 8, 0);
@@ -278,7 +282,7 @@ public class Crossbowman {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result focusedBarrageSkill(PrintStream out) {
+    public static Result focusedBarrageSkill(int level, PrintStream out) {
         out.println("석궁사수-집중 난사 사용");
         out.println("집중 난사: 무차별 난사 비활성화, 집중 공격 효과 50%로 강화");
         return new Result(0, 0, true, 6, 0);
@@ -291,7 +295,7 @@ public class Crossbowman {
      * @param out            출력 스트림
      * @return 결과 객체
      */
-    public static Result breakArrow(int consumedArrows, PrintStream out) {
+    public static Result breakArrow(int consumedArrows, int level, PrintStream out) {
         out.println("석궁사수-화살 꺾기 사용");
         int reduction = 6 * consumedArrows;
         out.println("화살 꺾기: 받는 데미지 " + reduction + " 감소");
@@ -304,7 +308,7 @@ public class Crossbowman {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    public static Result inTheseTimes(PrintStream out) {
+    public static Result inTheseTimes(int level, PrintStream out) {
         out.println("석궁사수-이럴 때 일수록! 사용");
         out.println("받은 데미지 4마다 화살 1개 장전");
         return new Result(0, 0, true, 0, 9);
