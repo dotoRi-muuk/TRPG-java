@@ -36,6 +36,7 @@ public class BarrierMageController {
         public boolean cloneBarrier;
         public int selectedCount;
         public int totalManaSpent;
+        public int level = 1;
     }
 
     /**
@@ -66,7 +67,7 @@ public class BarrierMageController {
         Result result = BarrierMage.plain(req.stat, req.castSum,
                 req.reinforceBarrier, req.reinforceBarrierCast,
                 req.sealBarrier, req.cloneBarrier,
-                req.precision, ps);
+                req.precision, req.level, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -84,7 +85,7 @@ public class BarrierMageController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        Result result = BarrierMage.forceField(req.stat, req.castSum, ps);
+        Result result = BarrierMage.forceField(req.stat, req.castSum, req.level, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -103,7 +104,7 @@ public class BarrierMageController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        Result result = BarrierMage.barrierAfterimage(req.stat, req.selectedCount, ps);
+        Result result = BarrierMage.barrierAfterimage(req.stat, req.selectedCount, req.level, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -122,7 +123,7 @@ public class BarrierMageController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        Result result = BarrierMage.overDeployment(req.stat, ps);
+        Result result = BarrierMage.overDeployment(req.stat, req.level, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -141,7 +142,7 @@ public class BarrierMageController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        Result result = BarrierMage.manaRecovery(req.stat, req.totalManaSpent, ps);
+        Result result = BarrierMage.manaRecovery(req.stat, req.totalManaSpent, req.level, ps);
         ps.flush();
 
         return buildResponse(result, baos);

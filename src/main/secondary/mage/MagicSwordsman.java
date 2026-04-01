@@ -33,9 +33,9 @@ public class MagicSwordsman {
      * @param out         출력 스트림
      * @return 결과 객체
      */
-    public static Result manaSlash(int stat, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, int precision, PrintStream out) {
+    public static Result manaSlash(int stat, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, int precision, int level, PrintStream out) {
         out.println("마검사-마나 슬래쉬 사용");
-        return skillAttack(stat, 3, 6, 3, lastMana, currentMana, overload, ethailSolar, shiftLifter, precision, out);
+        return skillAttack(stat, 3, 6, 3, lastMana, currentMana, overload, ethailSolar, shiftLifter, precision, level, out);
     }
 
     /**
@@ -51,9 +51,9 @@ public class MagicSwordsman {
      * @param out         출력 스트림
      * @return 결과 객체
      */
-    public static Result manaStrike(int stat, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, int precision, PrintStream out) {
+    public static Result manaStrike(int stat, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, int precision, int level, PrintStream out) {
         out.println("마검사-마나 스트라이크 사용");
-        return skillAttack(stat, 2, 10, 3, lastMana, currentMana, overload, ethailSolar, shiftLifter, precision, out);
+        return skillAttack(stat, 2, 10, 3, lastMana, currentMana, overload, ethailSolar, shiftLifter, precision, level, out);
     }
 
     /**
@@ -69,9 +69,9 @@ public class MagicSwordsman {
      * @param out         출력 스트림
      * @return 결과 객체
      */
-    public static Result manaSphere(int stat, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, int precision, PrintStream out) {
+    public static Result manaSphere(int stat, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, int precision, int level, PrintStream out) {
         out.println("마검사-마나 스피어 사용");
-        return skillAttack(stat, 1, 20, 3, lastMana, currentMana, overload, ethailSolar, shiftLifter, precision, out);
+        return skillAttack(stat, 1, 20, 3, lastMana, currentMana, overload, ethailSolar, shiftLifter, precision, level, out);
     }
 
     /**
@@ -87,9 +87,9 @@ public class MagicSwordsman {
      * @param out         출력 스트림
      * @return 결과 객체
      */
-    public static Result spinChrist(int stat, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, int precision, PrintStream out) {
+    public static Result spinChrist(int stat, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, int precision, int level, PrintStream out) {
         out.println("마검사-스핀 크라이스트 사용");
-        return skillAttack(stat, 4, 8, 4, lastMana, currentMana, overload, ethailSolar, shiftLifter, precision, out);
+        return skillAttack(stat, 4, 8, 4, lastMana, currentMana, overload, ethailSolar, shiftLifter, precision, level, out);
     }
 
     /**
@@ -105,9 +105,9 @@ public class MagicSwordsman {
      * @param out         출력 스트림
      * @return 결과 객체
      */
-    public static Result tripleSlain(int stat, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, int precision, PrintStream out) {
+    public static Result tripleSlain(int stat, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, int precision, int level, PrintStream out) {
         out.println("마검사-트리플 슬레인 사용");
-        return skillAttack(stat, 3, 12, 4, lastMana, currentMana, overload, ethailSolar, shiftLifter, precision, out);
+        return skillAttack(stat, 3, 12, 4, lastMana, currentMana, overload, ethailSolar, shiftLifter, precision, level, out);
     }
 
     /**
@@ -123,9 +123,9 @@ public class MagicSwordsman {
      * @param out         출력 스트림
      * @return 결과 객체
      */
-    public static Result etherealImperio(int stat, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, int precision, PrintStream out) {
+    public static Result etherealImperio(int stat, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, int precision, int level, PrintStream out) {
         out.println("마검사-에테리얼 임페리오 사용");
-        return skillAttack(stat, 3, 20, 6, lastMana, currentMana, overload, ethailSolar, shiftLifter, precision, out);
+        return skillAttack(stat, 3, 20, 6, lastMana, currentMana, overload, ethailSolar, shiftLifter, precision, level, out);
     }
 
     /**
@@ -135,7 +135,7 @@ public class MagicSwordsman {
      * @param out  출력 스트림
      * @return 결과 객체 (manaUsed = 2 - 회복량, 음수이면 순수 회복)
      */
-    public static Result speedDrain(int stat, PrintStream out) {
+    public static Result speedDrain(int stat, int level, PrintStream out) {
         out.println("마검사-스피드레인 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -157,7 +157,7 @@ public class MagicSwordsman {
      * @param out                출력 스트림
      * @return 결과 객체 (damageTaken = 감소된 데미지)
      */
-    public static Result flowAura(int manaSpentSinceRest, int damageTaken, PrintStream out) {
+    public static Result flowAura(int manaSpentSinceRest, int damageTaken, int level, PrintStream out) {
         out.println("마검사-플로우 오라 (전용 수비) 사용");
 
         double reductionRate = manaSpentSinceRest * 0.02;
@@ -191,7 +191,7 @@ public class MagicSwordsman {
      * @param out         출력 스트림
      * @return 결과 객체
      */
-    private static Result skillAttack(int stat, int dices, int sides, int manaUse, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, int precision, PrintStream out) {
+    private static Result skillAttack(int stat, int dices, int sides, int manaUse, int lastMana, int currentMana, boolean overload, boolean ethailSolar, boolean shiftLifter, int precision, int level, PrintStream out) {
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) {
             return new Result(0, 0, false, manaUse, 0);
@@ -243,6 +243,8 @@ public class MagicSwordsman {
         out.printf("데미지 보정치 : %d%n", sideDamage);
 
         damage = Main.criticalHit(precision, damage, out);
+        damage = (int) (damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double) level * level), damage);
         out.printf("최종 데미지 : %d%n", damage);
 
         if (shiftLifter) {
@@ -323,6 +325,8 @@ public class MagicSwordsman {
         out.printf("데미지 보정치 : %d%n", sideDamage);
 
         damage = Main.criticalHit(precision, damage, out);
+        damage = (int) (damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double) level * level), damage);
         out.printf("최종 데미지 : %d%n", damage);
 
         // 마나 오라 패시브: 이전 턴에 마나를 소모했다면 마나 회복

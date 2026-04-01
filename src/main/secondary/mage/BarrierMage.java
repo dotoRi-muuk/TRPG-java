@@ -36,7 +36,7 @@ public class BarrierMage {
     public static Result plain(int stat, int castSum,
                                boolean reinforceBarrier, int reinforceBarrierCast,
                                boolean sealBarrier, boolean cloneBarrier,
-                               int precision, PrintStream out) {
+                               int precision, int level, PrintStream out) {
         out.println("결계술사-기본공격 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -79,6 +79,8 @@ public class BarrierMage {
 
         // 치명타 판정
         damage = Main.criticalHit(precision, damage, out);
+        damage = (int) (damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double) level * level), damage);
         out.printf("최종 데미지 : %d%n", damage);
 
         return new Result(0, damage, true, 0, 0);
@@ -92,7 +94,7 @@ public class BarrierMage {
      * @param out     출력 스트림
      * @return 결과 객체
      */
-    public static Result forceField(int stat, int castSum, PrintStream out) {
+    public static Result forceField(int stat, int castSum, int level, PrintStream out) {
         out.println("결계술사-역장 결계 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -121,7 +123,7 @@ public class BarrierMage {
      * @param out           출력 스트림
      * @return 결과 객체
      */
-    public static Result barrierAfterimage(int stat, int selectedCount, PrintStream out) {
+    public static Result barrierAfterimage(int stat, int selectedCount, int level, PrintStream out) {
         out.println("결계술사-결계 잔영 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -142,7 +144,7 @@ public class BarrierMage {
      * @param out  출력 스트림
      * @return 결과 객체
      */
-    public static Result overDeployment(int stat, PrintStream out) {
+    public static Result overDeployment(int stat, int level, PrintStream out) {
         out.println("결계술사-초과 전개 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -161,7 +163,7 @@ public class BarrierMage {
      * @param out            출력 스트림
      * @return 결과 객체 (manaUsed = 2 - recoveredMana)
      */
-    public static Result manaRecovery(int stat, int totalManaSpent, PrintStream out) {
+    public static Result manaRecovery(int stat, int totalManaSpent, int level, PrintStream out) {
         out.println("결계술사-기운 회수 사용");
 
         int verdict = Main.verdict(stat, out);

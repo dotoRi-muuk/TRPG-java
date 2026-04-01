@@ -38,7 +38,7 @@ public class Summoner {
      * @param out  출력 스트림
      * @return 결과 객체
      */
-    public static Result fistOfObedience(int stat, int precision, PrintStream out) {
+    public static Result fistOfObedience(int stat, int precision, int level, PrintStream out) {
         out.println("소환술사-말을 잘 듣게 하는 주먹 사용");
         int verdict = Main.verdict(stat, out);
 
@@ -51,6 +51,8 @@ public class Summoner {
         damage += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
         damage = Main.criticalHit(precision, damage, out);
+        damage = (int) (damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double) level * level), damage);
         out.printf("최종 데미지 : %d%n", damage);
 
         return new Result(damage, 0, true, 0, 2);
@@ -63,7 +65,7 @@ public class Summoner {
      * @param out  출력 스트림
      * @return 결과 객체
      */
-    public static Result fistBeatingSummon(int stat, int precision, PrintStream out) {
+    public static Result fistBeatingSummon(int stat, int precision, int level, PrintStream out) {
         out.println("소환술사-소환수를 이기는 주먹 사용");
         int verdict = Main.verdict(stat, out);
 
@@ -76,6 +78,8 @@ public class Summoner {
         damage += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
         damage = Main.criticalHit(precision, damage, out);
+        damage = (int) (damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double) level * level), damage);
         out.printf("최종 데미지 : %d%n", damage);
 
         return new Result(damage, 0, true, 0, 3);
@@ -88,7 +92,7 @@ public class Summoner {
      * @param out  출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, int precision, PrintStream out) {
+    public static Result plain(int stat, int precision, int level, PrintStream out) {
         out.println("소환술사-기본공격 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -102,6 +106,8 @@ public class Summoner {
         damage += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
         damage = Main.criticalHit(precision, damage, out);
+        damage = (int) (damage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double) level * level), damage);
         out.printf("최종 데미지 : %d%n", damage);
 
         return new Result(damage, 0, true, 0, 0);

@@ -20,7 +20,7 @@ public class BarrierMaster {
      * @param out     출력 스트림
      * @return 결과 객체
      */
-    public static Result forceFieldBarrier(int stat, int castSum, boolean enableBarrierExpansion, PrintStream out) {
+    public static Result forceFieldBarrier(int stat, int castSum, boolean enableBarrierExpansion, int level, PrintStream out) {
         out.println("결계술사-역장 결계 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -55,7 +55,7 @@ public class BarrierMaster {
      * @param out                    출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, int castSum, boolean enableBarrierExpansion, boolean enhancementBarrier, int enhancementBarrierCast, boolean sealingBarrier, boolean cloneBarrier, int precision, PrintStream out) {
+    public static Result plain(int stat, int castSum, boolean enableBarrierExpansion, boolean enhancementBarrier, int enhancementBarrierCast, boolean sealingBarrier, boolean cloneBarrier, int precision, int level, PrintStream out) {
         out.println("결계술사-기본공격 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -119,6 +119,8 @@ public class BarrierMaster {
         damageAfterModifier += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
         damageAfterModifier = Main.criticalHit(precision, damageAfterModifier, out);
+        damageAfterModifier = (int) (damageAfterModifier * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double) level * level), damageAfterModifier);
         out.printf("최종 데미지 : %d%n", damageAfterModifier);
         return new Result(0, damageAfterModifier, true, 0, 0);
     }

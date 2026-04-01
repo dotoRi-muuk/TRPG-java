@@ -23,7 +23,7 @@ public class Arcanist {
      * @param out           출력 스트림
      * @return 결과 객체
      */
-    public static Result rampageAura(int stat, int damageTaken, int totalCast, int remainingCast, PrintStream out) {
+    public static Result rampageAura(int stat, int damageTaken, int totalCast, int remainingCast, int level, PrintStream out) {
         out.println("마도사-폭주오라 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -50,15 +50,15 @@ public class Arcanist {
      * @param out          출력 스트림
      * @return 결과 객체
      */
-    public static Result lumenConversion(int stat, int condensation, boolean annihilator, boolean global, int precision, PrintStream out) {
+    public static Result lumenConversion(int stat, int condensation, boolean annihilator, boolean global, int precision, int level, PrintStream out) {
         out.println("마도사-루멘 컨버전 사용");
 
         if (global) {
             out.println("광역 사용: 4D20");
-            return basicAttack(stat, condensation, 4, 20, annihilator, 15, 18, precision, out);
+            return basicAttack(stat, condensation, 4, 20, annihilator, 15, 18, precision, level, out);
         } else {
             out.println("1인 사용: 10D12");
-            return basicAttack(stat, condensation, 10, 12, annihilator, 15, 18, precision, out);
+            return basicAttack(stat, condensation, 10, 12, annihilator, 15, 18, precision, level, out);
         }
     }
 
@@ -71,10 +71,10 @@ public class Arcanist {
      * @param out          출력 스트림
      * @return 결과 객체
      */
-    public static Result etherCatastrophe(int stat, int condensation, boolean annihilator, int precision, PrintStream out) {
+    public static Result etherCatastrophe(int stat, int condensation, boolean annihilator, int precision, int level, PrintStream out) {
         out.println("마도사-에테르 카타스트로피 사용");
 
-        return basicAttack(stat, condensation, 5, 20, annihilator, 7, 10, precision, out);
+        return basicAttack(stat, condensation, 5, 20, annihilator, 7, 10, precision, level, out);
     }
 
     /**
@@ -86,13 +86,13 @@ public class Arcanist {
      * @param out          출력 스트림
      * @return 결과 객체
      */
-    public static Result manaBullet(int stat, int condensation, boolean annihilator, int precision, PrintStream out) {
+    public static Result manaBullet(int stat, int condensation, boolean annihilator, int precision, int level, PrintStream out) {
         out.println("마도사-마력탄 사용");
 
-        return basicAttack(stat, condensation, 5, 4, annihilator, 2, 0, precision, out);
+        return basicAttack(stat, condensation, 5, 4, annihilator, 2, 0, precision, level, out);
     }
 
-    private static Result basicAttack(int stat, int condensation, int dices, int sides, boolean annihilator, int mana, int cast, int precision, PrintStream out) {
+    private static Result basicAttack(int stat, int condensation, int dices, int sides, boolean annihilator, int mana, int cast, int precision, int level, PrintStream out) {
         int verdict = Main.verdict(stat, out);
 
         if (annihilator) mana *= 2;
@@ -130,6 +130,8 @@ public class Arcanist {
         baseDamage += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
         baseDamage = Main.criticalHit(precision, baseDamage, out);
+        baseDamage = (int) (baseDamage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double) level * level), baseDamage);
         out.printf("최종 데미지 : %d%n", baseDamage);
 
         //마도학 패시브
@@ -155,7 +157,7 @@ public class Arcanist {
      * @param out         출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, boolean annihilator, int precision, PrintStream out) {
+    public static Result plain(int stat, boolean annihilator, int precision, int level, PrintStream out) {
         out.println("마도사-기본공격 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -177,6 +179,8 @@ public class Arcanist {
         baseDamage += sideDamage;
         out.printf("데미지 보정치 : %d%n", sideDamage);
         baseDamage = Main.criticalHit(precision, baseDamage, out);
+        baseDamage = (int) (baseDamage * Main.levelMultiplier(level));
+        out.printf("레벨 보정 (레벨 %d): %.0f%% 적용 → %d%n", level, (100.0 + (double) level * level), baseDamage);
         out.printf("최종 데미지 : %d%n", baseDamage);
 
         return new Result(baseDamage, 0, true, 0, 0);
