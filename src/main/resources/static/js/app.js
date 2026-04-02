@@ -197,15 +197,16 @@ async function calculateRogue(skill) {
     const dexterity = parseInt(document.getElementById('rogue-dexterity').value) || 10;
     const swiftness = parseInt(document.getElementById('rogue-swiftness').value) || 10;
     const useTwoDice = document.getElementById('rogue-useTwoDice').checked;
+    const level = parseInt(document.getElementById('rogue-level').value) || 1;
     
     let body;
     
     if (skill === 'plain') {
-        body = { stat, useTwoDice };
+        body = { stat, useTwoDice, level };
     } else if (skill === 'stab') {
-        body = { stat };
+        body = { stat, level };
     } else if (skill === 'throw') {
-        body = { dexterity, swiftness };
+        body = { dexterity, swiftness, level };
     }
     
     try {
