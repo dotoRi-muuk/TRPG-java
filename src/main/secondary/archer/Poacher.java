@@ -13,6 +13,16 @@ import java.io.PrintStream;
 public class Poacher {
 
     /**
+     * 레벨 배율 적용: [100 + level^2]%
+     */
+    private static int applyLevelMultiplier(int damage, int level, PrintStream out) {
+        int multiplier = 100 + level * level;
+        int levelDamage = damage * multiplier / 100;
+        out.printf("레벨 배율 적용 (레벨 %d, %d%%) : %d -> %d%n", level, multiplier, damage, levelDamage);
+        return levelDamage;
+    }
+
+    /**
      * 덫 깔기 : 적이 공격 시도 시 판정을 시행합니다. 판정 성공 시 3D10의 데미지를 입힙니다.
      *
      * @param stat                 사용할 스탯
@@ -21,10 +31,12 @@ public class Poacher {
      * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +3)
      * @param contemptForTheWeak   약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 300%)
      * @param overwhelm            압도 스킬 적용 여부 (데미지 500%)
+     * @param precision            정밀 스탯
+     * @param level                레벨 (최종 데미지 배율 적용)
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result setTrap(int stat, int damageTaken, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, PrintStream out) {
+    public static Result setTrap(int stat, int damageTaken, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, int level, PrintStream out) {
         int staminaChange = 3;
 
         out.println("밀렵꾼-덫 깔기 사용");
@@ -64,6 +76,7 @@ public class Poacher {
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
+        finalDamage = applyLevelMultiplier(finalDamage, level, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         out.println("Defense Disabled");
         return new Result(damageTaken, finalDamage, true, 0, staminaChange);
@@ -77,10 +90,12 @@ public class Poacher {
      * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +3)
      * @param contemptForTheWeak   약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 300%)
      * @param overwhelm            압도 스킬 적용 여부 (데미지 500%)
+     * @param precision            정밀 스탯
+     * @param level                레벨 (최종 데미지 배율 적용)
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result headSmash(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, PrintStream out) {
+    public static Result headSmash(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, int level, PrintStream out) {
         int staminaChange = 1;
 
         out.println("밀렵꾼-머리찍기 사용");
@@ -120,6 +135,7 @@ public class Poacher {
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
+        finalDamage = applyLevelMultiplier(finalDamage, level, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         return new Result(0, finalDamage, true, 0, staminaChange);
     }
@@ -132,10 +148,12 @@ public class Poacher {
      * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +3)
      * @param contemptForTheWeak   약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 300%)
      * @param overwhelm            압도 스킬 적용 여부 (데미지 500%)
+     * @param precision            정밀 스탯
+     * @param level                레벨 (최종 데미지 배율 적용)
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result snareShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, PrintStream out) {
+    public static Result snareShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, int level, PrintStream out) {
         int staminaChange = 8;
 
         out.println("밀렵꾼-올가미 탄 사용");
@@ -175,6 +193,7 @@ public class Poacher {
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
+        finalDamage = applyLevelMultiplier(finalDamage, level, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         out.println("적에게 행동 불가 부여 (다음 턴까지)");
         return new Result(0, finalDamage, true, 0, staminaChange);
@@ -188,10 +207,12 @@ public class Poacher {
      * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +3)
      * @param contemptForTheWeak   약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 300%)
      * @param overwhelm            압도 스킬 적용 여부 (데미지 500%)
+     * @param precision            정밀 스탯
+     * @param level                레벨 (최종 데미지 배율 적용)
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result headShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, PrintStream out) {
+    public static Result headShot(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, int level, PrintStream out) {
         int staminaChange = 4;
 
         out.println("밀렵꾼-헤드샷 사용");
@@ -231,6 +252,7 @@ public class Poacher {
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
+        finalDamage = applyLevelMultiplier(finalDamage, level, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         return new Result(0, finalDamage, true, 0, staminaChange);
     }
@@ -244,10 +266,12 @@ public class Poacher {
      * @param contemptForTheWeak   약자멸시 스킬 ((자신 체력% - 적 체력%) >= 10% 시 데미지 300%)
      * @param overwhelm            압도 스킬 (데미지 500%)
      * @param reload               장전 기술 (다음 턴 데미지 4D4->4D6, 4D8->4D12)
+     * @param precision            정밀 스탯
+     * @param level                레벨 (최종 데미지 배율 적용)
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, boolean reload, int precision, PrintStream out) {
+    public static Result plain(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, boolean reload, int precision, int level, PrintStream out) {
         int staminaChange = 0;
 
         out.println("밀렵꾼-기본공격 사용");
@@ -308,6 +332,7 @@ public class Poacher {
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
+        finalDamage = applyLevelMultiplier(finalDamage, level, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         return new Result(0, finalDamage, true, 0, staminaChange);
     }
@@ -333,10 +358,12 @@ public class Poacher {
      * @param survivalOfTheFittest 약육강식 패시브 적용 여부 (자신 체력% > 적 체력% 시 스탯 +3)
      * @param contemptForTheWeak   약자멸시 스킬 적용 여부 ((자신 체력% - 적 체력%) >= 10% 시 데미지 300%)
      * @param overwhelm            압도 스킬 적용 여부 (데미지 500%)
+     * @param precision            정밀 스탯
+     * @param level                레벨 (최종 데미지 배율 적용)
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result landmine(int stat, int damageTaken, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, PrintStream out) {
+    public static Result landmine(int stat, int damageTaken, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, int precision, int level, PrintStream out) {
         out.println("밀렵꾼-지뢰 사용");
 
         int effectiveStat = stat;
@@ -374,6 +401,7 @@ public class Poacher {
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
+        finalDamage = applyLevelMultiplier(finalDamage, level, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         return new Result(damageTaken, finalDamage, true, 6, 0);
     }

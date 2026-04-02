@@ -13,6 +13,16 @@ import java.io.PrintStream;
 public class MasterArcher {
 
     /**
+     * 레벨 배율 적용: [100 + level^2]%
+     */
+    private static int applyLevelMultiplier(int damage, int level, PrintStream out) {
+        int multiplier = 100 + level * level;
+        int levelDamage = damage * multiplier / 100;
+        out.printf("레벨 배율 적용 (레벨 %d, %d%%) : %d -> %d%n", level, multiplier, damage, levelDamage);
+        return levelDamage;
+    }
+
+    /**
      * 기본공격 : 대상에게 1D6의 데미지를 입힙니다.
      * <p>
      * 데미지 계산식: [(기본 데미지) x (100 + 데미지)%] x (최종 데미지)% x (주사위 보정)
@@ -28,8 +38,9 @@ public class MasterArcher {
      * @param cracking 흐름 깨기 스킬 활성화 여부 (데미지 +300%)
      * @param stageTurn 무대 스킬 지속 턴 (최종 데미지 턴당 x70% 증가, 최대 +500%.
      *                  데미지를 입히지 못하면 해제되며 다음 턴까지 행동불능. 마나 5 소모, 쿨타임 10턴)
+     * @param level 레벨 (최종 데미지 배율 적용)
      */
-    public static Result plain(int stat, boolean isHeavyString, boolean isFirstTarget, boolean isEmergency, MasterArcherPassive ability, boolean preyEnabled, int arrowOverheatCount, boolean calm, boolean cracking, int stageTurn, int precision, PrintStream out) {
+    public static Result plain(int stat, boolean isHeavyString, boolean isFirstTarget, boolean isEmergency, MasterArcherPassive ability, boolean preyEnabled, int arrowOverheatCount, boolean calm, boolean cracking, int stageTurn, int precision, int level, PrintStream out) {
 
         if (isEmergency && isHeavyString) {
             out.println("긴급 사격과 무거운 시위는 동시에 사용할 수 없습니다!");
@@ -176,6 +187,7 @@ public class MasterArcher {
             out.printf("추가 사이드 데미지: %d%n", sideDamage);
             int totalDamage = damageAfterPassives + sideDamage;
             totalDamage = Main.criticalHit(precision, totalDamage, out);
+            totalDamage = applyLevelMultiplier(totalDamage, level, out);
             out.printf("총 데미지 : %d%n", totalDamage);
             damageDealt += totalDamage;
         }

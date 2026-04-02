@@ -15,6 +15,16 @@ import java.io.PrintStream;
 public class Sniper {
 
     /**
+     * 레벨 배율 적용: [100 + level^2]%
+     */
+    private static int applyLevelMultiplier(int damage, int level, PrintStream out) {
+        int multiplier = 100 + level * level;
+        int levelDamage = damage * multiplier / 100;
+        out.printf("레벨 배율 적용 (레벨 %d, %d%%) : %d -> %d%n", level, multiplier, damage, levelDamage);
+        return levelDamage;
+    }
+
+    /**
      * 데미지 계산 공식 적용
      * [(기본 데미지) x (100 + 데미지)%] x (최종 데미지)% x (주사위 보정)
      *
@@ -34,6 +44,7 @@ public class Sniper {
      * @param heightenedSenses 신경 극대화 스킬 적용 여부 (데미지 +1000%)
      * @param numBuffs         추가 외부 버프 수 (정조준 패시브에 반영)
      * @param precision        정밀 스탯
+     * @param level            레벨 (최종 데미지 배율 적용)
      * @param staminaUsed      소모 스태미나
      * @param out              출력 스트림
      * @return 결과 객체
@@ -42,7 +53,7 @@ public class Sniper {
                                     boolean secure, boolean assemble, boolean load, boolean aim,
                                     boolean sureHit, boolean stabilize,
                                     boolean immersion, boolean conviction, boolean heightenedSenses,
-                                    int numBuffs, int precision, int staminaUsed, PrintStream out, int diceRoll) {
+                                    int numBuffs, int precision, int level, int staminaUsed, PrintStream out, int diceRoll) {
         // 정조준: 버프 스킬 1개당 데미지 +50%
         int buffCount = numBuffs;
         if (secure) buffCount++;
@@ -112,6 +123,7 @@ public class Sniper {
         out.printf("데미지 보정치 : %d\n", sideDmg);
 
         damage = Main.criticalHit(precision, damage, out);
+        damage = applyLevelMultiplier(damage, level, out);
         out.printf("최종 데미지 : %d\n", damage);
 
         if (aim) {
@@ -137,12 +149,13 @@ public class Sniper {
      * @param heightenedSenses 신경 극대화 스킬 적용 여부 (데미지 +1000%)
      * @param numBuffs         추가 외부 버프 수 (정조준 패시브에 반영)
      * @param precision        정밀 스탯
+     * @param level            레벨 (최종 데미지 배율 적용)
      * @param out              출력 스트림
      * @return 결과 객체
      */
     public static Result plain(int stat, boolean vitalAim, boolean secure, boolean assemble, boolean load, boolean aim,
                                boolean sureHit, boolean stabilize, boolean immersion,
-                               boolean conviction, boolean heightenedSenses, int numBuffs, int precision, PrintStream out) {
+                               boolean conviction, boolean heightenedSenses, int numBuffs, int precision, int level, PrintStream out) {
         out.println("저격수-기본공격 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -156,7 +169,7 @@ public class Sniper {
         }
 
         return calculate(1, 6, stat, vitalAim, false, secure, assemble, load, aim,
-                sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, 0, out, diceRoll);
+                sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, level, 0, out, diceRoll);
     }
 
     /**
@@ -176,12 +189,13 @@ public class Sniper {
      * @param heightenedSenses 신경 극대화 스킬 적용 여부 (데미지 +1000%)
      * @param numBuffs         추가 외부 버프 수 (정조준 패시브에 반영)
      * @param precision        정밀 스탯
+     * @param level            레벨 (최종 데미지 배율 적용)
      * @param out              출력 스트림
      * @return 결과 객체
      */
     public static Result fire(int stat, boolean vitalAim, boolean deathBullet, boolean secure, boolean assemble,
                               boolean load, boolean aim, boolean sureHit, boolean stabilize, boolean immersion,
-                              boolean conviction, boolean heightenedSenses, int numBuffs, int precision, PrintStream out) {
+                              boolean conviction, boolean heightenedSenses, int numBuffs, int precision, int level, PrintStream out) {
         out.println("저격수-발사 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -196,6 +210,6 @@ public class Sniper {
 
         out.println("발사 스킬 적용: 5D20 데미지");
         return calculate(5, 20, stat, vitalAim, deathBullet, secure, assemble, load, aim,
-                sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, 10, out, diceRoll);
+                sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, level, 10, out, diceRoll);
     }
 }
