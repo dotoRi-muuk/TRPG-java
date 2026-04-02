@@ -160,16 +160,19 @@ async function calculateArcher(skill) {
     const strength = parseInt(document.getElementById('archer-strength').value) || 10;
     const dexterity = parseInt(document.getElementById('archer-dexterity').value) || 10;
     const consecutiveHits = parseInt(document.getElementById('archer-consecutiveHits').value) || 1;
+    const level = parseInt(document.getElementById('archer-level').value) || 1;
     
     let body;
     let endpoint = skill;
     
     if (skill === 'plain' || skill === 'dash' || skill === 'quickshot') {
-        body = { stat };
+        body = { stat, level };
     } else if (skill === 'plain-dual' || skill === 'dash-dual') {
-        body = { strength, dexterity };
+        body = { strength, dexterity, level };
     } else if (skill === 'hunt') {
-        body = { stat, consecutiveHits };
+        body = { stat, consecutiveHits, level };
+    } else if (skill === 'hunt-dual') {
+        body = { strength, dexterity, consecutiveHits, level };
     }
     
     try {
@@ -914,7 +917,8 @@ function getSkillName(job, skill) {
             'quickshot': '퀵샷',
             'dash': '대쉬 (단일)',
             'dash-dual': '대쉬 (동시)',
-            'hunt': '사냥감'
+            'hunt': '사냥감 (단일)',
+            'hunt-dual': '사냥감 (동시)'
         },
         rogue: {
             'plain': '기본공격',

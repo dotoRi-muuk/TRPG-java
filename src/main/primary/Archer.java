@@ -11,19 +11,20 @@ public class Archer {
      * 명사수 패시브: 자신과 상대의 수비효과 발동 X (게임 로직에서 처리)
      * 기본 공격이 원거리로 적용 (게임 로직에서 처리)
      */
-    public static int plain(int stat, int precision, PrintStream out) {
+    public static int plain(int stat, int precision, int level, PrintStream out) {
         out.println("궁수-기본공격 사용 (단일 스탯, D4)");
         int defaultDamage = Main.dice(1, 4, out);
         int sideDamage = Main.sideDamage(defaultDamage, stat, out);
         int totalDamage = defaultDamage + sideDamage;
         out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, totalDamage);
-        return Main.criticalHit(precision, totalDamage, out);
+        int criticalDamage = Main.criticalHit(precision, totalDamage, out);
+        return applyLevelMultiplier(criticalDamage, level, out);
     }
 
     /**
      * 궁수 기본공격 - 명사수 패시브 적용 (힘과 민첩 동시 사용, D6)
      */
-    public static int plain(int strength, int dexterity, int precision, PrintStream out) {
+    public static int plain(int strength, int dexterity, int precision, int level, PrintStream out) {
         out.println("궁수-기본공격 사용 (힘과 민첩 동시 사용, D6)");
         int defaultDamage = Main.dice(1, 6, out);
         // 두 스탯 중 더 높은 값으로 사이드 데미지 계산
@@ -31,14 +32,15 @@ public class Archer {
         int sideDamage = Main.sideDamage(defaultDamage, higherStat, out);
         int totalDamage = defaultDamage + sideDamage;
         out.printf("총 데미지 : %d + %d = %d%n", defaultDamage, sideDamage, totalDamage);
-        return Main.criticalHit(precision, totalDamage, out);
+        int criticalDamage = Main.criticalHit(precision, totalDamage, out);
+        return applyLevelMultiplier(criticalDamage, level, out);
     }
 
     /**
      * 퀵샷 기술
      * 기본 공격 3회(D4로 고정), 주사위당 데미지-1 (최소 1)
      */
-    public static int quickShot(int stat, int precision, PrintStream out) {
+    public static int quickShot(int stat, int precision, int level, PrintStream out) {
         out.println("궁수-퀵샷 사용");
         int baseDamage = 0;
 
@@ -52,14 +54,15 @@ public class Archer {
         int sideDamage = Main.sideDamage(baseDamage, stat, out);
         int totalDamage = baseDamage + sideDamage;
         out.printf("총 데미지 : %d + %d = %d%n", baseDamage, sideDamage, totalDamage);
-        return Main.criticalHit(precision, totalDamage, out);
+        int criticalDamage = Main.criticalHit(precision, totalDamage, out);
+        return applyLevelMultiplier(criticalDamage, level, out);
     }
 
     /**
      * 대쉬 기술 - 단일 스탯 사용 (D4 * 1.5)
      * 명사수 1번 효과(수비 무시) 제거는 게임 로직에서 처리
      */
-    public static int dash(int stat, int precision, PrintStream out) {
+    public static int dash(int stat, int precision, int level, PrintStream out) {
         out.println("궁수-대쉬 사용 (단일 스탯, D4)");
         out.println("※ 명사수 패시브 1번 효과(수비 무시)가 이번 턴 제거됨");
         int defaultDamage = Main.dice(1, 4, out);
@@ -68,14 +71,15 @@ public class Archer {
         int sideDamage = Main.sideDamage(boostedDamage, stat, out);
         int totalDamage = boostedDamage + sideDamage;
         out.printf("총 데미지 : %d + %d = %d%n", boostedDamage, sideDamage, totalDamage);
-        return Main.criticalHit(precision, totalDamage, out);
+        int criticalDamage = Main.criticalHit(precision, totalDamage, out);
+        return applyLevelMultiplier(criticalDamage, level, out);
     }
 
     /**
      * 대쉬 기술 - 힘과 민첩 동시 사용 (D6 * 1.5)
      * 명사수 1번 효과(수비 무시) 제거는 게임 로직에서 처리
      */
-    public static int dash(int strength, int dexterity, int precision, PrintStream out) {
+    public static int dash(int strength, int dexterity, int precision, int level, PrintStream out) {
         out.println("궁수-대쉬 사용 (힘과 민첩 동시 사용, D6)");
         out.println("※ 명사수 패시브 1번 효과(수비 무시)가 이번 턴 제거됨");
         int defaultDamage = Main.dice(1, 6, out);
@@ -85,7 +89,8 @@ public class Archer {
         int sideDamage = Main.sideDamage(boostedDamage, higherStat, out);
         int totalDamage = boostedDamage + sideDamage;
         out.printf("총 데미지 : %d + %d = %d%n", boostedDamage, sideDamage, totalDamage);
-        return Main.criticalHit(precision, totalDamage, out);
+        int criticalDamage = Main.criticalHit(precision, totalDamage, out);
+        return applyLevelMultiplier(criticalDamage, level, out);
     }
 
     /**
@@ -93,7 +98,7 @@ public class Archer {
      * 연속 공격 횟수에 따라 데미지 배율 증가
      * 1회: 100% / 2-3회: 125% / 4-6회: 150% / 7회 이상: 200%
      */
-    public static int hunt(int stat, int consecutiveHits, int precision, PrintStream out) {
+    public static int hunt(int stat, int consecutiveHits, int precision, int level, PrintStream out) {
         out.println("궁수-사냥감 스킬 사용 (단일 스탯, D4)");
         out.printf("연속 공격 횟수: %d회%n", consecutiveHits);
 
@@ -109,7 +114,8 @@ public class Archer {
         int totalDamage = damageAfterMultiplier + sideDamage;
 
         out.printf("최종 데미지: %d%n", totalDamage);
-        return Main.criticalHit(precision, totalDamage, out);
+        int criticalDamage = Main.criticalHit(precision, totalDamage, out);
+        return applyLevelMultiplier(criticalDamage, level, out);
     }
 
     /**
@@ -117,7 +123,7 @@ public class Archer {
      * 연속 공격 횟수에 따라 데미지 배율 증가
      * 1회: 100% / 2-3회: 125% / 4-6회: 150% / 7회 이상: 200%
      */
-    public static int hunt(int strength, int dexterity, int consecutiveHits, int precision, PrintStream out) {
+    public static int hunt(int strength, int dexterity, int consecutiveHits, int precision, int level, PrintStream out) {
         out.println("궁수-사냥감 스킬 사용 (힘과 민첩 동시 사용, D6)");
         out.printf("연속 공격 횟수: %d회%n", consecutiveHits);
 
@@ -134,7 +140,18 @@ public class Archer {
         int totalDamage = damageAfterMultiplier + sideDamage;
 
         out.printf("최종 데미지: %d%n", totalDamage);
-        return Main.criticalHit(precision, totalDamage, out);
+        int criticalDamage = Main.criticalHit(precision, totalDamage, out);
+        return applyLevelMultiplier(criticalDamage, level, out);
+    }
+
+    /**
+     * 레벨 배율 적용: [100 + level^2]%
+     */
+    private static int applyLevelMultiplier(int damage, int level, PrintStream out) {
+        int multiplier = 100 + level * level;
+        int levelDamage = damage * multiplier / 100;
+        out.printf("레벨 배율 적용 (레벨 %d, %d%%) : %d -> %d%n", level, multiplier, damage, levelDamage);
+        return levelDamage;
     }
 
     /**
