@@ -56,6 +56,7 @@ class SpearMaster {
     fun plain(
         stat: Int,
         precision: Int,
+        level: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - 기본 공격 사용")
@@ -65,7 +66,8 @@ class SpearMaster {
         out.println("데미지 보정치 : $sideDamage")
         val totalDamage = damage + sideDamage
         out.println("최종 데미지 : $totalDamage")
-        val finalDamage = Main.criticalHit(precision, totalDamage, out)
+        val critDamage = Main.criticalHit(precision, totalDamage, out)
+        val finalDamage = applyLevelMultiplier(critDamage, level, out)
         return main.Result(0, finalDamage, false, 0, 0)
     }
 
@@ -90,10 +92,11 @@ class SpearMaster {
         splendorTurns: Int,
         isAccelerationActive: Boolean,
         linkSuccessCount: Int,
+        level: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - 돌려 찌르기 사용")
-        return normalAttack(stat, agi, 1, 8, false, false, 1, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, out)
+        return normalAttack(stat, agi, 1, 8, false, false, 1, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, level, out)
     }
 
     /**
@@ -117,11 +120,12 @@ class SpearMaster {
         splendorTurns: Int,
         isAccelerationActive: Boolean,
         linkSuccessCount: Int,
+        level: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - 회전 타격 사용")
         out.println("[연계] 획득")
-        return normalAttack(stat, agi, 1, 10, false, false, 2, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, out)
+        return normalAttack(stat, agi, 1, 10, false, false, 2, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, level, out)
     }
 
     /**
@@ -145,12 +149,13 @@ class SpearMaster {
         splendorTurns: Int,
         isAccelerationActive: Boolean,
         linkSuccessCount: Int,
+        level: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - 하단 베기 사용")
         out.println("상대에게 수비 불가 부여")
         out.println("[연계] 획득")
-        return normalAttack(stat, agi, 1, 6, false, false, 2, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, out)
+        return normalAttack(stat, agi, 1, 6, false, false, 2, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, level, out)
     }
 
     /**
@@ -176,10 +181,11 @@ class SpearMaster {
         splendorTurns: Int,
         isAccelerationActive: Boolean,
         linkSuccessCount: Int,
+        level: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - [연계] 정면 찌르기 사용")
-        return normalAttack(stat, agi, 2, 10, true, adaptation, 1, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, out)
+        return normalAttack(stat, agi, 2, 10, true, adaptation, 1, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, level, out)
     }
 
     /**
@@ -205,10 +211,11 @@ class SpearMaster {
         splendorTurns: Int,
         isAccelerationActive: Boolean,
         linkSuccessCount: Int,
+        level: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - [연계] 일섬창 사용")
-        return normalAttack(stat, agi, 4, 8, true, adaptation, 3, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, out)
+        return normalAttack(stat, agi, 4, 8, true, adaptation, 3, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, level, out)
     }
 
     /**
@@ -234,10 +241,11 @@ class SpearMaster {
         splendorTurns: Int,
         isAccelerationActive: Boolean,
         linkSuccessCount: Int,
+        level: Int,
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - [연계] 천뢰격 사용")
-        return normalAttack(stat, agi, 5, 12, true, adaptation, 5, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, out)
+        return normalAttack(stat, agi, 5, 12, true, adaptation, 5, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, level, out)
     }
 
     /**
@@ -320,6 +328,13 @@ class SpearMaster {
         return main.Result(0, 0, true, 10, 0)
     }
 
+    private fun applyLevelMultiplier(damage: Int, level: Int, out: java.io.PrintStream): Int {
+        val multiplier = 100 + level * level
+        val levelDamage = damage * multiplier / 100
+        out.printf("레벨 배율 적용 (레벨 %d, %d%%) : %d -> %d%n", level, multiplier, damage, levelDamage)
+        return levelDamage
+    }
+
     private fun normalAttack(
         stat: Int,
         agi: Int,
@@ -333,6 +348,7 @@ class SpearMaster {
         splendorTurns: Int,
         isAccelerationActive: Boolean,
         linkSuccessCount: Int,
+        level: Int,
         out: java.io.PrintStream
     ): main.Result {
         val effectiveStat = if (isAccelerationActive) {
@@ -367,7 +383,7 @@ class SpearMaster {
         out.println("빈틈 패시브 적용 시도!")
         if (combo && Main.verdict(effectiveAgi, out) > 0) {
             out.println("빈틈 패시브 적용: 민첩 판정 성공으로 추가 공격 가능")
-            val extraDamage = plain(effectiveStat, precision, out).damageDealt
+            val extraDamage = plain(effectiveStat, precision, level, out).damageDealt
             out.println("추가 공격 데미지 : $extraDamage")
             damage += extraDamage
         }
@@ -375,7 +391,8 @@ class SpearMaster {
         out.println("데미지 보정치 : $sideDamage")
         val totalDamage = damage + sideDamage
         out.println("최종 데미지 : $totalDamage")
-        val finalDamage = Main.criticalHit(precision, totalDamage, out)
+        val critDamage = Main.criticalHit(precision, totalDamage, out)
+        val finalDamage = applyLevelMultiplier(critDamage, level, out)
         return main.Result(0, finalDamage, true, 0, staminaCost)
     }
 }
