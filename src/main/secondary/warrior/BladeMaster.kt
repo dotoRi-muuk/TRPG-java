@@ -42,6 +42,7 @@ class BladeMaster {
         limitBreak: Boolean,
         moonHide: Boolean,
         precision: Int,
+        level: Int,
         out: PrintStream
     ): Result {
         out.println("무사 - 일섬 사용")
@@ -59,6 +60,7 @@ class BladeMaster {
             limitBreak,
             moonHide,
             precision,
+            level,
             out
         )
     }
@@ -88,6 +90,7 @@ class BladeMaster {
         limitBreak: Boolean,
         moonHide: Boolean,
         precision: Int,
+        level: Int,
         out: PrintStream
     ): Result {
         out.println("무사 - 난격 사용")
@@ -105,6 +108,7 @@ class BladeMaster {
             limitBreak,
             moonHide,
             precision,
+            level,
             out
         )
     }
@@ -121,6 +125,7 @@ class BladeMaster {
      * @param limitBreak 극한돌파 스킬 사용 여부 (데미지% 절반만큼 추가)
      * @param moonHide 월은 스킬 사용 여부 (데미지 100% 증가)
      * @param precision 정밀 스탯 (치명타 판정)
+     * @param level 레벨 (최종 데미지 배율 적용)
      * @param out 출력 스트림
      * @return 결과 객체
      */
@@ -134,6 +139,7 @@ class BladeMaster {
         limitBreak: Boolean,
         moonHide: Boolean,
         precision: Int,
+        level: Int,
         out: PrintStream
     ): Result {
         out.println("무사 - 섬격 사용")
@@ -151,6 +157,7 @@ class BladeMaster {
             limitBreak,
             moonHide,
             precision,
+            level,
             out
         )
     }
@@ -183,6 +190,7 @@ class BladeMaster {
         limitBreak: Boolean,
         moonHide: Boolean,
         precision: Int,
+        level: Int,
         out: PrintStream
     ): Result {
         out.println("무사 - 종점 사용")
@@ -254,8 +262,9 @@ class BladeMaster {
             Main.criticalHit(precision, preCritDamage, out)
         }
 
+        val finalDamage = applyLevelMultiplier(critDamage, level, out)
         out.println("종점 효과: 다음 턴 행동 불가, 다음다음 턴 공격 불가. 다음 2턴 동안 받는 데미지 50% 증가.")
-        return Result(0, critDamage, true, 0, 10)
+        return Result(0, finalDamage, true, 0, 10)
     }
 
     /**
@@ -284,6 +293,7 @@ class BladeMaster {
         limitBreak: Boolean,
         moonHide: Boolean,
         precision: Int,
+        level: Int,
         out: PrintStream
     ): Result {
         out.println("무사 - 개화 사용")
@@ -301,6 +311,7 @@ class BladeMaster {
             limitBreak,
             moonHide,
             precision,
+            level,
             out
         )
         if (result.succeeded()) {
@@ -446,6 +457,7 @@ class BladeMaster {
         limitBreak: Boolean,
         moonHide: Boolean,
         precision: Int,
+        level: Int,
         out: PrintStream
     ): Result {
         out.println("무사 - 기본 공격 사용")
@@ -463,8 +475,16 @@ class BladeMaster {
             limitBreak,
             moonHide,
             precision,
+            level,
             out
         )
+    }
+
+    private fun applyLevelMultiplier(damage: Int, level: Int, out: PrintStream): Int {
+        val multiplier = 100 + level * level
+        val levelDamage = damage * multiplier / 100
+        out.printf("레벨 배율 적용 (레벨 %d, %d%%) : %d -> %d%n", level, multiplier, damage, levelDamage)
+        return levelDamage
     }
 
     /**
@@ -483,6 +503,7 @@ class BladeMaster {
      * @param limitBreak 극한돌파 스킬 사용 여부 (데미지% 절반만큼 추가)
      * @param moonHide 월은 스킬 사용 여부 (데미지 100% 증가)
      * @param precision 정밀 스탯 (치명타 판정)
+     * @param level 레벨 (최종 데미지 배율 적용)
      * @param out 출력 스트림
      * @return 결과 객체
      */
@@ -500,6 +521,7 @@ class BladeMaster {
         limitBreak: Boolean,
         moonHide: Boolean,
         precision: Int,
+        level: Int,
         out: PrintStream
     ): Result {
         val verdict = Main.verdict(stat, out)
@@ -557,7 +579,7 @@ class BladeMaster {
         val preCritDamage = sideDamage + totalDamage
         out.println("최종 데미지 : $preCritDamage")
 
-        val finalDamage = if (despair) {
+        val critDamage = if (despair) {
             out.println("절명 적용 - 치명타 배율 2.5배로 증가")
             val critRoll = Main.dice(1, 20, out)
             if (precision >= critRoll) {
@@ -572,6 +594,7 @@ class BladeMaster {
             Main.criticalHit(precision, preCritDamage, out)
         }
 
+        val finalDamage = applyLevelMultiplier(critDamage, level, out)
         return Result(0, finalDamage, true, 0, stamina)
     }
 }

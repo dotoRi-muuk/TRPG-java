@@ -297,12 +297,13 @@ async function calculateSamurai(skill) {
     const maxHP = parseInt(document.getElementById('samurai-maxHP').value) || 100;
     const currentHP = parseInt(document.getElementById('samurai-currentHP').value) || 100;
     const consumedStamina = parseInt(document.getElementById('samurai-consumedStamina').value) || 0;
+    const level = parseInt(document.getElementById('samurai-level').value) || 1;
     const isMula = document.getElementById('samurai-isMula').checked;
     const kakugo = document.getElementById('samurai-kakugo').checked;
     const seishaKetsudan = document.getElementById('samurai-seishaKetsudan').checked;
     const scatteringSwordDance = document.getElementById('samurai-scatteringSwordDance').checked;
     
-    let body = { stat, isMula, kakugo, seishaKetsudan, currentHP, maxHP, scatteringSwordDance };
+    let body = { stat, isMula, kakugo, seishaKetsudan, currentHP, maxHP, scatteringSwordDance, level };
     
     if (skill === 'final-point') {
         body.consumedStamina = consumedStamina;
@@ -329,12 +330,13 @@ async function calculateBerserker(skill) {
     const stat = parseInt(document.getElementById('berserker-stat').value) || 10;
     const maxHealth = parseInt(document.getElementById('berserker-maxHealth').value) || 100;
     const currentHealth = parseInt(document.getElementById('berserker-currentHealth').value) || 100;
+    const level = parseInt(document.getElementById('berserker-level').value) || 1;
     
     try {
         const response = await fetch(`${API_BASE}/berserker/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat, maxHealth, currentHealth })
+            body: JSON.stringify({ stat, maxHealth, currentHealth, level })
         });
         
         const data = await response.json();
@@ -395,12 +397,13 @@ async function calculateAssassin(skill) {
 // Knight calculations
 async function calculateKnight(skill) {
     const stat = parseInt(document.getElementById('knight-stat').value) || 10;
+    const level = parseInt(document.getElementById('knight-level').value) || 1;
     
     try {
         const response = await fetch(`${API_BASE}/knight/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat })
+            body: JSON.stringify({ stat, level })
         });
         
         const data = await response.json();
@@ -574,6 +577,7 @@ async function calculateCrossbowman(skill) {
 // Spearman calculations
 async function calculateSpearman(skill) {
     const stat = parseInt(document.getElementById('spearman-stat').value) || 10;
+    const level = parseInt(document.getElementById('spearman-level').value) || 1;
     const isAdaptationActive = document.getElementById('spearman-isAdaptationActive').checked;
     const isSplendorActive = document.getElementById('spearman-isSplendorActive').checked;
     const splendorTurns = parseInt(document.getElementById('spearman-splendorTurns').value) || 0;
@@ -584,7 +588,7 @@ async function calculateSpearman(skill) {
         const response = await fetch(`${API_BASE}/spearman/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat, isAdaptationActive, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount })
+            body: JSON.stringify({ stat, isAdaptationActive, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, level })
         });
         
         const data = await response.json();

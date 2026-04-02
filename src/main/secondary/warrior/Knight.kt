@@ -20,9 +20,9 @@ class Knight {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    fun plain(stat: Int, blessing: Boolean, precision: Int, out: PrintStream): Result {
+    fun plain(stat: Int, blessing: Boolean, precision: Int, level: Int, out: PrintStream): Result {
         out.println("기사 - 기본 공격 사용")
-        return normalAttack(stat, blessing, 0, 1, 6, precision, out)
+        return normalAttack(stat, blessing, 0, 1, 6, precision, level, out)
     }
 
     /**
@@ -34,9 +34,9 @@ class Knight {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    fun downwardStrike(stat: Int, blessing: Boolean, precision: Int, out: PrintStream): Result {
+    fun downwardStrike(stat: Int, blessing: Boolean, precision: Int, level: Int, out: PrintStream): Result {
         out.println("기사 - 내려치기 사용")
-        return normalAttack(stat, blessing, 1, 1, 8, precision, out)
+        return normalAttack(stat, blessing, 1, 1, 8, precision, level, out)
     }
 
     /**
@@ -48,9 +48,9 @@ class Knight {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    fun bash(stat: Int, blessing: Boolean, precision: Int, out: PrintStream): Result {
+    fun bash(stat: Int, blessing: Boolean, precision: Int, level: Int, out: PrintStream): Result {
         out.println("기사 - 후려치기 사용")
-        return normalAttack(stat, blessing, 1, 2, 4, precision, out)
+        return normalAttack(stat, blessing, 1, 2, 4, precision, level, out)
     }
 
     /**
@@ -62,9 +62,9 @@ class Knight {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    fun headStrike(stat: Int, blessing: Boolean, precision: Int, out: PrintStream): Result {
+    fun headStrike(stat: Int, blessing: Boolean, precision: Int, level: Int, out: PrintStream): Result {
         out.println("기사 - 머리치기 사용")
-        return normalAttack(stat, blessing, 8, 1, 6, precision, out)
+        return normalAttack(stat, blessing, 8, 1, 6, precision, level, out)
     }
 
     /**
@@ -76,9 +76,9 @@ class Knight {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    fun defenseBreak(stat: Int, blessing: Boolean, precision: Int, out: PrintStream): Result {
+    fun defenseBreak(stat: Int, blessing: Boolean, precision: Int, level: Int, out: PrintStream): Result {
         out.println("기사 - 수비파괴 사용")
-        return normalAttack(stat, blessing, 5, 1, 6, precision, out)
+        return normalAttack(stat, blessing, 5, 1, 6, precision, level, out)
     }
 
     /**
@@ -90,9 +90,9 @@ class Knight {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    fun stun(stat: Int, blessing: Boolean, precision: Int, out: PrintStream): Result {
+    fun stun(stat: Int, blessing: Boolean, precision: Int, level: Int, out: PrintStream): Result {
         out.println("기사 - 기절시키기 사용")
-        return normalAttack(stat, blessing, 10, 1, 8, precision, out)
+        return normalAttack(stat, blessing, 10, 1, 8, precision, level, out)
     }
 
     /**
@@ -104,9 +104,16 @@ class Knight {
      * @param out 출력 스트림
      * @return 결과 객체
      */
-    fun strike(stat: Int, blessing: Boolean, precision: Int, out: PrintStream): Result {
+    fun strike(stat: Int, blessing: Boolean, precision: Int, level: Int, out: PrintStream): Result {
         out.println("기사 - 일격 사용")
-        return normalAttack(stat, blessing, 6, 3, 12, precision, out)
+        return normalAttack(stat, blessing, 6, 3, 12, precision, level, out)
+    }
+
+    private fun applyLevelMultiplier(damage: Int, level: Int, out: PrintStream): Int {
+        val multiplier = 100 + level * level
+        val levelDamage = damage * multiplier / 100
+        out.printf("레벨 배율 적용 (레벨 %d, %d%%) : %d -> %d%n", level, multiplier, damage, levelDamage)
+        return levelDamage
     }
 
     private fun normalAttack(
@@ -116,6 +123,7 @@ class Knight {
         dices: Int,
         sides: Int,
         precision: Int,
+        level: Int,
         out: PrintStream
     ): Result {
         val verdict = verdict(stat, out)
@@ -135,7 +143,8 @@ class Knight {
         out.println("데미지 보정치: $sideDamage")
         val totalDamage = sideDamage + baseDamage
         out.println("최종 데미지: $totalDamage")
-        val finalDamage = Main.criticalHit(precision, totalDamage, out)
+        val critDamage = Main.criticalHit(precision, totalDamage, out)
+        val finalDamage = applyLevelMultiplier(critDamage, level, out)
         return Result(0, finalDamage, true, 0, stamina)
 
 
