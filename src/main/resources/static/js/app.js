@@ -79,7 +79,8 @@ function selectJob(job, event) {
         'darkpriest': '🌑 어둠의 사제',
         'lightningpriest': '⚡ 번개의 사제',
         'soulpriest': '👻 영혼의 사제',
-        'timepriest': '⏰ 시간의 사제'
+        'timepriest': '⏰ 시간의 사제',
+        'dicejob': '🎲 주사위'
     };
     document.getElementById('selected-job-title').textContent = jobNames[job] + ' 기술';
     
@@ -884,6 +885,28 @@ async function calculateTimePriest(skill) {
     }
 }
 
+// DiceJob calculations
+async function calculateDiceJob() {
+    const stat = parseInt(document.getElementById('dicejob-stat').value) || 10;
+    const dices = parseInt(document.getElementById('dicejob-dices').value) || 1;
+    const sides = parseInt(document.getElementById('dicejob-sides').value) || 6;
+
+    try {
+        const response = await fetch(`${API_BASE}/dicejob/roll`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ stat, dices, sides })
+        });
+
+        const data = await response.json();
+        showDamageResult(data.damage, `🎲 주사위 - ${dices}D${sides} 판정`);
+        addLog(`🎲 주사위 - ${dices}D${sides} 판정 (스탯: ${stat})`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
 // Show damage result
 function showDamageResult(damage, label) {
     document.getElementById('damageResult').innerHTML = `
@@ -1137,6 +1160,9 @@ function getSkillName(job, skill) {
         timepriest: {
             'plain': '기본공격',
             'corrosion': '부식'
+        },
+        dicejob: {
+            'roll': '판정 시도'
         }
     };
     
