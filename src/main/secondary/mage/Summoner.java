@@ -4,6 +4,7 @@ import main.Main;
 import main.Result;
 
 import java.io.PrintStream;
+import java.util.Random;
 
 /**
  * 소환술사
@@ -36,9 +37,13 @@ import java.io.PrintStream;
  *   <li>생명력 공유: 소환 가능한 소환수의 체력을 일정량 감소시키고 현재 소환된 소환수의 체력을 회복시킵니다. (소환패 1개 소모, 쿨타임 5턴)</li>
  *   <li>영혼 귀환: 3턴 동안 이전에 사망한 소환수를 다시 소환할 수 있습니다. (마나 10 소모, 쿨타임 15턴)</li>
  *   <li>원호 방어 (전용 신속): 지능 또는 지혜 판정을 진행합니다. 성공 시, 자신이나 아군이 받을 공격을 소환수가 대신 맞게 할 수 있습니다.</li>
+ *   <li>소환수: 현재 소환된 소환수가 스킬을 사용합니다. 기본적으로 소환수가 가진 스킬 중 하나를 랜덤하게 선택합니다.
+ *       지휘자 스킬 사용 후에는 플레이어가 직접 소환수가 사용할 스킬을 선택할 수 있습니다.</li>
  * </ul>
  */
 public class Summoner {
+
+    private static final Random RANDOM = new Random();
 
     // ─────────────────────────────────────────────────────────────────────────
     // 기본 공격 / 기술
@@ -184,6 +189,77 @@ public class Summoner {
         out.println("소환수가 사용할 스킬을 선택합니다.");
         out.println("마나 5 소모, 쿨타임 5턴");
         return new Result(0, 0, true, 5, 0);
+    }
+
+    /**
+     * 지휘자 : 소환수가 사용할 스킬을 선택할 수 있습니다.
+     * 소환수의 사용 가능한 스킬 목록을 출력합니다.
+     * (마나 5 소모, 쿨타임 5턴)
+     *
+     * @param minionType 현재 소환된 소환수 종류
+     * @param out        출력 스트림
+     * @return 결과 객체 (마나 5 소모)
+     */
+    public static Result commander(SummonerMinion.MinionType minionType, PrintStream out) {
+        out.println("소환술사-지휘자 사용");
+        out.printf("[%s] 사용 가능한 스킬 목록:%n", minionType.getKorName());
+        String[] skills = SummonerMinion.getSkillNames(minionType);
+        for (int i = 0; i < skills.length; i++) {
+            out.printf("  [%d] %s%n", i + 1, skills[i]);
+        }
+        out.println("소환수가 사용할 스킬 번호를 선택하세요.");
+        out.println("마나 5 소모, 쿨타임 5턴");
+        return new Result(0, 0, true, 5, 0);
+    }
+
+    /**
+     * 소환수 : 현재 소환된 소환수가 스킬을 랜덤하게 선택하여 사용합니다.
+     * (기본 동작 - 지휘자 스킬 미사용 시)
+     *
+     * @param minionType  현재 소환된 소환수 종류
+     * @param stat        소환수 판정 스탯
+     * @param damageBonus 데미지 증가 % (덧셈 보정)
+     * @param finalMult   최종 데미지 배율 (곱셈 보정)
+     * @param precision   정밀 스탯
+     * @param out         출력 스트림
+     * @return 결과 객체
+     */
+    public static Result minionAction(SummonerMinion.MinionType minionType, int stat, int damageBonus,
+                                      double finalMult, int precision, PrintStream out) {
+        out.printf("[소환수 행동] %s가 스킬을 랜덤하게 선택합니다.%n", minionType.getKorName());
+        String[] skillNames = SummonerMinion.getSkillNames(minionType);
+        int randomIndex = RANDOM.nextInt(skillNames.length);
+        out.printf("선택된 스킬: %s%n", skillNames[randomIndex]);
+        return SummonerMinion.useSkill(minionType, randomIndex, stat, damageBonus, finalMult, precision, out);
+    }
+
+    /**
+     * 소환수 (지휘자 활성화 시) : 현재 소환된 소환수가 플레이어가 선택한 스킬을 사용합니다.
+     * 지휘자 스킬 사용 후 호출하며, 플레이어가 지정한 스킬 인덱스로 소환수가 행동합니다.
+     *
+     * @param minionType         현재 소환된 소환수 종류
+     * @param selectedSkillIndex 플레이어가 선택한 스킬 인덱스 (1부터 시작,
+     *                           {@link SummonerMinion#getSkillNames(SummonerMinion.MinionType)} 의 순서 기준)
+     * @param stat               소환수 판정 스탯
+     * @param damageBonus        데미지 증가 % (덧셈 보정)
+     * @param finalMult          최종 데미지 배율 (곱셈 보정)
+     * @param precision          정밀 스탯
+     * @param out                출력 스트림
+     * @return 결과 객체
+     */
+    public static Result minionAction(SummonerMinion.MinionType minionType, int selectedSkillIndex,
+                                      int stat, int damageBonus, double finalMult, int precision,
+                                      PrintStream out) {
+        out.printf("[소환수 행동] %s가 지휘자 지시에 따라 스킬을 사용합니다.%n", minionType.getKorName());
+        String[] skillNames = SummonerMinion.getSkillNames(minionType);
+        int index = selectedSkillIndex - 1;
+        if (index < 0 || index >= skillNames.length) {
+            out.printf("유효하지 않은 스킬 번호: %d (1~%d 사이여야 합니다)%n",
+                    selectedSkillIndex, skillNames.length);
+            return new Result(0, 0, false, 0, 0);
+        }
+        out.printf("선택된 스킬: %s%n", skillNames[index]);
+        return SummonerMinion.useSkill(minionType, index, stat, damageBonus, finalMult, precision, out);
     }
 
     /**
