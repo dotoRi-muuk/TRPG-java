@@ -45,6 +45,11 @@ public class Summoner {
 
     private static final Random RANDOM = new Random();
 
+    /** 소환수 행동 시 기본 판정 스탯 */
+    private static final int DEFAULT_MINION_STAT = 10;
+    /** 소환수 행동 시 기본 정밀 스탯 */
+    private static final int DEFAULT_MINION_PRECISION = 0;
+
     // ─────────────────────────────────────────────────────────────────────────
     // 기본 공격 / 기술
     // ─────────────────────────────────────────────────────────────────────────
@@ -213,53 +218,35 @@ public class Summoner {
     }
 
     /**
-     * 소환수 : 현재 소환된 소환수가 스킬을 랜덤하게 선택하여 사용합니다.
-     * (기본 동작 - 지휘자 스킬 미사용 시)
-     *
-     * @param minionType  현재 소환된 소환수 종류
-     * @param stat        소환수 판정 스탯
-     * @param damageBonus 데미지 증가 % (덧셈 보정)
-     * @param finalMult   최종 데미지 배율 (곱셈 보정)
-     * @param precision   정밀 스탯
-     * @param out         출력 스트림
-     * @return 결과 객체
-     */
-    public static Result minionAction(SummonerMinion.MinionType minionType, int stat, int damageBonus,
-                                      double finalMult, int precision, PrintStream out) {
-        out.printf("[소환수 행동] %s가 스킬을 랜덤하게 선택합니다.%n", minionType.getKorName());
-        String[] skillNames = SummonerMinion.getSkillNames(minionType);
-        int randomIndex = RANDOM.nextInt(skillNames.length);
-        out.printf("선택된 스킬: %s%n", skillNames[randomIndex]);
-        return SummonerMinion.useSkill(minionType, randomIndex, stat, damageBonus, finalMult, precision, out);
-    }
-
-    /**
-     * 소환수 (지휘자 활성화 시) : 현재 소환된 소환수가 플레이어가 선택한 스킬을 사용합니다.
-     * 지휘자 스킬 사용 후 호출하며, 플레이어가 지정한 스킬 인덱스로 소환수가 행동합니다.
+     * 소환수 : 현재 소환된 소환수가 스킬을 사용합니다.
+     * selectedSkillIndex가 0이면 랜덤하게 스킬을 선택하고,
+     * 1 이상이면 해당 번호의 스킬을 사용합니다.
      *
      * @param minionType         현재 소환된 소환수 종류
-     * @param selectedSkillIndex 플레이어가 선택한 스킬 인덱스 (1부터 시작,
-     *                           {@link SummonerMinion#getSkillNames(SummonerMinion.MinionType)} 의 순서 기준)
-     * @param stat               소환수 판정 스탯
+     * @param selectedSkillIndex 사용할 스킬 번호 (0=랜덤, 1부터 시작)
      * @param damageBonus        데미지 증가 % (덧셈 보정)
      * @param finalMult          최종 데미지 배율 (곱셈 보정)
-     * @param precision          정밀 스탯
      * @param out                출력 스트림
      * @return 결과 객체
      */
     public static Result minionAction(SummonerMinion.MinionType minionType, int selectedSkillIndex,
-                                      int stat, int damageBonus, double finalMult, int precision,
-                                      PrintStream out) {
-        out.printf("[소환수 행동] %s가 지휘자 지시에 따라 스킬을 사용합니다.%n", minionType.getKorName());
+                                      int damageBonus, double finalMult, PrintStream out) {
         String[] skillNames = SummonerMinion.getSkillNames(minionType);
-        int index = selectedSkillIndex - 1;
-        if (index < 0 || index >= skillNames.length) {
-            out.printf("유효하지 않은 스킬 번호: %d (1~%d 사이여야 합니다)%n",
-                    selectedSkillIndex, skillNames.length);
-            return new Result(0, 0, false, 0, 0);
+        int index;
+        if (selectedSkillIndex == 0) {
+            out.printf("[소환수 행동] %s가 스킬을 랜덤하게 선택합니다.%n", minionType.getKorName());
+            index = RANDOM.nextInt(skillNames.length);
+        } else {
+            out.printf("[소환수 행동] %s가 스킬을 사용합니다.%n", minionType.getKorName());
+            index = selectedSkillIndex - 1;
+            if (index < 0 || index >= skillNames.length) {
+                out.printf("유효하지 않은 스킬 번호: %d (1~%d 사이여야 합니다)%n",
+                        selectedSkillIndex, skillNames.length);
+                return new Result(0, 0, false, 0, 0);
+            }
         }
         out.printf("선택된 스킬: %s%n", skillNames[index]);
-        return SummonerMinion.useSkill(minionType, index, stat, damageBonus, finalMult, precision, out);
+        return SummonerMinion.useSkill(minionType, index, DEFAULT_MINION_STAT, damageBonus, finalMult, DEFAULT_MINION_PRECISION, out);
     }
 
     /**

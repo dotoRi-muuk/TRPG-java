@@ -510,6 +510,30 @@
         }
 
         function getEnumOptions(enumName) {
+            // Handle MinionType enum (summoner minion types)
+            if (enumName === 'MinionType') {
+                return [
+                    { value: 'KOBLIN', label: '코볼린' },
+                    { value: 'RORUM', label: '로룸' },
+                    { value: 'MUMRU', label: '무므르' },
+                    { value: 'SHADERLIN', label: '샤데린' },
+                    { value: 'PAGRION', label: '파그리온' },
+                    { value: 'RUVELIN', label: '루벨린' },
+                    { value: 'GOLEM_KNIGHT', label: '골렘 나이트' },
+                    { value: 'BASILOS', label: '바실로스' },
+                    { value: 'TENBRAKS', label: '텐브락스' },
+                    { value: 'EREVLION', label: '에레블리온' },
+                    { value: 'MORDRAKE', label: '모르드라크' },
+                    { value: 'KELPROS', label: '켈프로스' },
+                    { value: 'CHAOPOLIS', label: '카오폴리스' },
+                    { value: 'RAGNAROK', label: '라그나로크' },
+                    { value: 'CERBERUS', label: '케르베로스' },
+                    { value: 'DEATHBARK', label: '데스바크' },
+                    { value: 'MONOSLASHER', label: '모노슬래셔' },
+                    { value: 'KARNAITZ', label: '카르나이츠' },
+                    { value: 'LUIN', label: '루인' }
+                ];
+            }
             // Handle MasterArcherPassive enum
             if (enumName === 'MasterArcherPassive') {
                 return [
