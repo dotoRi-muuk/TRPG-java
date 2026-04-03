@@ -26,6 +26,12 @@ public class SkillService {
     // Secondary classes (subclasses) mapped to their primary class
     private static final Map<String, List<SubclassInfo>> SECONDARY_CLASSES = new LinkedHashMap<>();
 
+    // Skills blocked from selection for the Summoner class
+    private static final Set<String> SUMMONER_BLOCKED_SKILLS = Set.of(
+            "summon", "waitSkill", "commander", "summonAmplify",
+            "lifeShare", "soulReturn", "calculateBondBonus", "calculateSummonCards"
+    );
+
     static {
         // Initialize primary classes with Korean names
         PRIMARY_CLASSES.put("궁수", "archer");
@@ -115,14 +121,23 @@ public class SkillService {
         SubclassInfo classInfo = findSubclassInfo(subclassName);
         if (classInfo == null) return Collections.emptyList();
 
+        // Skills blocked from selection for the Summoner class
         try {
             Class<?> clazz = Class.forName(classInfo.className);
             List<SkillInfo> skills = new ArrayList<>();
+            Set<String> seenMethodNames = new HashSet<>();
 
             for (Method method : clazz.getDeclaredMethods()) {
                 // Only include public methods
                 if (!Modifier.isPublic(method.getModifiers())) continue;
-                
+
+                // Skip blocked skills for Summoner
+                if ("main.secondary.mage.Summoner".equals(classInfo.className)
+                        && SUMMONER_BLOCKED_SKILLS.contains(method.getName())) continue;
+
+                // Skip duplicate method names (overloads already handled)
+                if (seenMethodNames.contains(method.getName())) continue;
+
                 // Skip methods without PrintStream parameter (not skill methods)
                 boolean hasPrintStream = false;
                 for (Parameter param : method.getParameters()) {
@@ -132,6 +147,8 @@ public class SkillService {
                     }
                 }
                 if (!hasPrintStream) continue;
+
+                seenMethodNames.add(method.getName());
 
                 // Build skill info
                 SkillInfo skill = new SkillInfo();
@@ -327,6 +344,11 @@ public class SkillService {
             case "etherealImperio" -> "에테리얼 임페리오";
             case "fistOfObedience" -> "말을 잘 듣게 하는 주먹";
             case "fistBeatingSummon" -> "소환수를 이기는 주먹";
+            case "bloodSacrifice" -> "천혈";
+            case "desummon" -> "소환해제";
+            case "minionAction" -> "소환수 행동";
+            case "bondTie" -> "결속의 끈";
+            case "supportDefense" -> "원호 방어";
             case "heavensDoor" -> "헤븐즈 도어";
             case "prayer" -> "기도";
             case "invocation" -> "기원";
@@ -505,6 +527,16 @@ public class SkillService {
             case "limitBreak" -> "극한돌파 여부";
             case "moonHide" -> "월은 여부";
             case "precision" -> "정밀 스탯";
+            case "minionType" -> "소환수 종류";
+            case "selectedSkillIndex" -> "스킬 번호 (0=랜덤)";
+            case "damageBonus" -> "데미지 증가 %";
+            case "finalMult" -> "최종 데미지 배율";
+            case "minionCurrentHp" -> "소환수 현재 체력";
+            case "minionMaxHp" -> "소환수 최대 체력";
+            case "wisdomStat" -> "지혜 스탯";
+            case "minionSummonedTurnsAgo" -> "소환 후 경과 턴";
+            case "intStat" -> "지능 스탯";
+            case "useWisdom" -> "지혜로 판정";
             case "blessing" -> "축복 여부";
             case "agi" -> "민첩";
             case "adaptation" -> "적응 여부";
