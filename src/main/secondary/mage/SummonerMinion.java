@@ -25,6 +25,41 @@ import java.io.PrintStream;
 public class SummonerMinion {
 
     /**
+     * 소환수 종류
+     */
+    public enum MinionType {
+        KOBLIN("코볼린"),
+        RORUM("로룸"),
+        MUMRU("무므르"),
+        SHADERLIN("샤데린"),
+        PAGRION("파그리온"),
+        RUVELIN("루벨린"),
+        GOLEM_KNIGHT("골렘 나이트"),
+        BASILOS("바실로스"),
+        TENBRAKS("텐브락스"),
+        EREVLION("에레블리온"),
+        MORDRAKE("모르드라크"),
+        KELPROS("켈프로스"),
+        CHAOPOLIS("카오폴리스"),
+        RAGNAROK("라그나로크"),
+        CERBERUS("케로베로스"),
+        DEATHBARK("데스바크"),
+        MONOSLASHER("모노슬래셔"),
+        KARNAITZ("카르나이츠"),
+        LUIN("루인");
+
+        private final String korName;
+
+        MinionType(String korName) {
+            this.korName = korName;
+        }
+
+        public String getKorName() {
+            return korName;
+        }
+    }
+
+    /**
      * 소환수 등급
      */
     public enum Rank {
@@ -1653,6 +1688,215 @@ public class SummonerMinion {
             return applyDamage(baseDamage, damageBonus, finalMult, stat, "죽음(200D200)", precision, out, diceRoll);
         }
         return new Result(0, 0, true, 0, 0);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // 소환수 스킬 목록 및 실행
+    // ═══════════════════════════════════════════════════════════════
+
+    /**
+     * 소환수 종류별 스킬 이름 목록을 반환합니다.
+     *
+     * @param minionType 소환수 종류
+     * @return 스킬 이름 배열 (인덱스 순서)
+     */
+    public static String[] getSkillNames(MinionType minionType) {
+        return switch (minionType) {
+            case KOBLIN       -> new String[]{"돌맹이 투척", "허약한 반격", "작은 방패"};
+            case RORUM        -> new String[]{"균형 타격", "보호의 기류", "단단한 몸"};
+            case MUMRU        -> new String[]{"음침한 노크", "미약한 흡기", "사소한 방해"};
+            case SHADERLIN    -> new String[]{"그림자 연속참", "추적흔적", "어둠의 걸음"};
+            case PAGRION      -> new String[]{"파편 탄성", "파편 연쇄", "파편 폭발"};
+            case RUVELIN      -> new String[]{"이중 할퀴기", "야수의 위협", "돌진 분쇄"};
+            case GOLEM_KNIGHT -> new String[]{"강철 망치 강타", "급속 파편 분출", "고체 압축", "과부화 충격"};
+            case BASILOS      -> new String[]{"맹독 절단", "석화 충격", "굴절 참격", "왕의 권위"};
+            case TENBRAKS     -> new String[]{"어둠 암살", "절멸하는 중력", "심연의 파열", "흑염 개방"};
+            case EREVLION     -> new String[]{"침식일섬", "암흑흡혈", "심야속의 포효", "심연과의 계약"};
+            case MORDRAKE     -> new String[]{"분해흉참", "저주의 숨결", "파열 행진", "흉조 방출"};
+            case KELPROS      -> new String[]{"불안정한 참극", "균열 분출", "파편 동요", "조율 파멸"};
+            case CHAOPOLIS    -> new String[]{"혼돈 충돌", "압파", "난폭진동", "혼돈 벼락", "파멸 폭발", "혼돈의 진조"};
+            case RAGNAROK     -> new String[]{"멸망참격", "종말의 폭발", "파멸의 굉음", "붕괴 폭주", "라그나로크", "멸망의 존재"};
+            case CERBERUS     -> new String[]{"삼두절단", "지옥의 포효", "연속돌진", "심문", "물고 찢고 절단하기", "지옥의 파수꾼"};
+            case DEATHBARK    -> new String[]{"부식갈퀴", "사령흡수", "암흑확산", "영혼찢기", "망령울음", "죽음의 울림"};
+            case MONOSLASHER  -> new String[]{"단독연참", "고속섬경", "그림자이탈", "일도난무", "절단돌파", "고독의 여정"};
+            case KARNAITZ     -> new String[]{"절단폭풍", "고속회전참", "칼날진격", "살육연무", "회전단층파", "소멸의 칼날"};
+            case LUIN         -> new String[]{"죽음의 저주", "죽음의 저주 추가 피해", "영혼의 군주", "침잠하는 영혼", "소멸", "혼돈", "파멸", "침식", "죽음"};
+        };
+    }
+
+    /**
+     * 소환수의 지정된 스킬을 실행합니다.
+     * <p>
+     * 특수 조건이 필요한 스킬(예: 어둠 암살, 심문 등)은 기본값으로 처리됩니다.
+     *
+     * @param minionType  소환수 종류
+     * @param skillIndex  실행할 스킬 인덱스 (0부터 시작, {@link #getSkillNames(MinionType)} 순서 기준)
+     * @param stat        소환수 판정 스탯
+     * @param damageBonus 데미지 증가 % (덧셈 보정)
+     * @param finalMult   최종 데미지 배율 (곱셈 보정)
+     * @param precision   정밀 스탯
+     * @param out         출력 스트림
+     * @return 결과 객체
+     */
+    public static Result useSkill(MinionType minionType, int skillIndex, int stat, int damageBonus,
+                                  double finalMult, int precision, PrintStream out) {
+        String[] skills = getSkillNames(minionType);
+        if (skillIndex < 0 || skillIndex >= skills.length) {
+            out.printf("[%s] 유효하지 않은 스킬 인덱스: %d%n", minionType.getKorName(), skillIndex);
+            return new Result(0, 0, false, 0, 0);
+        }
+        return switch (minionType) {
+            case KOBLIN -> switch (skillIndex) {
+                case 0 -> koblinStoneThrow(stat, damageBonus, finalMult, precision, out);
+                case 1 -> koblinWeakCounterattack(stat, damageBonus, finalMult, precision, out);
+                case 2 -> koblinSmallShield(out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+            case RORUM -> switch (skillIndex) {
+                case 0 -> rorumBalancedStrike(stat, damageBonus, finalMult, precision, out);
+                case 1 -> rorumProtectiveAura(out);
+                case 2 -> rorumSturdyBody(out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+            case MUMRU -> switch (skillIndex) {
+                case 0 -> mumruSinisterKnock(stat, damageBonus, finalMult, precision, out);
+                case 1 -> mumruWeakAbsorption(out);
+                case 2 -> mumruMinorDisruption(out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+            case SHADERLIN -> switch (skillIndex) {
+                case 0 -> shaderlinShadowSlash(stat, damageBonus, finalMult, precision, out);
+                case 1 -> shaderlinTrackingMark(out);
+                case 2 -> shaderlinDarkStep(out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+            case PAGRION -> switch (skillIndex) {
+                case 0 -> pagrionFragmentBounce(stat, damageBonus, finalMult, precision, out);
+                case 1 -> pagrionFragmentChain(stat, damageBonus, finalMult, precision, out);
+                case 2 -> pagrionFragmentExplosion(stat, damageBonus, finalMult, precision, out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+            case RUVELIN -> switch (skillIndex) {
+                case 0 -> ruvelinDoubleSlash(stat, damageBonus, finalMult, precision, out);
+                case 1 -> ruvelinBeastThreat(out);
+                case 2 -> ruvelinRushCrush(stat, damageBonus, finalMult, precision, out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+            case GOLEM_KNIGHT -> switch (skillIndex) {
+                case 0 -> golemKnightHammerStrike(stat, damageBonus, finalMult, precision, out);
+                case 1 -> golemKnightRapidFragmentBurst(stat, damageBonus, finalMult, precision, out);
+                case 2 -> golemKnightSolidCompression(out);
+                case 3 -> golemKnightOverloadShock(out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+            case BASILOS -> switch (skillIndex) {
+                case 0 -> basilosPoisonCut(stat, damageBonus, finalMult, precision, out);
+                case 1 -> basilosPetrifyShock(stat, damageBonus, finalMult, precision, out);
+                case 2 -> basilosRefractSlash(stat, damageBonus, finalMult, precision, out);
+                case 3 -> basilosKinglyAuthority(out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+            case TENBRAKS -> switch (skillIndex) {
+                // 어둠 암살: didNotAttackLastTurn=true 로 처리
+                case 0 -> tenbraksDarkAssassinate(stat, damageBonus, finalMult, true, precision, out);
+                case 1 -> tenbraksCrushingGravity(stat, damageBonus, finalMult, precision, out);
+                case 2 -> tenbraksAbyssRupture(out);
+                case 3 -> tenbraksBlackFlameRelease(out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+            case EREVLION -> switch (skillIndex) {
+                case 0 -> erevlionErosionSlash(stat, damageBonus, finalMult, precision, out);
+                case 1 -> erevlionDarkBloodSuck(stat, damageBonus, finalMult, precision, out);
+                case 2 -> erevlionMidnightRoar(out);
+                case 3 -> erevlionAbyssContract(out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+            case MORDRAKE -> switch (skillIndex) {
+                case 0 -> mordrakeDecomposeSlash(stat, damageBonus, finalMult, precision, out);
+                case 1 -> mordrakeCurseBreath(stat, damageBonus, finalMult, precision, out);
+                case 2 -> mordrakeRuptureMarch(stat, damageBonus, finalMult, precision, out);
+                case 3 -> mordrakeOmenRelease(stat, damageBonus, finalMult, precision, out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+            case KELPROS -> switch (skillIndex) {
+                case 0 -> kelprosUnstableMassacre(stat, damageBonus, finalMult, precision, out);
+                case 1 -> kelprosFissureBlast(stat, damageBonus, finalMult, precision, out);
+                case 2 -> kelprosFragmentAgitation(out);
+                case 3 -> kelprosHarmonyRuin(out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+            case CHAOPOLIS -> switch (skillIndex) {
+                case 0 -> chaopolisChaoticCollision(stat, damageBonus, finalMult, precision, out);
+                case 1 -> chaopolisWaveForce(stat, damageBonus, finalMult, precision, out);
+                case 2 -> chaopolisViolentVibration(stat, damageBonus, finalMult, precision, out);
+                case 3 -> chaopolisChaoticLightning(stat, damageBonus, finalMult, precision, out);
+                case 4 -> chaopolisRuinExplosion(stat, damageBonus, finalMult, precision, out);
+                case 5 -> chaopolisChaoticOmen(out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+            case RAGNAROK -> switch (skillIndex) {
+                case 0 -> ragnarokAnnihilationSlash(stat, damageBonus, finalMult, precision, out);
+                case 1 -> ragnarokDoomExplosion(stat, damageBonus, finalMult, precision, out);
+                case 2 -> ragnarokRuinRoar(stat, damageBonus, finalMult, precision, out);
+                case 3 -> ragnarokCollapseRunaway(out);
+                case 4 -> ragnarokUltimate(stat, damageBonus, finalMult, precision, out);
+                case 5 -> ragnarokExistenceOfRuin(out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+            case CERBERUS -> switch (skillIndex) {
+                case 0 -> cerberusTripleHeadSlash(stat, damageBonus, finalMult, precision, out);
+                case 1 -> cerberusHellRoar(out);
+                case 2 -> cerberusRapidCharge(stat, damageBonus, finalMult, precision, out);
+                // 심문: targetAttackedLastTurn=true 로 처리
+                case 3 -> cerberusInterrogation(true, out);
+                case 4 -> cerberusBiteTearCut(stat, damageBonus, finalMult, precision, out);
+                case 5 -> cerberusHellGuardian(out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+            case DEATHBARK -> switch (skillIndex) {
+                case 0 -> deathbarkCorrosiveClaw(stat, damageBonus, finalMult, precision, out);
+                case 1 -> deathbarkDeathAbsorb(stat, damageBonus, finalMult, precision, out);
+                case 2 -> deathbarkDarkSpread(out);
+                // 영혼찢기: lostHp=0 기본값
+                case 3 -> deathbarkSoulRend(stat, damageBonus, finalMult, 0, precision, out);
+                // 망령울음/죽음의 울림: deadUnitsInBattle=1 기본값
+                case 4 -> deathbarkWraithCry(1, out);
+                case 5 -> deathbarkDeathResonance(1, out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+            case MONOSLASHER -> switch (skillIndex) {
+                case 0 -> monoslasherSoloSlash(stat, damageBonus, finalMult, precision, out);
+                case 1 -> monoslasherHighSpeedFlash(stat, damageBonus, finalMult, precision, out);
+                case 2 -> monoslasherShadowEscape(out);
+                case 3 -> monoslasherSlashBarrage(stat, damageBonus, finalMult, precision, out);
+                case 4 -> monoslasherSlashBreakthrough(stat, damageBonus, finalMult, precision, out);
+                // 고독의 여정: maxHp=100 기본값
+                case 5 -> monoslasherSolitaryJourney(100, out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+            case KARNAITZ -> switch (skillIndex) {
+                case 0 -> karnaitzSlashStorm(stat, damageBonus, finalMult, precision, out);
+                case 1 -> karnaitzHighSpeedSpinSlash(stat, damageBonus, finalMult, precision, out);
+                case 2 -> karnaitzBladeCharge(stat, damageBonus, finalMult, precision, out);
+                case 3 -> karnaitzMassacreMist(stat, damageBonus, finalMult, precision, out);
+                case 4 -> karnaitzSpinFaultWave(stat, damageBonus, finalMult, precision, out);
+                case 5 -> karnaitzVanishingBlade(out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+            case LUIN -> switch (skillIndex) {
+                case 0 -> luinDeathCurse(out);
+                case 1 -> luinDeathCurseProc(stat, damageBonus, finalMult, precision, out);
+                case 2 -> luinSoulLord(out);
+                case 3 -> luinSubsidingSoul(out);
+                case 4 -> luinAnnihilation(stat, damageBonus, finalMult, precision, out);
+                case 5 -> luinChaos(stat, damageBonus, finalMult, precision, out);
+                case 6 -> luinRuin(stat, damageBonus, finalMult, precision, out);
+                case 7 -> luinErosion(stat, damageBonus, finalMult, precision, out);
+                // 죽음: targetHp=0 전달 (대상 HP가 3000 이하이므로 즉사 효과 발동 조건으로 처리)
+                case 8 -> luinDeath(stat, damageBonus, finalMult, 0, precision, out);
+                default -> new Result(0, 0, false, 0, 0);
+            };
+        };
     }
 
     // ═══════════════════════════════════════════════════════════════
