@@ -54,7 +54,7 @@ public class AlchemistController {
      * 융합 스킬 요청 본문 - 원소 목록 포함.
      */
     public static class FusionRequest extends AlchemistRequest {
-        /** 융합할 원소 이름 목록 (예: ["corrosion", "poison"]) */
+        /** 융합할 원소 이름 목록 (예: ["부식", "맹독"]) */
         public List<String> elements = new ArrayList<>();
     }
 
