@@ -13,7 +13,7 @@ import java.util.*;
  * 판정 사용 스탯 : 지능(지혜)
  * <p>
  * 데미지 공식: [(기본 데미지) x (100 + 데미지 증가)%] x (최종 데미지)% x (주사위 보정)
- * + 레벨 보너스 (100 + 레벨^2)
+ * x 레벨 보너스 (100 + 레벨^2)%
  */
 public class Alchemist {
 
@@ -47,17 +47,17 @@ public class Alchemist {
 
     /**
      * 공통 최종 데미지 계산 헬퍼.
-     * [(기본 데미지) x (100 + damageBonus)%] x (최종 데미지%)% x (주사위 보정) + 레벨 보너스
+     * [(기본 데미지) x (100 + damageBonus)%] x (최종 데미지%)% x (주사위 보정) x 레벨 보너스
      *
      * @param baseDamage        주사위로 굴린 기본 데미지
      * @param damageBonus       데미지 증가 (%) - 증폭 스택 + 외부 효과 합산
      * @param flasks            현재 플라스크 개수 (연성 패시브: 개당 25% 최종 데미지 증가)
      * @param fusionCount       속성 융합 성공 횟수 (변이 신체 패시브: 회당 20% 최종 데미지 증가)
      * @param externalFinalDmg  외부 최종 데미지 증가 (%)
-     * @param level             캐릭터 레벨 (레벨 보너스: 100 + 레벨^2)
+     * @param level             캐릭터 레벨 (레벨 보너스: (100 + 레벨^2)% 배율 적용)
      * @param verdict           판정 결과 (스탯 - D20 주사위값, 주사위 보정 계수에 사용)
      * @param out               출력 스트림
-     * @return 레벨 보너스 포함 최종 데미지
+     * @return 레벨 보너스 적용 최종 데미지
      */
     private static int computeFinalDamage(int baseDamage, int damageBonus,
                                            int flasks, int fusionCount, int externalFinalDmg,
@@ -77,10 +77,10 @@ public class Alchemist {
 
         int finalDamage = Main.calculateDamage(baseDamage, damageBonus, finalMultiplier, diceModifier, out);
 
-        // 레벨 보너스: 100 + 레벨^2
+        // 레벨 보너스: (100 + 레벨^2)% 배율 적용
         int levelBonus = 100 + level * level;
-        finalDamage += levelBonus;
-        out.printf("레벨 보너스 (+%d): 합계 %d%n", levelBonus, finalDamage);
+        finalDamage = (int) Math.round(finalDamage * levelBonus / 100.0);
+        out.printf("레벨 보너스 (%d%%): 합계 %d%n", levelBonus, finalDamage);
 
         return finalDamage;
     }
