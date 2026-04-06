@@ -762,17 +762,33 @@ async function calculateSummoner(skill) {
 }
 
 // Alchemist calculations
+function getAlchemistBody() {
+    return {
+        stat:                   parseInt(document.getElementById('alchemist-stat').value) || 10,
+        level:                  parseInt(document.getElementById('alchemist-level').value) || 1,
+        precision:              parseInt(document.getElementById('alchemist-precision').value) || 0,
+        flasks:                 parseInt(document.getElementById('alchemist-flasks').value) || 0,
+        fusionCount:            parseInt(document.getElementById('alchemist-fusionCount').value) || 0,
+        corrosionAmpBonus:      parseInt(document.getElementById('alchemist-corrosionAmp').value) || 0,
+        poisonAmpBonus:         parseInt(document.getElementById('alchemist-poisonAmp').value) || 0,
+        fireAmpBonus:           parseInt(document.getElementById('alchemist-fireAmp').value) || 0,
+        iceAmpBonus:            parseInt(document.getElementById('alchemist-iceAmp').value) || 0,
+        allAmpBonus:            parseInt(document.getElementById('alchemist-allAmp').value) || 0,
+        externalDmgIncrease:    parseInt(document.getElementById('alchemist-externalDmg').value) || 0,
+        externalFinalDmgIncrease: parseInt(document.getElementById('alchemist-externalFinalDmg').value) || 0
+    };
+}
+
 async function calculateAlchemist(skill) {
-    const intelligence = parseInt(document.getElementById('alchemist-intelligence').value) || 10;
-    const unknownPotions = parseInt(document.getElementById('alchemist-unknownPotions').value) || 5;
-    
+    const body = getAlchemistBody();
+
     try {
         const response = await fetch(`${API_BASE}/alchemist/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ intelligence, unknownPotions })
+            body: JSON.stringify(body)
         });
-        
+
         const data = await response.json();
         showDamageResult(data.damage, '연금술사 - ' + getSkillName('alchemist', skill));
         addLog(`⚗️ 연금술사 - ${getSkillName('alchemist', skill)}`, data.log);
@@ -781,6 +797,35 @@ async function calculateAlchemist(skill) {
         addLog('❌ 오류 발생: ' + error.message);
     }
 }
+
+async function calculateAlchemistFusion(skill, requiredCount) {
+    const selectorClass = skill === 'reaction' ? 'reaction-el' : 'chain-el';
+    const checked = Array.from(document.querySelectorAll(`#alchemist-skills .${selectorClass}:checked`));
+    const elements = checked.map(cb => cb.value);
+
+    if (elements.length !== requiredCount) {
+        alert(`정확히 ${requiredCount}가지 속성을 선택해 주세요. (현재 ${elements.length}가지 선택됨)`);
+        return;
+    }
+
+    const body = Object.assign(getAlchemistBody(), { elements });
+
+    try {
+        const response = await fetch(`${API_BASE}/alchemist/${skill}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+
+        const data = await response.json();
+        showDamageResult(data.damage, '연금술사 - ' + getSkillName('alchemist', skill));
+        addLog(`⚗️ 연금술사 - ${getSkillName('alchemist', skill)}`, data.log);
+    } catch (error) {
+        console.error('Error:', error);
+        addLog('❌ 오류 발생: ' + error.message);
+    }
+}
+
 
 // LightPriest calculations
 async function calculateLightPriest(skill) {
@@ -1116,12 +1161,15 @@ function getSkillName(job, skill) {
             'punch-to-obey': '말을 잘 듣게 하는 주먹'
         },
         alchemist: {
-            'plain': '기본공격',
-            'toxic-potion': '독성물약',
-            'explosive-potion': '폭발물약',
-            'healing-potion': '회복물약',
-            'hasty-preparation': '성급한 준비',
-            'perfect-preparation': '완벽한 준비'
+            'plain': '기본 공격',
+            'vitriolic-flask': '비트리올 플라스크',
+            'blight-flask': '블라이트 플라스크',
+            'ignis-flask': '이그니스 플라스크',
+            'absolute-flask': '앱솔루트 플라스크',
+            'arcane-flask': '아케인 플라스크',
+            'reaction': '리액션',
+            'chain-distortion': '체인 디스토션',
+            'matter-disaster': '매터 디재스티아'
         },
         lightpriest: {
             'plain': '기본공격',

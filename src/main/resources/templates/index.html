@@ -1161,23 +1161,110 @@
 
                 <!-- 연금술사 스킬 -->
                 <div id="alchemist-skills" class="skill-form" style="display: none;">
+                    <!-- ── 기본 스탯 ── -->
                     <div class="stat-inputs">
                         <div class="form-group">
-                            <label for="alchemist-intelligence">지능</label>
-                            <input type="number" id="alchemist-intelligence" value="10" min="1">
+                            <label for="alchemist-stat">지능</label>
+                            <input type="number" id="alchemist-stat" value="10" min="1">
                         </div>
                         <div class="form-group">
-                            <label for="alchemist-unknownPotions">미지의 물약 개수</label>
-                            <input type="number" id="alchemist-unknownPotions" value="5" min="0">
+                            <label for="alchemist-level">레벨</label>
+                            <input type="number" id="alchemist-level" value="1" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="alchemist-precision">정밀</label>
+                            <input type="number" id="alchemist-precision" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="alchemist-flasks">현재 플라스크 수</label>
+                            <input type="number" id="alchemist-flasks" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="alchemist-fusionCount">속성 융합 성공 횟수 (변이 신체)</label>
+                            <input type="number" id="alchemist-fusionCount" value="0" min="0">
                         </div>
                     </div>
+
+                    <!-- ── 증폭 스택 (데미지 증가%) ── -->
+                    <p class="note" style="font-size:0.85em;color:#555;margin:6px 0 2px;">
+                        ※ 융합 결과로 얻은 증폭 스택은 아래에 누적 %로 입력 (극속 부식 1회 = +100 등)
+                    </p>
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="alchemist-corrosionAmp">부식 계열 데미지 증가 (%)</label>
+                            <input type="number" id="alchemist-corrosionAmp" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="alchemist-poisonAmp">맹독 계열 데미지 증가 (%)</label>
+                            <input type="number" id="alchemist-poisonAmp" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="alchemist-fireAmp">화염 계열 데미지 증가 (%)</label>
+                            <input type="number" id="alchemist-fireAmp" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="alchemist-iceAmp">빙결 계열 데미지 증가 (%)</label>
+                            <input type="number" id="alchemist-iceAmp" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="alchemist-allAmp">전체 스킬 데미지 증가 (%)</label>
+                            <input type="number" id="alchemist-allAmp" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <!-- ── 외부 효과 ── -->
+                    <div class="stat-inputs">
+                        <div class="form-group">
+                            <label for="alchemist-externalDmg">외부 데미지 증가 (%)</label>
+                            <input type="number" id="alchemist-externalDmg" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="alchemist-externalFinalDmg">외부 최종 데미지 증가 (%)</label>
+                            <input type="number" id="alchemist-externalFinalDmg" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <!-- ── 일반 스킬 버튼 ── -->
                     <div class="skill-buttons">
-                        <button onclick="calculateAlchemist('plain')" class="btn btn-skill">기본공격 (D6)</button>
-                        <button onclick="calculateAlchemist('toxic-potion')" class="btn btn-skill">독성물약 (5D4)</button>
-                        <button onclick="calculateAlchemist('explosive-potion')" class="btn btn-skill">폭발물약 (5D6)</button>
-                        <button onclick="calculateAlchemist('healing-potion')" class="btn btn-skill">회복물약 (D10)</button>
-                        <button onclick="calculateAlchemist('hasty-preparation')" class="btn btn-skill">성급한 준비 (D8 물약)</button>
-                        <button onclick="calculateAlchemist('perfect-preparation')" class="btn btn-skill">완벽한 준비 (D20 물약)</button>
+                        <button onclick="calculateAlchemist('plain')" class="btn btn-skill">기본 공격 (1D6)</button>
+                        <button onclick="calculateAlchemist('vitriolic-flask')" class="btn btn-skill">비트리올 플라스크 (3D8 | 부식)</button>
+                        <button onclick="calculateAlchemist('blight-flask')" class="btn btn-skill">블라이트 플라스크 (6D4 | 맹독)</button>
+                        <button onclick="calculateAlchemist('ignis-flask')" class="btn btn-skill">이그니스 플라스크 (3D12 | 화염)</button>
+                        <button onclick="calculateAlchemist('absolute-flask')" class="btn btn-skill">앱솔루트 플라스크 (2D8 | 빙결)</button>
+                        <button onclick="calculateAlchemist('arcane-flask')" class="btn btn-skill">아케인 플라스크 (2D20 | 증폭)</button>
+                    </div>
+
+                    <!-- ── 리액션 (2가지 속성 선택) ── -->
+                    <div style="margin-top:12px;padding:10px;border:1px solid #ddd;border-radius:6px;">
+                        <h4 style="margin:0 0 6px;">🔬 리액션 - 속성 2가지 선택 (마나 3)</h4>
+                        <div id="reaction-elements" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+                            <label><input type="checkbox" class="reaction-el" value="corrosion"> 부식</label>
+                            <label><input type="checkbox" class="reaction-el" value="poison"> 맹독</label>
+                            <label><input type="checkbox" class="reaction-el" value="fire"> 화염</label>
+                            <label><input type="checkbox" class="reaction-el" value="ice"> 빙결</label>
+                            <label><input type="checkbox" class="reaction-el" value="amplify"> 증폭</label>
+                        </div>
+                        <button onclick="calculateAlchemistFusion('reaction', 2)" class="btn btn-skill">리액션 발동</button>
+                    </div>
+
+                    <!-- ── 체인 디스토션 (3가지 속성 선택) ── -->
+                    <div style="margin-top:10px;padding:10px;border:1px solid #ddd;border-radius:6px;">
+                        <h4 style="margin:0 0 6px;">⛓️ 체인 디스토션 - 속성 3가지 선택 (마나 4, 쿨타임 5턴)</h4>
+                        <div id="chain-elements" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+                            <label><input type="checkbox" class="chain-el" value="corrosion"> 부식</label>
+                            <label><input type="checkbox" class="chain-el" value="poison"> 맹독</label>
+                            <label><input type="checkbox" class="chain-el" value="fire"> 화염</label>
+                            <label><input type="checkbox" class="chain-el" value="ice"> 빙결</label>
+                            <label><input type="checkbox" class="chain-el" value="amplify"> 증폭</label>
+                        </div>
+                        <button onclick="calculateAlchemistFusion('chain-distortion', 3)" class="btn btn-skill">체인 디스토션 발동</button>
+                    </div>
+
+                    <!-- ── 매터 디재스티아 (5가지 속성 모두) ── -->
+                    <div style="margin-top:10px;padding:10px;border:1px solid #c0392b;border-radius:6px;">
+                        <h4 style="margin:0 0 4px;color:#c0392b;">💥 매터 디재스티아 - 오블리테라 맬리티아 (마나 6, 쿨타임 12턴)</h4>
+                        <p style="margin:0 0 6px;font-size:0.85em;color:#555;">부식+맹독+화염+빙결+증폭 모두 융합 → 10D6 + D200</p>
+                        <button onclick="calculateAlchemist('matter-disaster')" class="btn btn-skill" style="background:#c0392b;color:#fff;">매터 디재스티아 발동</button>
                     </div>
                 </div>
 
