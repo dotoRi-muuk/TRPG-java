@@ -830,15 +830,24 @@ async function calculateAlchemistFusion(skill, requiredCount) {
 // LightPriest calculations
 async function calculateLightPriest(skill) {
     const intelligence = parseInt(document.getElementById('lightpriest-intelligence').value) || 10;
+    const level = parseInt(document.getElementById('lightpriest-level').value) || 1;
+    const healBonus = parseInt(document.getElementById('lightpriest-healBonus').value) || 0;
+    const finalHealBonus = parseInt(document.getElementById('lightpriest-finalHealBonus').value) || 0;
+    const chantTurns = parseInt(document.getElementById('lightpriest-chantTurns').value) || 1;
+    const precision = parseInt(document.getElementById('lightpriest-precision').value) || 0;
     const hasAttacked = document.getElementById('lightpriest-hasAttacked').checked;
-    
+    const favoritism = document.getElementById('lightpriest-favoritism').checked;
+    const transfer = document.getElementById('lightpriest-transfer').checked;
+    const piety = document.getElementById('lightpriest-piety').checked;
+
     try {
         const response = await fetch(`${API_BASE}/lightpriest/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ intelligence, hasAttacked })
+            body: JSON.stringify({ intelligence, level, healBonus, finalHealBonus, chantTurns,
+                precision, hasAttacked, favoritism, transfer, piety })
         });
-        
+
         const data = await response.json();
         showDamageResult(data.damage, '빛의 사제 - ' + getSkillName('lightpriest', skill));
         addLog(`✨ 빛의 사제 - ${getSkillName('lightpriest', skill)}`, data.log);
@@ -1176,7 +1185,8 @@ function getSkillName(job, skill) {
             'heal': '힐',
             'healing-wind': '치유의 바람',
             'chalice-of-light': '빛의 성배',
-            'prayer': '기원',
+            'invocation': '기원',
+            'prayer': '기도',
             'heavens-door': '헤븐즈 도어'
         },
         darkpriest: {
