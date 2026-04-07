@@ -1275,10 +1275,48 @@
                             <label for="lightpriest-intelligence">지능</label>
                             <input type="number" id="lightpriest-intelligence" value="10" min="1">
                         </div>
+                        <div class="form-group">
+                            <label for="lightpriest-level">레벨</label>
+                            <input type="number" id="lightpriest-level" value="1" min="1" title="최종 회복량 기본 계수: (100 + 레벨²/2)%">
+                        </div>
+                        <div class="form-group">
+                            <label for="lightpriest-healBonus">회복량 증가 (%)</label>
+                            <input type="number" id="lightpriest-healBonus" value="0" title="직업 스킬 외 추가 회복량 증가(%)">
+                        </div>
+                        <div class="form-group">
+                            <label for="lightpriest-finalHealBonus">최종 회복량 증가 (%)</label>
+                            <input type="number" id="lightpriest-finalHealBonus" value="0" title="직업 스킬 외 추가 최종 회복량 증가(%)">
+                        </div>
+                        <div class="form-group">
+                            <label for="lightpriest-chantTurns">영창 턴수 (기도)</label>
+                            <input type="number" id="lightpriest-chantTurns" value="1" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="lightpriest-precision">정밀</label>
+                            <input type="number" id="lightpriest-precision" value="0" min="0">
+                        </div>
                         <div class="form-group checkbox-group">
                             <label>
                                 <input type="checkbox" id="lightpriest-hasAttacked">
                                 전투 내 공격 이력 (자비 해제)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="lightpriest-favoritism">
+                                편애 (회복량 +50%)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="lightpriest-transfer">
+                                양도 (회복량 +50%)
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="lightpriest-piety">
+                                신앙심 (회복량 +100%)
                             </label>
                         </div>
                     </div>
@@ -1287,7 +1325,8 @@
                         <button onclick="calculateLightPriest('heal')" class="btn btn-skill">힐 (D6)</button>
                         <button onclick="calculateLightPriest('healing-wind')" class="btn btn-skill">치유의 바람 (2D6)</button>
                         <button onclick="calculateLightPriest('chalice-of-light')" class="btn btn-skill">빛의 성배 (5D4)</button>
-                        <button onclick="calculateLightPriest('prayer')" class="btn btn-skill">기원 (5D8 보호막)</button>
+                        <button onclick="calculateLightPriest('invocation')" class="btn btn-skill">기원 (5D8 보호막)</button>
+                        <button onclick="calculateLightPriest('prayer')" class="btn btn-skill">기도 (영창 턴수 x D6)</button>
                         <button onclick="calculateLightPriest('heavens-door')" class="btn btn-skill">헤븐즈 도어 (4D10 부활)</button>
                     </div>
                 </div>
