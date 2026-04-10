@@ -1358,18 +1358,51 @@
                             <input type="number" id="lightningpriest-intelligence" value="10" min="1">
                         </div>
                         <div class="form-group">
-                            <label for="lightningpriest-n">일렉트릭 필드 영창 턴</label>
-                            <input type="number" id="lightningpriest-n" value="3" min="0" max="6">
+                            <label for="lightningpriest-level">레벨</label>
+                            <input type="number" id="lightningpriest-level" value="1" min="1" title="최종 데미지 기본 계수: (100 + 레벨²)%">
+                        </div>
+                        <div class="form-group">
+                            <label for="lightningpriest-damageBonus">데미지 증가 (%)</label>
+                            <input type="number" id="lightningpriest-damageBonus" value="0" title="직업 외 데미지 증가(%)">
+                        </div>
+                        <div class="form-group">
+                            <label for="lightningpriest-finalDamageBonus">최종 데미지 증가 (%)</label>
+                            <input type="number" id="lightningpriest-finalDamageBonus" value="0" title="직업 외 최종 데미지 증가(%)">
+                        </div>
+                        <div class="form-group">
+                            <label for="lightningpriest-chantTurns">일렉트릭 필드 영창 턴</label>
+                            <input type="number" id="lightningpriest-chantTurns" value="1" min="1" max="10">
+                        </div>
+                        <div class="form-group">
+                            <label for="lightningpriest-precision">정밀</label>
+                            <input type="number" id="lightningpriest-precision" value="0" min="0">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="lightningpriest-monopoly">
+                                독점 (아군 데미지 n% 증가를 본인 최종 데미지 n+100%로 변경)
+                            </label>
+                        </div>
+                        <div class="form-group" id="lightningpriest-monopolyAmount-group" style="display:none;">
+                            <label for="lightningpriest-monopolyAmount">독점 n 값 (%)</label>
+                            <input type="number" id="lightningpriest-monopolyAmount" value="0" min="0">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="lightningpriest-piety">
+                                신앙심 (아군 데미지 50% 증가)
+                            </label>
                         </div>
                     </div>
                     <div class="skill-buttons">
-                        <button onclick="calculateLightningPriest('plain')" class="btn btn-skill">기본공격 (D6)</button>
-                        <button onclick="calculateLightningPriest('spark')" class="btn btn-skill">스파크 (2D4)</button>
-                        <button onclick="calculateLightningPriest('chain-lightning-damage')" class="btn btn-skill">체인 라이트닝 공격 (2D6)</button>
-                        <button onclick="calculateLightningPriest('chain-lightning-shield')" class="btn btn-skill">체인 라이트닝 보호막 (2D4)</button>
-                        <button onclick="calculateLightningPriest('electric-field')" class="btn btn-skill">일렉트릭 필드</button>
-                        <button onclick="calculateLightningPriest('strike')" class="btn btn-skill">스트라이크 (2D8)</button>
-                        <button onclick="calculateLightningPriest('divine-lightning')" class="btn btn-skill">신뇌격 (3D20)</button>
+                        <button onclick="calculateLightningPriest('plain')" class="btn btn-skill">기본공격 (1D6)</button>
+                        <button onclick="calculateLightningPriest('spark')" class="btn btn-skill">스파크 (4D6, 마나 3)</button>
+                        <button onclick="calculateLightningPriest('chain-lightning-damage')" class="btn btn-skill">체인 라이트닝 공격 (4D8, 마나 5)</button>
+                        <button onclick="calculateLightningPriest('chain-lightning-shield')" class="btn btn-skill">체인 라이트닝 보호막 (2D4, 마나 5)</button>
+                        <button onclick="calculateLightningPriest('electric-field')" class="btn btn-skill">일렉트릭 필드 (영창 턴×D12, 마나 8)</button>
+                        <button onclick="calculateLightningPriest('strike')" class="btn btn-skill">스트라이크 (3D20, 마나 5)</button>
+                        <button onclick="calculateLightningPriest('elraister')" class="btn btn-skill">일레이스터 (아군 버프, 마나 5)</button>
+                        <button onclick="calculateLightningPriest('divine-lightning')" class="btn btn-skill">신뇌격 (4D20, 영창 2턴, 마나 4)</button>
                     </div>
                 </div>
 
