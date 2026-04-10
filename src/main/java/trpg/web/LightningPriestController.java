@@ -40,7 +40,7 @@ public class LightningPriestController {
         public int damageBonus;
         public int finalDamageBonus;
         public boolean monopoly;
-        public double monopolyAmount;
+        public int monopolyAmount;
         public boolean piety;
         public int precision;
         public int chantTurns;

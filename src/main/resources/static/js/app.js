@@ -1377,7 +1377,7 @@ document.addEventListener('DOMContentLoaded', () => {
         monopolyCheck.addEventListener('change', () => {
             const amountGroup = document.getElementById('lightningpriest-monopolyAmount-group');
             if (amountGroup) {
-                amountGroup.style.display = monopolyCheck.checked ? '' : 'none';
+                amountGroup.style.display = monopolyCheck.checked ? 'block' : 'none';
             }
         });
     }

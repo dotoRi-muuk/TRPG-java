@@ -67,7 +67,7 @@ public class LightningPriest {
      * @param out              출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, boolean monopoly, double monopolyAmount, boolean piety,
+    public static Result plain(int stat, boolean monopoly, int monopolyAmount, boolean piety,
                                int damageBonus, int finalDamageBonus, int level, int precision,
                                PrintStream out) {
         out.println("번개의 사제-기본공격 사용");
@@ -81,7 +81,7 @@ public class LightningPriest {
 
         int totalDamageBonus = damageBonus;
         if (monopoly) {
-            out.printf("독점 패시브 적용: 최종 데미지 %.1f%%로 증가%n", monopolyAmount + 100);
+            out.printf("독점 패시브 적용: 최종 데미지 %d%%로 증가%n", monopolyAmount + 100);
         }
         if (piety) {
             out.println("신앙심 스킬 적용: 아군 데미지 50% 증가");
@@ -89,7 +89,7 @@ public class LightningPriest {
         }
 
         int damage = applyDamageFormula(baseDamage, verdict, totalDamageBonus,
-                finalDamageBonus + (monopoly ? (int) monopolyAmount : 0), level, out);
+                finalDamageBonus + (monopoly ? monopolyAmount : 0), level, out);
         damage = Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d\n", damage);
         return new Result(0, damage, true, 0, 0, Map.of());
@@ -109,7 +109,7 @@ public class LightningPriest {
      * @param out              출력 스트림
      * @return 결과 객체
      */
-    public static Result spark(int stat, boolean monopoly, double monopolyAmount, boolean piety,
+    public static Result spark(int stat, boolean monopoly, int monopolyAmount, boolean piety,
                                int damageBonus, int finalDamageBonus, int level, int precision,
                                PrintStream out) {
         out.println("스파크 사용");
@@ -122,7 +122,7 @@ public class LightningPriest {
 
         int totalDamageBonus = damageBonus;
         if (monopoly) {
-            out.printf("독점 패시브 적용: 최종 데미지 %.1f%%로 증가%n", monopolyAmount + 100);
+            out.printf("독점 패시브 적용: 최종 데미지 %d%%로 증가%n", monopolyAmount + 100);
         }
         if (piety) {
             out.println("신앙심 스킬 적용: 아군 데미지 50% 증가");
@@ -130,7 +130,7 @@ public class LightningPriest {
         }
 
         int damage = applyDamageFormula(baseDamage, verdict, totalDamageBonus,
-                finalDamageBonus + (monopoly ? (int) monopolyAmount : 0), level, out);
+                finalDamageBonus + (monopoly ? monopolyAmount : 0), level, out);
         damage = Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d\n", damage);
         return new Result(0, damage, true, 3, 0, Map.of());
@@ -150,7 +150,7 @@ public class LightningPriest {
      * @param out              출력 스트림
      * @return 결과 객체 (적 피해 반환)
      */
-    public static Result chainLightning(int stat, boolean monopoly, double monopolyAmount, boolean piety,
+    public static Result chainLightning(int stat, boolean monopoly, int monopolyAmount, boolean piety,
                                         int damageBonus, int finalDamageBonus, int level, int precision,
                                         PrintStream out) {
         out.println("체인 라이트닝 사용 (최대 3명 대상)");
@@ -164,7 +164,7 @@ public class LightningPriest {
 
         int totalDamageBonus = damageBonus;
         if (monopoly) {
-            out.printf("독점 패시브 적용: 최종 데미지 %.1f%%로 증가%n", monopolyAmount + 100);
+            out.printf("독점 패시브 적용: 최종 데미지 %d%%로 증가%n", monopolyAmount + 100);
         }
         if (piety) {
             out.println("신앙심 스킬 적용: 아군 데미지 50% 증가");
@@ -172,7 +172,7 @@ public class LightningPriest {
         }
 
         int damage = applyDamageFormula(baseDamage, verdict, totalDamageBonus,
-                finalDamageBonus + (monopoly ? (int) monopolyAmount : 0), level, out);
+                finalDamageBonus + (monopoly ? monopolyAmount : 0), level, out);
         damage = Main.criticalHit(precision, damage, out);
         out.printf("적 최종 데미지 : %d\n", damage);
 
@@ -219,7 +219,7 @@ public class LightningPriest {
      * @param out              출력 스트림
      * @return 결과 객체
      */
-    public static Result electricField(int stat, int chantTurns, boolean monopoly, double monopolyAmount,
+    public static Result electricField(int stat, int chantTurns, boolean monopoly, int monopolyAmount,
                                        boolean piety, int damageBonus, int finalDamageBonus, int level,
                                        int precision, PrintStream out) {
         int safeTurns = Math.max(1, chantTurns);
@@ -238,7 +238,7 @@ public class LightningPriest {
 
         int totalDamageBonus = damageBonus + endBonus;
         if (monopoly) {
-            out.printf("독점 패시브 적용: 최종 데미지 %.1f%%로 증가%n", monopolyAmount + 100);
+            out.printf("독점 패시브 적용: 최종 데미지 %d%%로 증가%n", monopolyAmount + 100);
         }
         if (piety) {
             out.println("신앙심 스킬 적용: 아군 데미지 50% 증가");
@@ -246,7 +246,7 @@ public class LightningPriest {
         }
 
         int damage = applyDamageFormula(baseDamage, verdict, totalDamageBonus,
-                finalDamageBonus + (monopoly ? (int) monopolyAmount : 0), level, out);
+                finalDamageBonus + (monopoly ? monopolyAmount : 0), level, out);
         damage = Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d\n", damage);
 
@@ -267,7 +267,7 @@ public class LightningPriest {
      * @param out              출력 스트림
      * @return 결과 객체
      */
-    public static Result strike(int stat, boolean monopoly, double monopolyAmount, boolean piety,
+    public static Result strike(int stat, boolean monopoly, int monopolyAmount, boolean piety,
                                 int damageBonus, int finalDamageBonus, int level, int precision,
                                 PrintStream out) {
         out.println("스트라이크 사용");
@@ -280,7 +280,7 @@ public class LightningPriest {
 
         int totalDamageBonus = damageBonus;
         if (monopoly) {
-            out.printf("독점 패시브 적용: 최종 데미지 %.1f%%로 증가%n", monopolyAmount + 100);
+            out.printf("독점 패시브 적용: 최종 데미지 %d%%로 증가%n", monopolyAmount + 100);
         }
         if (piety) {
             out.println("신앙심 스킬 적용: 아군 데미지 50% 증가");
@@ -288,7 +288,7 @@ public class LightningPriest {
         }
 
         int damage = applyDamageFormula(baseDamage, verdict, totalDamageBonus,
-                finalDamageBonus + (monopoly ? (int) monopolyAmount : 0), level, out);
+                finalDamageBonus + (monopoly ? monopolyAmount : 0), level, out);
         damage = Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d\n", damage);
         return new Result(0, damage, true, 5, 0, Map.of());
@@ -327,7 +327,7 @@ public class LightningPriest {
      * @param out              출력 스트림
      * @return 결과 객체
      */
-    public static Result divineThunderStrike(int stat, boolean monopoly, double monopolyAmount, boolean piety,
+    public static Result divineThunderStrike(int stat, boolean monopoly, int monopolyAmount, boolean piety,
                                              int damageBonus, int finalDamageBonus, int level, int precision,
                                              PrintStream out) {
         out.println("신뇌격 사용 (영창 2턴)");
@@ -340,7 +340,7 @@ public class LightningPriest {
 
         int totalDamageBonus = damageBonus;
         if (monopoly) {
-            out.printf("독점 패시브 적용: 최종 데미지 %.1f%%로 증가%n", monopolyAmount + 100);
+            out.printf("독점 패시브 적용: 최종 데미지 %d%%로 증가%n", monopolyAmount + 100);
         }
         if (piety) {
             out.println("신앙심 스킬 적용: 아군 데미지 50% 증가");
@@ -348,7 +348,7 @@ public class LightningPriest {
         }
 
         int damage = applyDamageFormula(baseDamage, verdict, totalDamageBonus,
-                finalDamageBonus + (monopoly ? (int) monopolyAmount : 0), level, out);
+                finalDamageBonus + (monopoly ? monopolyAmount : 0), level, out);
         damage = Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d\n", damage);
         return new Result(0, damage, true, 4, 0, Map.of());
