@@ -880,15 +880,23 @@ async function calculateDarkPriest(skill) {
 // LightningPriest calculations
 async function calculateLightningPriest(skill) {
     const intelligence = parseInt(document.getElementById('lightningpriest-intelligence').value) || 10;
-    const n = parseInt(document.getElementById('lightningpriest-n').value) || 3;
-    
+    const level = parseInt(document.getElementById('lightningpriest-level').value) || 1;
+    const damageBonus = parseInt(document.getElementById('lightningpriest-damageBonus').value) || 0;
+    const finalDamageBonus = parseInt(document.getElementById('lightningpriest-finalDamageBonus').value) || 0;
+    const chantTurns = parseInt(document.getElementById('lightningpriest-chantTurns').value) || 1;
+    const precision = parseInt(document.getElementById('lightningpriest-precision').value) || 0;
+    const monopoly = document.getElementById('lightningpriest-monopoly').checked;
+    const monopolyAmount = monopoly ? (parseInt(document.getElementById('lightningpriest-monopolyAmount').value) || 0) : 0;
+    const piety = document.getElementById('lightningpriest-piety').checked;
+
     try {
         const response = await fetch(`${API_BASE}/lightningpriest/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ intelligence, n })
+            body: JSON.stringify({ intelligence, level, damageBonus, finalDamageBonus,
+                chantTurns, precision, monopoly, monopolyAmount, piety })
         });
-        
+
         const data = await response.json();
         showDamageResult(data.damage, '번개의 사제 - ' + getSkillName('lightningpriest', skill));
         addLog(`⚡ 번개의 사제 - ${getSkillName('lightningpriest', skill)}`, data.log);
@@ -1205,6 +1213,7 @@ function getSkillName(job, skill) {
             'chain-lightning-shield': '체인 라이트닝 (보호막)',
             'electric-field': '일렉트릭 필드',
             'strike': '스트라이크',
+            'elraister': '일레이스터',
             'divine-lightning': '신뇌격'
         },
         soulpriest: {
@@ -1361,4 +1370,15 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.skill-form .btn-skill').forEach(btn => {
         btn.addEventListener('click', e => e.preventDefault());
     });
+
+    // Show/hide monopoly amount field for lightning priest
+    const monopolyCheck = document.getElementById('lightningpriest-monopoly');
+    if (monopolyCheck) {
+        monopolyCheck.addEventListener('change', () => {
+            const amountGroup = document.getElementById('lightningpriest-monopolyAmount-group');
+            if (amountGroup) {
+                amountGroup.style.display = monopolyCheck.checked ? 'block' : 'none';
+            }
+        });
+    }
 });
