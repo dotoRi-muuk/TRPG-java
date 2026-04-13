@@ -882,19 +882,21 @@ async function calculateLightningPriest(skill) {
     const intelligence = parseInt(document.getElementById('lightningpriest-intelligence').value) || 10;
     const level = parseInt(document.getElementById('lightningpriest-level').value) || 1;
     const damageBonus = parseInt(document.getElementById('lightningpriest-damageBonus').value) || 0;
-    const finalDamageBonus = parseInt(document.getElementById('lightningpriest-finalDamageBonus').value) || 0;
+    const finalDamageBonusEl = document.getElementById('lightningpriest-finalDamageBonus');
+    const finalDamageBonus = finalDamageBonusEl.value !== '' ? parseInt(finalDamageBonusEl.value) : 100;
     const chantTurns = parseInt(document.getElementById('lightningpriest-chantTurns').value) || 1;
     const precision = parseInt(document.getElementById('lightningpriest-precision').value) || 0;
     const monopoly = document.getElementById('lightningpriest-monopoly').checked;
-    const monopolyAmount = monopoly ? (parseInt(document.getElementById('lightningpriest-monopolyAmount').value) || 0) : 0;
+    const blessing = document.getElementById('lightningpriest-blessing').checked;
     const piety = document.getElementById('lightningpriest-piety').checked;
+    const elraister = document.getElementById('lightningpriest-elraister').checked;
 
     try {
         const response = await fetch(`${API_BASE}/lightningpriest/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ intelligence, level, damageBonus, finalDamageBonus,
-                chantTurns, precision, monopoly, monopolyAmount, piety })
+                chantTurns, precision, monopoly, blessing, piety, elraister })
         });
 
         const data = await response.json();
@@ -1371,14 +1373,9 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', e => e.preventDefault());
     });
 
-    // Show/hide monopoly amount field for lightning priest
+    // Lightning priest monopoly checkbox (no additional toggle needed - skills shown always)
     const monopolyCheck = document.getElementById('lightningpriest-monopoly');
     if (monopolyCheck) {
-        monopolyCheck.addEventListener('change', () => {
-            const amountGroup = document.getElementById('lightningpriest-monopolyAmount-group');
-            if (amountGroup) {
-                amountGroup.style.display = monopolyCheck.checked ? 'block' : 'none';
-            }
-        });
+        // No extra UI to toggle - skill checkboxes are always visible and serve dual purpose
     }
 });

@@ -13,8 +13,9 @@ import java.util.Map;
 /**
  * REST API Controller for LightningPriest (번개의 사제) skill calculations.
  * <p>
- * 데미지 계산 공식: [(기본 데미지) x (100 + 데미지 증가)%] x (최종 데미지 증가)% x (주사위 보정)
+ * 데미지 계산 공식: [(기본 데미지) x (100 + 데미지 증가)%] x [(직업 최종 데미지)% x (직업 외 최종 데미지)%] x 독점 배율 x (주사위 보정)
  * 레벨 기반 최종 데미지 기본 계수: (100 + (레벨)^2)%
+ * 직업 외 최종 데미지 기본값: 100% (1배). 최종 데미지는 곱연산으로 적용.
  */
 @RestController
 @RequestMapping("/api/lightningpriest")
@@ -25,11 +26,12 @@ public class LightningPriestController {
      * <ul>
      *   <li>intelligence   - 지능(지혜) 스탯</li>
      *   <li>level          - 캐릭터 레벨 (최종 데미지 기본 계수: (100 + 레벨²)%)</li>
-     *   <li>damageBonus    - 직업 외 데미지 증가 (%)</li>
-     *   <li>finalDamageBonus - 직업 외 최종 데미지 증가 (%)</li>
-     *   <li>monopoly       - 독점 스킬 적용 여부 (아군 데미지 n% 증가를 본인 최종 데미지 n+100% 증가로 변경)</li>
-     *   <li>monopolyAmount - 독점 적용 시 n 값 (%)</li>
-     *   <li>piety          - 신앙심 스킬 적용 여부 (아군 데미지 50% 증가)</li>
+     *   <li>damageBonus    - 직업 외 데미지 증가 (%, 합연산, 기본값 0)</li>
+     *   <li>finalDamageBonus - 직업 외 최종 데미지 증가 (%, 곱연산, 기본값 100 = 1배)</li>
+     *   <li>monopoly       - 독점 스킬 적용 여부</li>
+     *   <li>blessing       - 축복 패시브 발동 여부 (아군 데미지 75% 증가 → 독점 시 최종 데미지 ×1.75)</li>
+     *   <li>piety          - 신앙심 스킬 발동 여부 (아군 데미지 50% 증가 → 독점 시 최종 데미지 ×1.50)</li>
+     *   <li>elraister      - 일레이스터 스킬 발동 여부 (아군 데미지 100% 증가 → 독점 시 최종 데미지 ×2.00)</li>
      *   <li>precision      - 정밀 스탯 (치명타 판정)</li>
      *   <li>chantTurns     - 영창 턴 수 (일렉트릭 필드 전용)</li>
      * </ul>
@@ -38,10 +40,11 @@ public class LightningPriestController {
         public int intelligence;
         public int level;
         public int damageBonus;
-        public int finalDamageBonus;
+        public int finalDamageBonus = 100;
         public boolean monopoly;
-        public int monopolyAmount;
+        public boolean blessing;
         public boolean piety;
+        public boolean elraister;
         public int precision;
         public int chantTurns;
     }
@@ -64,8 +67,8 @@ public class LightningPriestController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        Result result = LightningPriest.plain(req.intelligence, req.monopoly, req.monopolyAmount,
-                req.piety, req.damageBonus, req.finalDamageBonus, req.level, req.precision, ps);
+        Result result = LightningPriest.plain(req.intelligence, req.monopoly, req.blessing, req.piety,
+                req.elraister, req.damageBonus, req.finalDamageBonus, req.level, req.precision, ps);
         ps.flush();
         return buildResponse(result, baos);
     }
@@ -79,8 +82,8 @@ public class LightningPriestController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        Result result = LightningPriest.spark(req.intelligence, req.monopoly, req.monopolyAmount,
-                req.piety, req.damageBonus, req.finalDamageBonus, req.level, req.precision, ps);
+        Result result = LightningPriest.spark(req.intelligence, req.monopoly, req.blessing, req.piety,
+                req.elraister, req.damageBonus, req.finalDamageBonus, req.level, req.precision, ps);
         ps.flush();
         return buildResponse(result, baos);
     }
@@ -94,8 +97,8 @@ public class LightningPriestController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        Result result = LightningPriest.chainLightning(req.intelligence, req.monopoly, req.monopolyAmount,
-                req.piety, req.damageBonus, req.finalDamageBonus, req.level, req.precision, ps);
+        Result result = LightningPriest.chainLightning(req.intelligence, req.monopoly, req.blessing,
+                req.piety, req.elraister, req.damageBonus, req.finalDamageBonus, req.level, req.precision, ps);
         ps.flush();
         return buildResponse(result, baos);
     }
@@ -125,8 +128,8 @@ public class LightningPriestController {
 
         int chantTurns = Math.max(1, req.chantTurns);
         Result result = LightningPriest.electricField(req.intelligence, chantTurns, req.monopoly,
-                req.monopolyAmount, req.piety, req.damageBonus, req.finalDamageBonus, req.level,
-                req.precision, ps);
+                req.blessing, req.piety, req.elraister, req.damageBonus, req.finalDamageBonus,
+                req.level, req.precision, ps);
         ps.flush();
         return buildResponse(result, baos);
     }
@@ -140,8 +143,8 @@ public class LightningPriestController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        Result result = LightningPriest.strike(req.intelligence, req.monopoly, req.monopolyAmount,
-                req.piety, req.damageBonus, req.finalDamageBonus, req.level, req.precision, ps);
+        Result result = LightningPriest.strike(req.intelligence, req.monopoly, req.blessing, req.piety,
+                req.elraister, req.damageBonus, req.finalDamageBonus, req.level, req.precision, ps);
         ps.flush();
         return buildResponse(result, baos);
     }
@@ -169,8 +172,8 @@ public class LightningPriestController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        Result result = LightningPriest.divineThunderStrike(req.intelligence, req.monopoly,
-                req.monopolyAmount, req.piety, req.damageBonus, req.finalDamageBonus, req.level,
+        Result result = LightningPriest.divineThunderStrike(req.intelligence, req.monopoly, req.blessing,
+                req.piety, req.elraister, req.damageBonus, req.finalDamageBonus, req.level,
                 req.precision, ps);
         ps.flush();
         return buildResponse(result, baos);

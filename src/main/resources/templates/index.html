@@ -1362,12 +1362,12 @@
                             <input type="number" id="lightningpriest-level" value="1" min="1" title="최종 데미지 기본 계수: (100 + 레벨²)%">
                         </div>
                         <div class="form-group">
-                            <label for="lightningpriest-damageBonus">데미지 증가 (%)</label>
-                            <input type="number" id="lightningpriest-damageBonus" value="0" title="직업 외 데미지 증가(%)">
+                            <label for="lightningpriest-damageBonus">데미지 증가(직업 외) (%)</label>
+                            <input type="number" id="lightningpriest-damageBonus" value="0" title="직업 외 데미지 증가(%, 합연산)">
                         </div>
                         <div class="form-group">
-                            <label for="lightningpriest-finalDamageBonus">최종 데미지 증가 (%)</label>
-                            <input type="number" id="lightningpriest-finalDamageBonus" value="0" title="직업 외 최종 데미지 증가(%)">
+                            <label for="lightningpriest-finalDamageBonus">최종 데미지 증가(직업 외) (%)</label>
+                            <input type="number" id="lightningpriest-finalDamageBonus" value="100" title="직업 외 최종 데미지 증가(%, 곱연산, 기본값 100 = 1배)">
                         </div>
                         <div class="form-group">
                             <label for="lightningpriest-chantTurns">일렉트릭 필드 영창 턴</label>
@@ -1380,18 +1380,31 @@
                         <div class="form-group checkbox-group">
                             <label>
                                 <input type="checkbox" id="lightningpriest-monopoly">
-                                독점 (아군 데미지 n% 증가를 본인 최종 데미지 n+100%로 변경)
+                                독점 (아군 데미지 n% 증가 효과를 본인 최종 데미지 n+100%배 증가로 변환)
                             </label>
                         </div>
-                        <div class="form-group" id="lightningpriest-monopolyAmount-group" style="display:none;">
-                            <label for="lightningpriest-monopolyAmount">독점 n 값 (%)</label>
-                            <input type="number" id="lightningpriest-monopolyAmount" value="0" min="0">
-                        </div>
-                        <div class="form-group checkbox-group">
-                            <label>
-                                <input type="checkbox" id="lightningpriest-piety">
-                                신앙심 (아군 데미지 50% 증가)
-                            </label>
+                        <div style="border-left: 3px solid #f0a500; padding-left: 12px; margin: 4px 0 8px 4px;">
+                            <p style="margin: 4px 0 6px; font-size: 0.85em; color: #ccc;">
+                                스킬 발동 여부 — 독점 <strong>미적용</strong> 시: 아군 데미지 증가 / 독점 <strong>적용</strong> 시: 본인 최종 데미지 배율로 변환
+                            </p>
+                            <div class="form-group checkbox-group">
+                                <label>
+                                    <input type="checkbox" id="lightningpriest-blessing">
+                                    축복 발동 (아군 데미지 +75% / 독점 시 최종 데미지 ×1.75)
+                                </label>
+                            </div>
+                            <div class="form-group checkbox-group">
+                                <label>
+                                    <input type="checkbox" id="lightningpriest-piety">
+                                    신앙심 발동 (아군 데미지 +50% / 독점 시 최종 데미지 ×1.50)
+                                </label>
+                            </div>
+                            <div class="form-group checkbox-group">
+                                <label>
+                                    <input type="checkbox" id="lightningpriest-elraister">
+                                    일레이스터 발동 (아군 데미지 +100% / 독점 시 최종 데미지 ×2.00)
+                                </label>
+                            </div>
                         </div>
                     </div>
                     <div class="skill-buttons">
