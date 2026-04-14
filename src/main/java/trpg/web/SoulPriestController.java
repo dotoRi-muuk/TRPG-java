@@ -110,9 +110,8 @@ public class SoulPriestController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
-        int soulUse = Math.max(1, req.soulUse);
         Result result = SOUL_PRIEST.grudge(req.intelligence, req.soul, req.ruins,
-                soulUse, req.level, req.damageBonus, req.finalDamageBonus, req.precision, ps);
+                req.soulUse, req.level, req.damageBonus, req.finalDamageBonus, req.precision, ps);
         ps.flush();
         return buildResponse(result, baos);
     }

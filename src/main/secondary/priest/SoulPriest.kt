@@ -166,12 +166,12 @@ class SoulPriest {
 
         // 레벨 기반 최종 데미지 계수: (100 + level²)%
         val safeLevel = maxOf(0, level)
-        val levelCoeff = 100.0 + safeLevel.toDouble() * safeLevel.toDouble()
+        val levelCoeff = 100.0 + safeLevel * safeLevel
         out.printf("레벨 %d 기반 최종 데미지 계수: (100 + %d^2) = %.1f%%%n", safeLevel, safeLevel, levelCoeff)
 
         // 총 최종 데미지 배율
         var totalFinalMult = (levelCoeff / 100.0) * (finalDamageBonus / 100.0)
-        out.printf("직업 외 최종 데미지: %d%% (×%.4f)%n", finalDamageBonus, finalDamageBonus / 100.0)
+        out.printf("직업 외 최종 데미지 배율: %d%% (×%.4f)%n", finalDamageBonus, finalDamageBonus / 100.0)
 
         // 폐허 최종 데미지 (폐허 활성 + 영혼 30개 이상 시)
         if (ruins && soul >= 30) {
@@ -182,6 +182,7 @@ class SoulPriest {
         }
 
         // 주사위 보정: 1.0 + max(0, verdict) × 0.1
+        // (판정 결과가 양수일수록 데미지 10%씩 추가 증가)
         val diceModifier = 1.0 + maxOf(0, verdict) * 0.1
 
         val damage = (baseDamage * ((100.0 + totalDamageBonus) / 100.0) * totalFinalMult * diceModifier).toInt()
