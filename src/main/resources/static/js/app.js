@@ -911,13 +911,19 @@ async function calculateLightningPriest(skill) {
 // SoulPriest calculations
 async function calculateSoulPriest(skill) {
     const intelligence = parseInt(document.getElementById('soulpriest-intelligence').value) || 10;
+    const soul = parseInt(document.getElementById('soulpriest-soul').value) || 0;
     const soulsSpent = parseInt(document.getElementById('soulpriest-soulsSpent').value) || 5;
-    
+    const level = parseInt(document.getElementById('soulpriest-level').value) || 1;
+    const damageBonus = parseInt(document.getElementById('soulpriest-damageBonus').value) || 0;
+    const finalDamageBonus = parseInt(document.getElementById('soulpriest-finalDamageBonus').value) || 100;
+    const precision = parseInt(document.getElementById('soulpriest-precision').value) || 0;
+    const ruins = document.getElementById('soulpriest-ruins').checked;
+
     try {
         const response = await fetch(`${API_BASE}/soulpriest/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ intelligence, soulsSpent })
+            body: JSON.stringify({ intelligence, soul, ruins, soulUse: soulsSpent, level, damageBonus, finalDamageBonus, precision })
         });
         
         const data = await response.json();

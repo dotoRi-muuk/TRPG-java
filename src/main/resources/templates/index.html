@@ -1427,17 +1427,43 @@
                             <input type="number" id="soulpriest-intelligence" value="10" min="1">
                         </div>
                         <div class="form-group">
+                            <label for="soulpriest-level">레벨 (최종 데미지 (100+레벨²)%)</label>
+                            <input type="number" id="soulpriest-level" value="1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="soulpriest-soul">현재 영혼 누적 개수</label>
+                            <input type="number" id="soulpriest-soul" value="0" min="0">
+                        </div>
+                        <div class="form-group">
                             <label for="soulpriest-soulsSpent">소모할 영혼 (원한)</label>
                             <input type="number" id="soulpriest-soulsSpent" value="5" min="1">
                         </div>
+                        <div class="form-group">
+                            <label for="soulpriest-damageBonus">외부 데미지 증가 (%)</label>
+                            <input type="number" id="soulpriest-damageBonus" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="soulpriest-finalDamageBonus">외부 최종 데미지 배율 (100 = 1×, 기본값)</label>
+                            <input type="number" id="soulpriest-finalDamageBonus" value="100" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="soulpriest-precision">정밀 스탯</label>
+                            <input type="number" id="soulpriest-precision" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="soulpriest-ruins">
+                                폐허 스킬 활성 (축복 효과 변경)
+                            </label>
+                        </div>
                     </div>
                     <div class="skill-buttons">
-                        <button onclick="calculateSoulPriest('plain')" class="btn btn-skill">기본공격 (D6)</button>
-                        <button onclick="calculateSoulPriest('absorb')" class="btn btn-skill">흡수 (2D4 회복)</button>
-                        <button onclick="calculateSoulPriest('curse')" class="btn btn-skill">저주 (3D4)</button>
+                        <button onclick="calculateSoulPriest('plain')" class="btn btn-skill">기본공격 (1D6)</button>
+                        <button onclick="calculateSoulPriest('absorb')" class="btn btn-skill">흡수 (2D12 회복)</button>
+                        <button onclick="calculateSoulPriest('curse')" class="btn btn-skill">저주 (3D10)</button>
                         <button onclick="calculateSoulPriest('chest-pain')" class="btn btn-skill">흉통 (8D4)</button>
-                        <button onclick="calculateSoulPriest('grudge')" class="btn btn-skill">원한 (영혼D12)</button>
-                        <button onclick="calculateSoulPriest('collect')" class="btn btn-skill">수거 (D4 영혼)</button>
+                        <button onclick="calculateSoulPriest('grudge')" class="btn btn-skill">원한 (영혼D20)</button>
+                        <button onclick="calculateSoulPriest('collect')" class="btn btn-skill">수거 (D10 영혼)</button>
                     </div>
                 </div>
 
