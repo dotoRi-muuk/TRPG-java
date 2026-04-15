@@ -860,12 +860,24 @@ async function calculateLightPriest(skill) {
 // DarkPriest calculations
 async function calculateDarkPriest(skill) {
     const intelligence = parseInt(document.getElementById('darkpriest-intelligence').value) || 10;
-    
+    const level = parseInt(document.getElementById('darkpriest-level').value) || 1;
+    const damageBonus = parseInt(document.getElementById('darkpriest-damageBonus').value) || 0;
+    const finalDamageBonus = parseInt(document.getElementById('darkpriest-finalDamageBonus').value) || 100;
+    const precision = parseInt(document.getElementById('darkpriest-precision').value) || 0;
+    const stolenHp = parseInt(document.getElementById('darkpriest-stolenHp').value) || 0;
+    const erosionAllies = parseInt(document.getElementById('darkpriest-erosionAllies').value) || 0;
+    const pietyAllies = parseInt(document.getElementById('darkpriest-pietyAllies').value) || 0;
+    const scapegoatHit = parseInt(document.getElementById('darkpriest-scapegoatHit').value) || 0;
+    const domination = document.getElementById('darkpriest-domination').checked;
+    const bloodflow = document.getElementById('darkpriest-bloodflow').checked;
+
     try {
         const response = await fetch(`${API_BASE}/darkpriest/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ intelligence })
+            body: JSON.stringify({ intelligence, level, damageBonus, finalDamageBonus,
+                precision, domination, stolenHp, bloodflow, scapegoatHit,
+                erosionAllies, pietyAllies })
         });
         
         const data = await response.json();
