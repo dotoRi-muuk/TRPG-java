@@ -950,14 +950,24 @@ async function calculateSoulPriest(skill) {
 // TimePriest calculations
 async function calculateTimePriest(skill) {
     const intelligence = parseInt(document.getElementById('timepriest-intelligence').value) || 10;
-    
+    const level = parseInt(document.getElementById('timepriest-level').value) || 1;
+    const damageBonus = parseInt(document.getElementById('timepriest-damageBonus').value) || 0;
+    const finalDamageBonusEl = document.getElementById('timepriest-finalDamageBonus');
+    const finalDamageBonus = finalDamageBonusEl.value !== '' ? parseInt(finalDamageBonusEl.value) : 100;
+    const precision = parseInt(document.getElementById('timepriest-precision').value) || 0;
+    const chantTurns = parseInt(document.getElementById('timepriest-chantTurns').value) || 1;
+    const turns = parseInt(document.getElementById('timepriest-turns').value) || 1;
+    const impatience = document.getElementById('timepriest-impatience').checked;
+    const piety = document.getElementById('timepriest-piety').checked;
+
     try {
         const response = await fetch(`${API_BASE}/timepriest/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ intelligence })
+            body: JSON.stringify({ intelligence, level, damageBonus, finalDamageBonus,
+                precision, chantTurns, turns, impatience, piety })
         });
-        
+
         const data = await response.json();
         showDamageResult(data.damage, '시간의 사제 - ' + getSkillName('timepriest', skill));
         addLog(`⏰ 시간의 사제 - ${getSkillName('timepriest', skill)}`, data.log);
@@ -1246,7 +1256,17 @@ function getSkillName(job, skill) {
         },
         timepriest: {
             'plain': '기본공격',
-            'corrosion': '부식'
+            'corrosion': '부식',
+            'acceleration': '가속',
+            'stop': '정지',
+            'suspension': '유예',
+            'deceleration': '감속',
+            'time-gap': '시간의 틈새',
+            'seizure': '강탈',
+            'self-centered': '자기중심',
+            'impatience-skill': '성급함',
+            'fluctuation': '기복',
+            'piety-skill': '신앙심'
         },
         dicejob: {
             'roll': '판정 시도'
