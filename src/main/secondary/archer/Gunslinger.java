@@ -12,16 +12,27 @@ import java.io.PrintStream;
  */
 public class Gunslinger {
 
+    /**
+     * 레벨 배율 적용: [100 + level^2]%
+     */
+    private static int applyLevelMultiplier(int damage, int level, PrintStream out) {
+        int multiplier = 100 + level * level;
+        int levelDamage = damage * multiplier / 100;
+        out.printf("레벨 배율 적용 (레벨 %d, %d%%) : %d -> %d%n", level, multiplier, damage, levelDamage);
+        return levelDamage;
+    }
 
     /**
      * 백스탭 : 판정 성공 시 공격을 회피합니다. 1.5배의 데미지로 반격합니다. (스태미나 3 소모)
      *
      * @param stat        사용 스탯
      * @param damageTaken 받은 데미지
+     * @param precision   정밀 스탯
+     * @param level       레벨 (최종 데미지 배율 적용)
      * @param out         출력 스트림
      * @return 결과 객체
      */
-    public static Result backStab(int stat, int damageTaken, int precision, PrintStream out) {
+    public static Result backStab(int stat, int damageTaken, int precision, int level, PrintStream out) {
         out.println("건슬링거-백스탭 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -31,6 +42,7 @@ public class Gunslinger {
         out.print("백스탭 반격 데미지 적용: 데미지 배율 1.5배\n");
         int finalDamage = (int) (damageTaken * 1.5);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
+        finalDamage = applyLevelMultiplier(finalDamage, level, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         return new Result(0, finalDamage, true, 0, 3);
     }
@@ -40,10 +52,12 @@ public class Gunslinger {
      *
      * @param stat       사용 스탯
      * @param baseDamage 기본 데미지
+     * @param precision  정밀 스탯
+     * @param level      레벨 (최종 데미지 배율 적용)
      * @param out        출력 스트림
      * @return 결과 객체
      */
-    public static Result opportunity(int stat, int baseDamage, int precision, PrintStream out) {
+    public static Result opportunity(int stat, int baseDamage, int precision, int level, PrintStream out) {
         out.println("건슬링거-활약 기회 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -53,6 +67,7 @@ public class Gunslinger {
         out.print("활약 기회 신속 적용: 데미지 배율 1.5배\n");
         int finalDamage = (int) (baseDamage * 1.5);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
+        finalDamage = applyLevelMultiplier(finalDamage, level, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         return new Result(0, finalDamage, true, 0, 0);
     }
@@ -60,63 +75,77 @@ public class Gunslinger {
     /**
      * 일점사 : 대상에게 6D6의 피해를 입힙니다. (스태미나 4 소모)
      *
-     * @param stat 사용 스탯
-     * @param out  출력 스트림
+     * @param stat      사용 스탯
+     * @param precision 정밀 스탯
+     * @param level     레벨 (최종 데미지 배율 적용)
+     * @param out       출력 스트림
      * @return 결과 객체
      */
-    public static Result focusedFire(int stat, int precision, PrintStream out) {
+    public static Result focusedFire(int stat, int precision, int level, PrintStream out) {
         out.println("건슬링거-일점사 사용");
 
         int verdict = Main.verdict(stat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 4);
         int diceRoll = stat - verdict;
-        return new Result(0, Main.criticalHit(precision, Main.normalCalculation(stat, out, 6, 6, diceRoll), out), true, 0, 4);
+        int damage = Main.criticalHit(precision, Main.normalCalculation(stat, out, 6, 6, diceRoll), out);
+        damage = applyLevelMultiplier(damage, level, out);
+        return new Result(0, damage, true, 0, 4);
     }
 
     /**
      * 헤드샷 : 대상에게 D20의 피해를 입힙니다. (스태미나 3 소모)
      *
-     * @param stat 사용 스탯
-     * @param out  출력 스트림
+     * @param stat      사용 스탯
+     * @param precision 정밀 스탯
+     * @param level     레벨 (최종 데미지 배율 적용)
+     * @param out       출력 스트림
      * @return 결과 객체
      */
-    public static Result HeadShot(int stat, int precision, PrintStream out) {
+    public static Result HeadShot(int stat, int precision, int level, PrintStream out) {
         out.println("건슬링거-헤드샷 사용");
 
         int verdict = Main.verdict(stat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 3);
         int diceRoll = stat - verdict;
-        return new Result(0, Main.criticalHit(precision, Main.normalCalculation(stat, out, 1, 20, diceRoll), out), true, 0, 3);
+        int damage = Main.criticalHit(precision, Main.normalCalculation(stat, out, 1, 20, diceRoll), out);
+        damage = applyLevelMultiplier(damage, level, out);
+        return new Result(0, damage, true, 0, 3);
     }
 
     /**
-     * 헤드샷 : 대상에게 2D6의 피해를 입힙니다. (스태미나 2 소모)
+     * 더블샷 : 대상에게 2D6의 피해를 입힙니다. (스태미나 2 소모)
      *
-     * @param stat 사용 스탯
-     * @param out  출력 스트림
+     * @param stat      사용 스탯
+     * @param precision 정밀 스탯
+     * @param level     레벨 (최종 데미지 배율 적용)
+     * @param out       출력 스트림
      * @return 결과 객체
      */
-    public static Result doubleShot(int stat, int precision, PrintStream out) {
+    public static Result doubleShot(int stat, int precision, int level, PrintStream out) {
         out.println("건슬링거-더블샷 사용");
 
         int verdict = Main.verdict(stat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 2);
         int diceRoll = stat - verdict;
-        return new Result(0, Main.criticalHit(precision, Main.normalCalculation(stat, out, 2, 6, diceRoll), out), true, 0, 2);
+        int damage = Main.criticalHit(precision, Main.normalCalculation(stat, out, 2, 6, diceRoll), out);
+        damage = applyLevelMultiplier(damage, level, out);
+        return new Result(0, damage, true, 0, 2);
     }
 
     /**
      * 퀵드로우 : 대상에게 D8의 피해를 입힙니다. '신중함' 발동 시 4D8의 피해를 입힙니다. (스태미나 1 소모)
      *
-     * @param stat     사용 스탯
-     * @param prudence 신중함 패시브 적용 여부
-     * @param out      출력 스트림
+     * @param stat      사용 스탯
+     * @param prudence  신중함 패시브 적용 여부
+     * @param precision 정밀 스탯
+     * @param level     레벨 (최종 데미지 배율 적용)
+     * @param out       출력 스트림
      * @return 결과 객체
      */
-    public static Result quickDraw(int stat, boolean prudence, int precision, PrintStream out) {
+    public static Result quickDraw(int stat, boolean prudence, int precision, int level, PrintStream out) {
         out.println("건슬링거-퀵드로우 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -128,7 +157,9 @@ public class Gunslinger {
             out.println("신중함 패시브 적용: D8 -> 4D8 적용");
             dices = 4;
         }
-        return new Result(0, Main.criticalHit(precision, Main.normalCalculation(stat, out, dices, 8, diceRoll), out), true, 0, 1);
+        int damage = Main.criticalHit(precision, Main.normalCalculation(stat, out, dices, 8, diceRoll), out);
+        damage = applyLevelMultiplier(damage, level, out);
+        return new Result(0, damage, true, 0, 1);
     }
 
     /**
@@ -140,10 +171,12 @@ public class Gunslinger {
      * @param judge           심판자 패시브 적용 여부
      * @param judgementTarget 심판 대상 스킬 적용 여부
      * @param warning         경고 스킬 적용 여부
+     * @param precision       정밀 스탯
+     * @param level           레벨 (최종 데미지 배율 적용)
      * @param out             출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, boolean prudence, boolean calculatedMove, boolean judge, boolean judgementTarget, boolean warning, int precision, PrintStream out) {
+    public static Result plain(int stat, boolean prudence, boolean calculatedMove, boolean judge, boolean judgementTarget, boolean warning, int precision, int level, PrintStream out) {
         out.println("건슬링거-기본공격 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -183,6 +216,7 @@ public class Gunslinger {
         finalDamage += sideDamage;
         out.printf("데미지 보정치 : %d\n", sideDamage);
         finalDamage = Main.criticalHit(precision, finalDamage, out);
+        finalDamage = applyLevelMultiplier(finalDamage, level, out);
         out.printf("최종 데미지 : %d\n", finalDamage);
         return new Result(0, finalDamage, true, 0, 0);
     }
