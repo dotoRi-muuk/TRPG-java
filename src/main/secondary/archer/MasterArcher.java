@@ -11,6 +11,8 @@ import java.io.PrintStream;
  * 판정 사용 스탯 : 민첩 또는 힘
  */
 public class MasterArcher {
+    private static final int DEFAULT_LEVEL = 1;
+    private static final int DEFAULT_FINAL_DAMAGE_PERCENT = 100;
 
     /**
      * 기본공격 : 대상에게 1D6의 데미지를 입힙니다.
@@ -30,6 +32,13 @@ public class MasterArcher {
      *                  데미지를 입히지 못하면 해제되며 다음 턴까지 행동불능. 마나 5 소모, 쿨타임 10턴)
      */
     public static Result plain(int stat, boolean isHeavyString, boolean isFirstTarget, boolean isEmergency, MasterArcherPassive ability, boolean preyEnabled, int arrowOverheatCount, boolean calm, boolean cracking, int stageTurn, int precision, PrintStream out) {
+        return plain(stat, isHeavyString, isFirstTarget, isEmergency, ability, preyEnabled, arrowOverheatCount, calm, cracking, stageTurn, precision, DEFAULT_LEVEL, 0, DEFAULT_FINAL_DAMAGE_PERCENT, false, 0, out);
+    }
+
+    public static Result plain(int stat, boolean isHeavyString, boolean isFirstTarget, boolean isEmergency, MasterArcherPassive ability,
+                               boolean preyEnabled, int arrowOverheatCount, boolean calm, boolean cracking, int stageTurn, int precision,
+                               int level, int externalDamageIncreasePercent, int externalFinalDamagePercent,
+                               boolean finaleArrowActive, int forcedActionCount, PrintStream out) {
 
         if (isEmergency && isHeavyString) {
             out.println("긴급 사격과 무거운 시위는 동시에 사용할 수 없습니다!");
@@ -65,6 +74,10 @@ public class MasterArcher {
         if (isEmergency) {
             count += 1;
             out.println("긴급 사격 패시브 적용: 기본 공격 2회 사용");
+        }
+        if (forcedActionCount > 0) {
+            count = forcedActionCount;
+            out.printf("행동 횟수 고정 적용: %d회%n", count);
         }
         int dices, sides;
         float damageAdditive = 0.0f;
@@ -136,6 +149,12 @@ public class MasterArcher {
             }
         }
 
+        if (finaleArrowActive) {
+            dices = 5;
+            sides = 10;
+            out.println("종막의 화살 적용: 이번 턴 기본 공격 데미지를 5D10으로 고정");
+        }
+
         if (isFirstTarget) {
             damageAdditive += 1.0f;
             out.println("포착 패시브 적용: 첫 대상 데미지 +100%");
@@ -164,14 +183,19 @@ public class MasterArcher {
             finalDamageMultiplier *= (1.0f + stageBonus);
             out.printf("무대 스킬 적용: 최종 데미지 %.1f배 (%d턴 지속)%n", 1.0f + stageBonus, stageTurn);
         }
-        out.printf("데미지 배율: %+.0f%%, 최종 데미지 배율: %.2f%n", damageAdditive * 100, finalDamageMultiplier);
+        int levelMultiplierPercent = 100 + level * level;
+        double externalFinalMultiplier = externalFinalDamagePercent / 100.0;
+        double combinedFinalDamageMultiplier = finalDamageMultiplier * (levelMultiplierPercent / 100.0) * externalFinalMultiplier;
+        int totalDamageIncreasePercent = Math.round(damageAdditive * 100) + externalDamageIncreasePercent;
+        out.printf("데미지 배율 합계: %+.0f%% + 외부 %d%% = %d%%%n", damageAdditive * 100, externalDamageIncreasePercent, totalDamageIncreasePercent);
+        out.printf("최종 데미지 배율: 클래스 %.2f배 × 레벨 %d%% × 외부 %d%% = %.2f배%n",
+                finalDamageMultiplier, levelMultiplierPercent, externalFinalDamagePercent, combinedFinalDamageMultiplier);
 
         int damageDealt = 0;
         while (count-- > 0) {
             int defaultDamage = Main.dice(dices, sides, out);
             out.printf("기본 데미지: %d%n", defaultDamage);
-            int damageAfterPassives = (int) (defaultDamage * (1.0f + damageAdditive) * finalDamageMultiplier);
-            out.printf("데미지 배율 적용 후 데미지: %d%n", damageAfterPassives);
+            int damageAfterPassives = Main.calculateDamage(defaultDamage, totalDamageIncreasePercent, combinedFinalDamageMultiplier, out);
             int sideDamage = Main.sideDamage(damageAfterPassives, effectiveStat, out, diceRoll);
             out.printf("추가 사이드 데미지: %d%n", sideDamage);
             int totalDamage = damageAfterPassives + sideDamage;
@@ -182,6 +206,26 @@ public class MasterArcher {
         return new Result(0, damageDealt, true, 0, 0);
     }
 
-}
+    public static Result twilightMeteor(PrintStream out) {
+        out.println("명사수-황혼의 유성 사용");
+        out.println("다음 자신의 턴에 총 3회 행동할 수 있습니다.");
+        return new Result(0, 0, true, 7, 0);
+    }
 
+    public static Result finaleArrow(int stat, boolean isHeavyString, boolean isFirstTarget, boolean isEmergency,
+                                     boolean preyEnabled, int arrowOverheatCount, boolean calm, boolean cracking, int stageTurn,
+                                     int precision, int level, int externalDamageIncreasePercent, int externalFinalDamagePercent,
+                                     int actionCount, PrintStream out) {
+        out.println("명사수-종막의 화살 사용");
+        out.println("다음 턴 디버프 없이 무대 효과를 종료합니다.");
+        int resolvedActionCount = Math.max(1, actionCount);
+        return plain(
+                stat, isHeavyString, isFirstTarget, isEmergency, MasterArcherPassive.NONE,
+                preyEnabled, arrowOverheatCount, calm, cracking, stageTurn, precision,
+                level, externalDamageIncreasePercent, externalFinalDamagePercent,
+                true, resolvedActionCount, out
+        );
+    }
+
+}
 

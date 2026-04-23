@@ -332,12 +332,14 @@ async function calculateBerserker(skill) {
     const maxHealth = parseInt(document.getElementById('berserker-maxHealth').value) || 100;
     const currentHealth = parseInt(document.getElementById('berserker-currentHealth').value) || 100;
     const level = parseInt(document.getElementById('berserker-level').value) || 1;
+    const damageIncrease = parseInt(document.getElementById('berserker-damageIncrease')?.value) || 0;
+    const finalDamageIncrease = parseInt(document.getElementById('berserker-finalDamageIncrease')?.value) || 100;
     
     try {
         const response = await fetch(`${API_BASE}/berserker/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat, maxHealth, currentHealth, level })
+            body: JSON.stringify({ stat, maxHealth, currentHealth, level, damageIncrease, finalDamageIncrease })
         });
         
         const data = await response.json();
@@ -399,12 +401,16 @@ async function calculateAssassin(skill) {
 async function calculateKnight(skill) {
     const stat = parseInt(document.getElementById('knight-stat').value) || 10;
     const level = parseInt(document.getElementById('knight-level').value) || 1;
+    const maxHealth = parseInt(document.getElementById('knight-maxHealth')?.value) || 100;
+    const swiftness = parseInt(document.getElementById('knight-swiftness')?.value) || stat;
+    const damageIncrease = parseInt(document.getElementById('knight-damageIncrease')?.value) || 0;
+    const finalDamageIncrease = parseInt(document.getElementById('knight-finalDamageIncrease')?.value) || 100;
     
     try {
         const response = await fetch(`${API_BASE}/knight/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat, level })
+            body: JSON.stringify({ stat, level, maxHealth, swiftness, damageIncrease, finalDamageIncrease })
         });
         
         const data = await response.json();
@@ -521,6 +527,10 @@ async function calculateMasterArcher(skill) {
     const isHeavyString = document.getElementById('masterarcher-isHeavyString').checked;
     const isFirstTarget = document.getElementById('masterarcher-isFirstTarget').checked;
     const isEmergencyShot = document.getElementById('masterarcher-isEmergencyShot')?.checked || false;
+    const level = parseInt(document.getElementById('masterarcher-level')?.value) || 1;
+    const damageIncrease = parseInt(document.getElementById('masterarcher-damageIncrease')?.value) || 0;
+    const finalDamageIncrease = parseInt(document.getElementById('masterarcher-finalDamageIncrease')?.value) || 100;
+    const actionCount = parseInt(document.getElementById('masterarcher-actionCount')?.value) || 1;
     
     // If emergency shot checkbox is checked and basic attack is requested, use emergency-shot endpoint
     let actualSkill = skill;
@@ -532,7 +542,7 @@ async function calculateMasterArcher(skill) {
         const response = await fetch(`${API_BASE}/masterarcher/${actualSkill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat, isHeavyString, isFirstTarget })
+            body: JSON.stringify({ stat, isHeavyString, isFirstTarget, level, damageIncrease, finalDamageIncrease, actionCount })
         });
         
         const data = await response.json();
@@ -548,21 +558,28 @@ async function calculateMasterArcher(skill) {
 async function calculateCrossbowman(skill) {
     const stat = parseInt(document.getElementById('crossbowman-stat').value) || 10;
     const arrows = parseInt(document.getElementById('crossbowman-arrows').value) || 1;
-    const executionArrows = parseInt(document.getElementById('crossbowman-executionArrows').value) || 0;
     const arrowsToBreak = parseInt(document.getElementById('crossbowman-arrowsToBreak').value) || 1;
-    const damageTaken = parseInt(document.getElementById('crossbowman-damageTaken').value) || 10;
     const focusedAttack = document.getElementById('crossbowman-focusedAttack').checked;
     const isErrorRemoval = document.getElementById('crossbowman-isErrorRemoval').checked;
     const isDistanceCalc = document.getElementById('crossbowman-isDistanceCalc').checked;
     const isExecutionArrow = document.getElementById('crossbowman-isExecutionArrow').checked;
+    const scarletRainActive = document.getElementById('crossbowman-scarletRainActive')?.checked || false;
+    const level = parseInt(document.getElementById('crossbowman-level')?.value) || 1;
+    const damageIncrease = parseInt(document.getElementById('crossbowman-damageIncrease')?.value) || 0;
+    const finalDamageIncrease = parseInt(document.getElementById('crossbowman-finalDamageIncrease')?.value) || 100;
+    const arrowsFirst = parseInt(document.getElementById('crossbowman-arrowsFirst')?.value) || 1;
+    const arrowsSecond = parseInt(document.getElementById('crossbowman-arrowsSecond')?.value) || 1;
+    const arrowsThird = parseInt(document.getElementById('crossbowman-arrowsThird')?.value) || 1;
+    const arrowsFourth = parseInt(document.getElementById('crossbowman-arrowsFourth')?.value) || 1;
     
     try {
         const response = await fetch(`${API_BASE}/crossbowman/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
-                stat, arrows, executionArrows, arrowsToBreak, damageTaken, 
-                focusedAttack, isErrorRemoval, isDistanceCalc, isExecutionArrow 
+                stat, arrows, arrowsToBreak, focusedAttack, isErrorRemoval, isDistanceCalc, isExecutionArrow,
+                scarletRainActive, level, damageIncrease, finalDamageIncrease,
+                arrowsFirst, arrowsSecond, arrowsThird, arrowsFourth
             })
         });
         
@@ -1075,7 +1092,9 @@ function getSkillName(job, skill) {
             'mindless-barrage': '무지성 난타',
             'savage-assault': '흉폭한 맹공',
             'last-strike': '최후의 일격',
-            'devastating-blow': '파멸의 일격'
+            'devastating-blow': '파멸의 일격',
+            'inferno': '업화',
+            'immortal-flame': '불사의 화염'
         },
         gambler: {
             'plain': '기본공격',
@@ -1100,7 +1119,9 @@ function getSkillName(job, skill) {
             'head-strike': '머리치기',
             'defense-break': '수비파괴',
             'stun': '기절시키기',
-            'critical-strike': '일격'
+            'critical-strike': '일격',
+            'solar-armor': '태양 갑옷',
+            'sunset-guardian': '노을빛 수호'
         },
         ninja: {
             'strike': '일격',
@@ -1139,7 +1160,9 @@ function getSkillName(job, skill) {
             'explosive-arrow': '폭탄 화살',
             'split-arrow': '분열 화살',
             'piercing-arrow': '관통 화살',
-            'double-shot': '더블 샷'
+            'double-shot': '더블 샷',
+            'twilight-meteor': '황혼의 유성',
+            'finale-arrow': '종막의 화살'
         },
         crossbowman: {
             'plain': '기본공격',
@@ -1149,7 +1172,9 @@ function getSkillName(job, skill) {
             'rage-arrow': '발광 화살',
             'paralyze-arrow': '마비 화살',
             'break-arrows': '화살 꺾기',
-            'desperate-load': '이럴 때 일수록!'
+            'desperate-load': '이럴 때 일수록!',
+            'scarlet-rain': '붉은 강우',
+            'final-reload': '종언의 장전'
         },
         spearman: {
             'plain': '기본공격',

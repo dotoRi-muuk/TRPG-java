@@ -26,6 +26,10 @@ public class KnightController {
         public boolean blessing;
         public int precision;
         public int level;
+        public int damageIncrease;
+        public int finalDamageIncrease = 100;
+        public int maxHealth = 100;
+        public int swiftness;
     }
 
     private static Map<String, Object> buildResponse(Result result, ByteArrayOutputStream baos) {
@@ -47,7 +51,8 @@ public class KnightController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Knight knight = new Knight();
-        Result result = knight.plain(req.stat, req.blessing, req.precision, req.level, ps);
+        Result result = knight.plain(req.stat, req.blessing, req.precision, req.level,
+                req.damageIncrease, req.finalDamageIncrease, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -63,7 +68,8 @@ public class KnightController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Knight knight = new Knight();
-        Result result = knight.downwardStrike(req.stat, req.blessing, req.precision, req.level, ps);
+        Result result = knight.downwardStrike(req.stat, req.blessing, req.precision, req.level,
+                req.damageIncrease, req.finalDamageIncrease, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -79,7 +85,8 @@ public class KnightController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Knight knight = new Knight();
-        Result result = knight.bash(req.stat, req.blessing, req.precision, req.level, ps);
+        Result result = knight.bash(req.stat, req.blessing, req.precision, req.level,
+                req.damageIncrease, req.finalDamageIncrease, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -95,7 +102,8 @@ public class KnightController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Knight knight = new Knight();
-        Result result = knight.headStrike(req.stat, req.blessing, req.precision, req.level, ps);
+        Result result = knight.headStrike(req.stat, req.blessing, req.precision, req.level,
+                req.damageIncrease, req.finalDamageIncrease, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -111,7 +119,8 @@ public class KnightController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Knight knight = new Knight();
-        Result result = knight.defenseBreak(req.stat, req.blessing, req.precision, req.level, ps);
+        Result result = knight.defenseBreak(req.stat, req.blessing, req.precision, req.level,
+                req.damageIncrease, req.finalDamageIncrease, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -127,7 +136,8 @@ public class KnightController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Knight knight = new Knight();
-        Result result = knight.stun(req.stat, req.blessing, req.precision, req.level, ps);
+        Result result = knight.stun(req.stat, req.blessing, req.precision, req.level,
+                req.damageIncrease, req.finalDamageIncrease, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -143,7 +153,41 @@ public class KnightController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Knight knight = new Knight();
-        Result result = knight.strike(req.stat, req.blessing, req.precision, req.level, ps);
+        Result result = knight.strike(req.stat, req.blessing, req.precision, req.level,
+                req.damageIncrease, req.finalDamageIncrease, ps);
+        ps.flush();
+
+        return buildResponse(result, baos);
+    }
+
+    /**
+     * 태양 갑옷
+     * POST /api/knight/solar-armor
+     */
+    @PostMapping("/solar-armor")
+    public Map<String, Object> solarArmor(@RequestBody KnightRequest req) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        Knight knight = new Knight();
+        Result result = knight.solarArmor(req.stat, req.maxHealth, ps);
+        ps.flush();
+
+        return buildResponse(result, baos);
+    }
+
+    /**
+     * 노을빛 수호
+     * POST /api/knight/sunset-guardian
+     */
+    @PostMapping("/sunset-guardian")
+    public Map<String, Object> sunsetGuardian(@RequestBody KnightRequest req) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        Knight knight = new Knight();
+        int swiftness = req.swiftness > 0 ? req.swiftness : req.stat;
+        Result result = knight.sunsetGuardian(swiftness, ps);
         ps.flush();
 
         return buildResponse(result, baos);
