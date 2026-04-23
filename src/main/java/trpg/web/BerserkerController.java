@@ -27,6 +27,8 @@ public class BerserkerController {
         public int currentHealth;
         public int precision;
         public int level;
+        public int damageIncrease;
+        public int finalDamageIncrease = 100;
     }
 
     /**
@@ -40,6 +42,8 @@ public class BerserkerController {
         public int currentStamina;
         public int precision;
         public int level;
+        public int damageIncrease;
+        public int finalDamageIncrease = 100;
     }
 
     /**
@@ -72,7 +76,8 @@ public class BerserkerController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Berserker berserker = new Berserker();
-        Result result = berserker.plain(req.stat, req.currentHealth, req.maxHealth, req.precision, req.level, ps);
+        Result result = berserker.plain(req.stat, req.currentHealth, req.maxHealth, req.precision, req.level,
+                req.damageIncrease, req.finalDamageIncrease, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -88,7 +93,8 @@ public class BerserkerController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Berserker berserker = new Berserker();
-        Result result = berserker.smash(req.stat, req.currentHealth, req.maxHealth, req.precision, req.level, ps);
+        Result result = berserker.smash(req.stat, req.currentHealth, req.maxHealth, req.precision, req.level,
+                req.damageIncrease, req.finalDamageIncrease, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -104,7 +110,8 @@ public class BerserkerController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Berserker berserker = new Berserker();
-        Result result = berserker.crush(req.stat, req.currentHealth, req.maxHealth, req.precision, req.level, ps);
+        Result result = berserker.crush(req.stat, req.currentHealth, req.maxHealth, req.precision, req.level,
+                req.damageIncrease, req.finalDamageIncrease, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -120,7 +127,8 @@ public class BerserkerController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Berserker berserker = new Berserker();
-        Result result = berserker.strike(req.stat, req.currentHealth, req.maxHealth, req.precision, req.level, ps);
+        Result result = berserker.strike(req.stat, req.currentHealth, req.maxHealth, req.precision, req.level,
+                req.damageIncrease, req.finalDamageIncrease, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -136,7 +144,8 @@ public class BerserkerController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Berserker berserker = new Berserker();
-        Result result = berserker.mindlessThrashing(req.stat, req.currentHealth, req.maxHealth, req.precision, req.level, ps);
+        Result result = berserker.mindlessThrashing(req.stat, req.currentHealth, req.maxHealth, req.precision, req.level,
+                req.damageIncrease, req.finalDamageIncrease, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -152,7 +161,8 @@ public class BerserkerController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Berserker berserker = new Berserker();
-        Result result = berserker.ferociousAssault(req.stat, req.currentHealth, req.maxHealth, req.precision, req.level, ps);
+        Result result = berserker.ferociousAssault(req.stat, req.currentHealth, req.maxHealth, req.precision, req.level,
+                req.damageIncrease, req.finalDamageIncrease, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -168,7 +178,8 @@ public class BerserkerController {
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
 
         Berserker berserker = new Berserker();
-        Result result = berserker.devastatingBlow(req.stat, req.currentHealth, req.maxHealth, req.precision, req.level, ps);
+        Result result = berserker.devastatingBlow(req.stat, req.currentHealth, req.maxHealth, req.precision, req.level,
+                req.damageIncrease, req.finalDamageIncrease, ps);
         ps.flush();
 
         return buildResponse(result, baos);
@@ -185,7 +196,39 @@ public class BerserkerController {
 
         Berserker berserker = new Berserker();
         Result result = berserker.finalStrike(req.stat, req.currentHealth, req.maxHealth,
-                req.currentStamina, req.precision, req.level, ps);
+                req.currentStamina, req.precision, req.level, req.damageIncrease, req.finalDamageIncrease, ps);
+        ps.flush();
+
+        return buildResponse(result, baos);
+    }
+
+    /**
+     * 업화
+     * POST /api/berserker/inferno
+     */
+    @PostMapping("/inferno")
+    public Map<String, Object> inferno() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        Berserker berserker = new Berserker();
+        Result result = berserker.inferno(ps);
+        ps.flush();
+
+        return buildResponse(result, baos);
+    }
+
+    /**
+     * 불사의 화염
+     * POST /api/berserker/immortal-flame
+     */
+    @PostMapping("/immortal-flame")
+    public Map<String, Object> immortalFlame() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        Berserker berserker = new Berserker();
+        Result result = berserker.immortalFlame(ps);
         ps.flush();
 
         return buildResponse(result, baos);

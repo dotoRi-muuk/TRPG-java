@@ -38,6 +38,9 @@ import kotlin.math.roundToInt
  * 동귀어진 (전용 수비) : 받는 데미지가 100% 증가합니다. 입은 피해의 400%만큼 적에게 피해를 입힙니다. (스태미나 6 소모, 쿨타임 10턴)
  */
 class Berserker {
+    companion object {
+        private const val DEFAULT_FINAL_DAMAGE_PERCENT = 100
+    }
 
     /**
      * 버서커 동귀어진 : 받는 데미지가 100% 증가합니다. 입은 피해의 400%만큼 적에게 피해를 입힙니다. (스태미나 6 소모, 쿨타임 10턴)
@@ -112,8 +115,12 @@ class Berserker {
      * @return 결과 객체
      */
     fun plain(stat: Int, currentHp: Int, maxHp: Int, precision: Int, level: Int, out: PrintStream): main.Result {
+        return plain(stat, currentHp, maxHp, precision, level, 0, DEFAULT_FINAL_DAMAGE_PERCENT, out)
+    }
+
+    fun plain(stat: Int, currentHp: Int, maxHp: Int, precision: Int, level: Int, damageIncreasePercent: Int, finalDamagePercent: Int, out: PrintStream): main.Result {
         out.println("버서커 - 기본 공격 사용")
-        return normalAttack(stat, 1, 6, currentHp, maxHp, 0, precision, level, out)
+        return normalAttack(stat, 1, 6, currentHp, maxHp, 0, precision, level, damageIncreasePercent, finalDamagePercent, out)
     }
 
     /**
@@ -127,8 +134,12 @@ class Berserker {
      * @return 결과 객체
      */
     fun smash(stat: Int, currentHp: Int, maxHp: Int, precision: Int, level: Int, out: PrintStream): main.Result {
+        return smash(stat, currentHp, maxHp, precision, level, 0, DEFAULT_FINAL_DAMAGE_PERCENT, out)
+    }
+
+    fun smash(stat: Int, currentHp: Int, maxHp: Int, precision: Int, level: Int, damageIncreasePercent: Int, finalDamagePercent: Int, out: PrintStream): main.Result {
         out.println("버서커 - 찍어내리기 사용")
-        return normalAttack(stat, 1, 8, currentHp, maxHp, 1, precision, level, out)
+        return normalAttack(stat, 1, 8, currentHp, maxHp, 1, precision, level, damageIncreasePercent, finalDamagePercent, out)
     }
 
     /**
@@ -142,8 +153,12 @@ class Berserker {
      * @return 결과 객체
      */
     fun crush(stat: Int, currentHp: Int, maxHp: Int, precision: Int, level: Int, out: PrintStream): main.Result {
+        return crush(stat, currentHp, maxHp, precision, level, 0, DEFAULT_FINAL_DAMAGE_PERCENT, out)
+    }
+
+    fun crush(stat: Int, currentHp: Int, maxHp: Int, precision: Int, level: Int, damageIncreasePercent: Int, finalDamagePercent: Int, out: PrintStream): main.Result {
         out.println("버서커 - 부수기 사용")
-        return normalAttack(stat, 2, 6, currentHp, maxHp, 2, precision, level, out)
+        return normalAttack(stat, 2, 6, currentHp, maxHp, 2, precision, level, damageIncreasePercent, finalDamagePercent, out)
     }
 
     /**
@@ -157,8 +172,12 @@ class Berserker {
      * @return 결과 객체
      */
     fun strike(stat: Int, currentHp: Int, maxHp: Int, precision: Int, level: Int, out: PrintStream): main.Result {
+        return strike(stat, currentHp, maxHp, precision, level, 0, DEFAULT_FINAL_DAMAGE_PERCENT, out)
+    }
+
+    fun strike(stat: Int, currentHp: Int, maxHp: Int, precision: Int, level: Int, damageIncreasePercent: Int, finalDamagePercent: Int, out: PrintStream): main.Result {
         out.println("버서커 - 일격 사용")
-        return normalAttack(stat, 1, 20, currentHp, maxHp, 5, precision, level, out)
+        return normalAttack(stat, 1, 20, currentHp, maxHp, 5, precision, level, damageIncreasePercent, finalDamagePercent, out)
     }
 
     /**
@@ -172,8 +191,12 @@ class Berserker {
      * @return 결과 객체
      */
     fun mindlessThrashing(stat: Int, currentHp: Int, maxHp: Int, precision: Int, level: Int, out: PrintStream): main.Result {
+        return mindlessThrashing(stat, currentHp, maxHp, precision, level, 0, DEFAULT_FINAL_DAMAGE_PERCENT, out)
+    }
+
+    fun mindlessThrashing(stat: Int, currentHp: Int, maxHp: Int, precision: Int, level: Int, damageIncreasePercent: Int, finalDamagePercent: Int, out: PrintStream): main.Result {
         out.println("버서커 - 무지성 난타 사용")
-        return normalAttack(stat, 4, 8, currentHp, maxHp, 8, precision, level, out)
+        return normalAttack(stat, 4, 8, currentHp, maxHp, 8, precision, level, damageIncreasePercent, finalDamagePercent, out)
     }
 
     /**
@@ -187,8 +210,12 @@ class Berserker {
      * @return 결과 객체
      */
     fun ferociousAssault(stat: Int, currentHp: Int, maxHp: Int, precision: Int, level: Int, out: PrintStream): main.Result {
+        return ferociousAssault(stat, currentHp, maxHp, precision, level, 0, DEFAULT_FINAL_DAMAGE_PERCENT, out)
+    }
+
+    fun ferociousAssault(stat: Int, currentHp: Int, maxHp: Int, precision: Int, level: Int, damageIncreasePercent: Int, finalDamagePercent: Int, out: PrintStream): main.Result {
         out.println("버서커 - 흉폭한 맹공 사용")
-        return normalAttack(stat, 5, 12, currentHp, maxHp, 12, precision, level, out)
+        return normalAttack(stat, 5, 12, currentHp, maxHp, 12, precision, level, damageIncreasePercent, finalDamagePercent, out)
     }
 
     /**
@@ -203,8 +230,12 @@ class Berserker {
      * @return 결과 객체
      */
     fun devastatingBlow(stat: Int, currentHp: Int, maxHp: Int, precision: Int, level: Int, out: PrintStream): main.Result {
+        return devastatingBlow(stat, currentHp, maxHp, precision, level, 0, DEFAULT_FINAL_DAMAGE_PERCENT, out)
+    }
+
+    fun devastatingBlow(stat: Int, currentHp: Int, maxHp: Int, precision: Int, level: Int, damageIncreasePercent: Int, finalDamagePercent: Int, out: PrintStream): main.Result {
         out.println("버서커 - 파멸의 일격 사용")
-        return normalAttack(stat, 6, 8, currentHp, maxHp, 14, precision, level, out)
+        return normalAttack(stat, 6, 8, currentHp, maxHp, 14, precision, level, damageIncreasePercent, finalDamagePercent, out)
     }
 
     /**
@@ -224,6 +255,20 @@ class Berserker {
         currentStamina: Int,
         precision: Int,
         level: Int,
+        out: PrintStream
+    ): main.Result {
+        return finalStrike(stat, currentHp, maxHp, currentStamina, precision, level, 0, DEFAULT_FINAL_DAMAGE_PERCENT, out)
+    }
+
+    fun finalStrike(
+        stat: Int,
+        currentHp: Int,
+        maxHp: Int,
+        currentStamina: Int,
+        precision: Int,
+        level: Int,
+        damageIncreasePercent: Int,
+        finalDamagePercent: Int,
         out: PrintStream
     ): main.Result {
         out.println("버서커 - 최후의 일격 사용")
@@ -248,19 +293,37 @@ class Berserker {
         val euphoriaOutBonus = if (euphoriaActive) 150 else 0
         if (euphoriaActive) out.println("희열 패시브 적용: 가하는 데미지 150% 증가")
 
-        val damageAfterPassives = Main.calculateDamage(baseDamage, rageBonus + euphoriaOutBonus, 1.0, out)
+        val additivePercent = rageBonus + euphoriaOutBonus + damageIncreasePercent
+        val levelMultiplierPercent = 100 + level * level
+        val combinedFinalMultiplier = (levelMultiplierPercent / 100.0) * (finalDamagePercent / 100.0)
+        val damageAfterPassives = Main.calculateDamage(baseDamage, additivePercent, combinedFinalMultiplier, out)
         val sideDamage = Main.sideDamage(damageAfterPassives, stat, out, diceRoll)
         val totalDamage = damageAfterPassives + sideDamage
         out.println("데미지 보정치 : $sideDamage")
         out.println("최종 데미지 : $totalDamage")
         val critDamage = Main.criticalHit(precision, totalDamage, out)
-        val finalDamage = applyLevelMultiplier(critDamage, level, out)
+        val finalDamage = critDamage
 
         // 광기 패시브: 가한 데미지의 10% 회복
         val heal = (finalDamage * 0.1).roundToInt()
         out.println("광기 패시브 적용: $heal HP 회복")
 
         return main.Result(0, finalDamage, true, 0, currentStamina)
+    }
+
+    fun inferno(out: PrintStream): main.Result {
+        out.println("버서커 - 업화 사용")
+        val reductionPercent = Main.dice(4, 20, out)
+        out.printf("다음 받는 공격 피해 %d%% 감소 (턴 미소모)%n", reductionPercent)
+        return main.Result(0, 0, true, 5, 0)
+    }
+
+    fun immortalFlame(out: PrintStream): main.Result {
+        out.println("버서커 - 불사의 화염 발동")
+        out.println("전투 중 치명상 시 사망하지 않고 HP 0 상태 유지")
+        out.println("모든 스킬 쿨타임 초기화, 즉시 2회 행동")
+        out.println("이후 받는 최종 데미지 2배 증가")
+        return main.Result(0, 0, true, 0, 0)
     }
 
     /**
@@ -328,13 +391,6 @@ class Berserker {
         return main.Result(0, 0, true, 5, 0)
     }
 
-    private fun applyLevelMultiplier(damage: Int, level: Int, out: PrintStream): Int {
-        val multiplier = 100 + level * level
-        val levelDamage = damage * multiplier / 100
-        out.printf("레벨 배율 적용 (레벨 %d, %d%%) : %d -> %d%n", level, multiplier, damage, levelDamage)
-        return levelDamage
-    }
-
     /**
      * 버서커 범용 공격 메소드
      *
@@ -358,6 +414,8 @@ class Berserker {
         stamina: Int,
         precision: Int,
         level: Int,
+        externalDamageIncreasePercent: Int,
+        externalFinalDamagePercent: Int,
         out: PrintStream
     ): main.Result {
         val verdictResult = Main.verdict(stat, out)
@@ -380,13 +438,16 @@ class Berserker {
         val effectiveStamina = if (euphoriaActive) (stamina * 0.5).roundToInt() else stamina
         if (euphoriaActive) out.println("희열 패시브 적용: 스태미나 소모 50% 감소 ($stamina -> $effectiveStamina)")
 
-        val damageAfterPassives = Main.calculateDamage(baseDamage, rageBonus + euphoriaOutBonus, 1.0, out)
+        val additivePercent = rageBonus + euphoriaOutBonus + externalDamageIncreasePercent
+        val levelMultiplierPercent = 100 + level * level
+        val combinedFinalMultiplier = (levelMultiplierPercent / 100.0) * (externalFinalDamagePercent / 100.0)
+        val damageAfterPassives = Main.calculateDamage(baseDamage, additivePercent, combinedFinalMultiplier, out)
         val sideDamage = Main.sideDamage(damageAfterPassives, stat, out, diceRoll)
         val totalDamage = damageAfterPassives + sideDamage
         out.println("데미지 보정치 : $sideDamage")
         out.println("최종 데미지 : $totalDamage")
         val critDamage = Main.criticalHit(precision, totalDamage, out)
-        val finalDamage = applyLevelMultiplier(critDamage, level, out)
+        val finalDamage = critDamage
 
         // 광기 패시브: 가한 데미지의 10% 회복
         val heal = (finalDamage * 0.1).roundToInt()
