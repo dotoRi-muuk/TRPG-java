@@ -433,6 +433,14 @@
                             <input type="number" id="samurai-level" value="1" min="1">
                         </div>
                         <div class="form-group">
+                            <label for="samurai-damageIncrease">데미지 증가(%)</label>
+                            <input type="number" id="samurai-damageIncrease" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="samurai-finalDamageIncrease">최종 데미지(%)</label>
+                            <input type="number" id="samurai-finalDamageIncrease" value="100" min="0">
+                        </div>
+                        <div class="form-group">
                             <label for="samurai-maxHP">최대 체력</label>
                             <input type="number" id="samurai-maxHP" value="100" min="1">
                         </div>
@@ -443,6 +451,10 @@
                         <div class="form-group">
                             <label for="samurai-consumedStamina">소모 스태미나 (종점)</label>
                             <input type="number" id="samurai-consumedStamina" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="samurai-scarCount">검흔 개수 (섬멸의 칼날 [종])</label>
+                            <input type="number" id="samurai-scarCount" value="0" min="0">
                         </div>
                         <div class="form-group checkbox-group">
                             <label>
@@ -480,6 +492,8 @@
                         <button onclick="calculateSamurai('flash-strike')" class="btn btn-skill">섬격 (D12 200%)</button>
                         <button onclick="calculateSamurai('final-point')" class="btn btn-skill">종점 (3D20)</button>
                         <button onclick="calculateSamurai('bloom')" class="btn btn-skill">개화 (8D6)</button>
+                        <button onclick="calculateSamurai('annihilation-blade-cast')" class="btn btn-skill">섬멸의 칼날 [시]</button>
+                        <button onclick="calculateSamurai('annihilation-blade-end')" class="btn btn-skill">섬멸의 칼날 [종]</button>
                     </div>
                 </div>
 
@@ -825,10 +839,18 @@
                                 신경 극대화 (데미지 +1000%)
                             </label>
                         </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="sniper-hasThunderBreakRound">
+                                뇌광파쇄탄환 장전 상태
+                            </label>
+                        </div>
                     </div>
                     <div class="skill-buttons">
                         <button onclick="calculateSniper('plain')" class="btn btn-skill">기본공격 (1D6)</button>
                         <button onclick="calculateSniper('fire')" class="btn btn-skill">발사 (5D20)</button>
+                        <button onclick="calculateSniper('thunder-break-round')" class="btn btn-skill">뇌광파쇄탄환</button>
+                        <button onclick="calculateSniper('electric-sure-shot')" class="btn btn-skill">전격필중저격 (5D20+7D12)</button>
                     </div>
                 </div>
 
@@ -855,6 +877,10 @@
                             <label for="masterarcher-actionCount">행동 횟수 (종막의 화살)</label>
                             <input type="number" id="masterarcher-actionCount" value="1" min="1">
                         </div>
+                        <div class="form-group">
+                            <label for="masterarcher-weaponCount">생성 무기 수 (마나 웨폰)</label>
+                            <input type="number" id="masterarcher-weaponCount" value="1" min="0">
+                        </div>
                         <div class="form-group checkbox-group">
                             <label>
                                 <input type="checkbox" id="masterarcher-isHeavyString">
@@ -873,6 +899,12 @@
                                 첫 대상 (포착 200%)
                             </label>
                         </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="masterarcher-nextActionFailed">
+                                다음 행동 실패 (허상 전환 발동)
+                            </label>
+                        </div>
                     </div>
                     <p class="note" style="font-size: 0.9em; color: #666;">※ 오차 제거 패시브: 스탯 +3 자동 적용</p>
                     <div class="skill-buttons">
@@ -884,6 +916,8 @@
                         <button onclick="calculateMasterArcher('double-shot')" class="btn btn-skill">더블 샷 (2회)</button>
                         <button onclick="calculateMasterArcher('twilight-meteor')" class="btn btn-skill">황혼의 유성</button>
                         <button onclick="calculateMasterArcher('finale-arrow')" class="btn btn-skill">종막의 화살 (5D10)</button>
+                        <button onclick="calculateMasterArcher('mana-weapon')" class="btn btn-skill">마나 웨폰</button>
+                        <button onclick="calculateMasterArcher('phantom-shift')" class="btn btn-skill">허상 전환</button>
                     </div>
                 </div>
 
@@ -1204,6 +1238,16 @@
                             <label for="magicswordsman-damageTaken">받은 데미지 (플로우 오라)</label>
                             <input type="number" id="magicswordsman-damageTaken" value="10" min="0">
                         </div>
+                        <div class="form-group">
+                            <label for="magicswordsman-ecletTurns">에클레트 진행 턴 수</label>
+                            <input type="number" id="magicswordsman-ecletTurns" value="0" min="0">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="magicswordsman-ecletActive">
+                                오라 블레이드 [에클레트] 활성화
+                            </label>
+                        </div>
                     </div>
                     <div class="skill-buttons">
                         <button onclick="calculateMagicSwordsman('plain')" class="btn btn-skill">기본공격 (D6)</button>
@@ -1215,6 +1259,8 @@
                         <button onclick="calculateMagicSwordsman('ethereal-imperio')" class="btn btn-skill">에테리얼 임페리오 (3D20)</button>
                         <button onclick="calculateMagicSwordsman('speed-drain')" class="btn btn-skill">스피드레인 (마나 2D8)</button>
                         <button onclick="calculateMagicSwordsman('flow-aura')" class="btn btn-skill">플로우 오라 (수비)</button>
+                        <button onclick="calculateMagicSwordsman('aura-blade-eclet')" class="btn btn-skill">오라 블레이드 [에클레트]</button>
+                        <button onclick="calculateMagicSwordsman('eclair-dominia')" class="btn btn-skill">에클레어 도미니아</button>
                     </div>
                 </div>
 

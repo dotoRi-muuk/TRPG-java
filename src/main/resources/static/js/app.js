@@ -298,16 +298,22 @@ async function calculateSamurai(skill) {
     const maxHP = parseInt(document.getElementById('samurai-maxHP').value) || 100;
     const currentHP = parseInt(document.getElementById('samurai-currentHP').value) || 100;
     const consumedStamina = parseInt(document.getElementById('samurai-consumedStamina').value) || 0;
+    const scarCount = parseInt(document.getElementById('samurai-scarCount')?.value) || 0;
     const level = parseInt(document.getElementById('samurai-level').value) || 1;
+    const damageIncrease = parseInt(document.getElementById('samurai-damageIncrease')?.value) || 0;
+    const finalDamageIncrease = parseInt(document.getElementById('samurai-finalDamageIncrease')?.value) || 100;
     const isMula = document.getElementById('samurai-isMula').checked;
     const kakugo = document.getElementById('samurai-kakugo').checked;
     const seishaKetsudan = document.getElementById('samurai-seishaKetsudan').checked;
     const scatteringSwordDance = document.getElementById('samurai-scatteringSwordDance').checked;
     
-    let body = { stat, isMula, kakugo, seishaKetsudan, currentHP, maxHP, scatteringSwordDance, level };
+    let body = { stat, isMula, kakugo, seishaKetsudan, currentHP, maxHP, scatteringSwordDance, level, damageIncrease, finalDamageIncrease };
     
     if (skill === 'final-point') {
         body.consumedStamina = consumedStamina;
+    }
+    if (skill === 'annihilation-blade-end') {
+        body.scarCount = scarCount;
     }
     
     try {
@@ -490,6 +496,7 @@ async function calculateSniper(skill) {
     const isConfident = document.getElementById('sniper-isConfident')?.checked || false;
     const isLoaded = document.getElementById('sniper-isLoaded')?.checked || false;
     const isNerveMax = document.getElementById('sniper-isNerveMax')?.checked || false;
+    const hasThunderBreakRound = document.getElementById('sniper-hasThunderBreakRound')?.checked || false;
 
     const turnsSinceAttack = notAttackedFor5Turns ? 5 : 0;
 
@@ -508,7 +515,8 @@ async function calculateSniper(skill) {
                 stabilize: isStabilized,
                 immersion: isImmersed,
                 conviction: isConfident,
-                heightenedSenses: isNerveMax
+                heightenedSenses: isNerveMax,
+                hasThunderBreakRound
             })
         });
 
@@ -531,6 +539,8 @@ async function calculateMasterArcher(skill) {
     const damageIncrease = parseInt(document.getElementById('masterarcher-damageIncrease')?.value) || 0;
     const finalDamageIncrease = parseInt(document.getElementById('masterarcher-finalDamageIncrease')?.value) || 100;
     const actionCount = parseInt(document.getElementById('masterarcher-actionCount')?.value) || 1;
+    const weaponCount = parseInt(document.getElementById('masterarcher-weaponCount')?.value) || 1;
+    const nextActionFailed = document.getElementById('masterarcher-nextActionFailed')?.checked || false;
     
     // If emergency shot checkbox is checked and basic attack is requested, use emergency-shot endpoint
     let actualSkill = skill;
@@ -542,7 +552,7 @@ async function calculateMasterArcher(skill) {
         const response = await fetch(`${API_BASE}/masterarcher/${actualSkill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat, isHeavyString, isFirstTarget, level, damageIncrease, finalDamageIncrease, actionCount })
+            body: JSON.stringify({ stat, isHeavyString, isFirstTarget, level, damageIncrease, finalDamageIncrease, actionCount, weaponCount, nextActionFailed })
         });
         
         const data = await response.json();
@@ -740,12 +750,14 @@ async function calculateMagicSwordsman(skill) {
     const intelligence = parseInt(document.getElementById('magicswordsman-intelligence').value) || 10;
     const manaSpentInPreviousAction = parseInt(document.getElementById('magicswordsman-manaSpent').value) || 5;
     const damageTaken = parseInt(document.getElementById('magicswordsman-damageTaken').value) || 10;
+    const ecletTurns = parseInt(document.getElementById('magicswordsman-ecletTurns')?.value) || 0;
+    const ecletActive = document.getElementById('magicswordsman-ecletActive')?.checked || false;
     
     try {
         const response = await fetch(`${API_BASE}/magicswordsman/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ intelligence, manaSpentInPreviousAction, damageTaken })
+            body: JSON.stringify({ intelligence, manaSpentInPreviousAction, damageTaken, ecletTurns, ecletActive })
         });
         
         const data = await response.json();
@@ -1082,7 +1094,9 @@ function getSkillName(job, skill) {
             'ranged-attack': '난격',
             'flash-strike': '섬격',
             'final-point': '종점',
-            'bloom': '개화'
+            'bloom': '개화',
+            'annihilation-blade-cast': '섬멸의 칼날 [시]',
+            'annihilation-blade-end': '섬멸의 칼날 [종]'
         },
         berserker: {
             'plain': '기본공격',
@@ -1148,6 +1162,8 @@ function getSkillName(job, skill) {
             'load': '장전',
             'aim': '조준',
             'fire': '발사',
+            'thunder-break-round': '뇌광파쇄탄환',
+            'electric-sure-shot': '전격필중저격',
             'stabilize': '안정화',
             'immerse': '몰입',
             'confidence': '확신',
@@ -1162,7 +1178,9 @@ function getSkillName(job, skill) {
             'piercing-arrow': '관통 화살',
             'double-shot': '더블 샷',
             'twilight-meteor': '황혼의 유성',
-            'finale-arrow': '종막의 화살'
+            'finale-arrow': '종막의 화살',
+            'mana-weapon': '마나 웨폰',
+            'phantom-shift': '허상 전환'
         },
         crossbowman: {
             'plain': '기본공격',
@@ -1209,7 +1227,9 @@ function getSkillName(job, skill) {
             'ether-catastrophe': '에테르 카타스트로피',
             'lumen-conversion-aoe': '루멘 컨버전 (광역)',
             'lumen-conversion-single': '루멘 컨버전 (단일)',
-            'rampage-aura': '폭주오라'
+            'rampage-aura': '폭주오라',
+            'elea-excidium-nova': '엘레아 엑시디움 노바',
+            'mana-circuit-restoration': '마나 회로 수복'
         },
         barriermage: {
             'force-field-barrier': '역장 결계',
@@ -1225,7 +1245,9 @@ function getSkillName(job, skill) {
             'triple-slain': '트리플 슬레인',
             'ethereal-imperio': '에테리얼 임페리오',
             'speed-drain': '스피드레인',
-            'flow-aura': '플로우 오라'
+            'flow-aura': '플로우 오라',
+            'aura-blade-eclet': '오라 블레이드 [에클레트]',
+            'eclair-dominia': '에클레어 도미니아'
         },
         summoner: {
             'plain': '기본공격',

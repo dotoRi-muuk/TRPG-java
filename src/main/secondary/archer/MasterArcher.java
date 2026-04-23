@@ -227,5 +227,32 @@ public class MasterArcher {
         );
     }
 
-}
+    /**
+     * 웨폰마스터 - 마나 웨폰:
+     * 생성한 무기 1개당 1회 추가 행동. 생성 무기는 사용 가능 무기 개수에 포함되지 않음. (무기 1개당 마나 3, 쿨타임 10턴)
+     */
+    public static Result manaWeapon(int weaponCount, PrintStream out) {
+        int count = Math.max(0, weaponCount);
+        int manaUsed = count * 3;
+        out.println("웨폰마스터-마나 웨폰 사용");
+        out.printf("생성 무기 수: %d개%n", count);
+        out.printf("효과: 생성 무기 1개당 추가 행동 1회 (총 +%d회)%n", count);
+        out.println("생성된 무기는 사용 가능한 무기 개수에 포함되지 않습니다.");
+        return new Result(0, 0, true, manaUsed, 0);
+    }
 
+    /**
+     * 웨폰마스터 - 허상 전환:
+     * 다음 행동 실패 시 모든 디버프 제거 + 즉시 턴 1회 획득 + 해당 턴 최종 데미지 2배. (마나 5, 쿨타임 8턴)
+     */
+    public static Result phantomShift(boolean nextActionFailed, PrintStream out) {
+        out.println("웨폰마스터-허상 전환 사용");
+        if (nextActionFailed) {
+            out.println("다음 행동 실패 감지: 모든 디버프 제거, 즉시 턴 1회 획득, 해당 턴 최종 데미지 2배");
+        } else {
+            out.println("대기 상태: 다음 행동이 실패하면 허상 전환 효과가 발동합니다.");
+        }
+        return new Result(0, 0, true, 5, 0);
+    }
+
+}
