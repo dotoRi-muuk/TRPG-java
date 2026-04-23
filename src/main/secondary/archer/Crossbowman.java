@@ -16,6 +16,10 @@ public class Crossbowman {
     private static final int DEFAULT_LEVEL = 1;
     private static final int DEFAULT_FINAL_DAMAGE_PERCENT = 100;
 
+    private static int scarletArrowDamage(PrintStream out) {
+        return Main.dice(1, 2, out) == 1 ? 1 : 15;
+    }
+
     /**
      * 데미지 계산 공식 적용
      * [(기본 데미지) x (100 + 데미지)%] x (최종 데미지)% x (주사위 보정)
@@ -42,7 +46,7 @@ public class Crossbowman {
         if (scarletRain) {
             out.println("붉은 강우 적용: 모든 화살 피해를 1 또는 15로 변경");
             for (int i = 0; i < dices; i++) {
-                int arrowDamage = Math.random() < 0.5 ? 1 : 15;
+                int arrowDamage = scarletArrowDamage(out);
                 basic += arrowDamage;
             }
             out.printf("붉은 강우 기본 데미지 합계 : %d\n", basic);
@@ -277,8 +281,8 @@ public class Crossbowman {
         int dice2;
         if (scarletRain) {
             out.println("붉은 강우 적용: 모든 화살 피해를 1 또는 15로 변경");
-            dice1 = (Math.random() < 0.5 ? 1 : 15) + (Math.random() < 0.5 ? 1 : 15);
-            dice2 = Math.random() < 0.5 ? 1 : 15;
+            dice1 = scarletArrowDamage(out) + scarletArrowDamage(out);
+            dice2 = scarletArrowDamage(out);
         } else {
             dice1 = Main.dice(2, 8, out);
             dice2 = Main.dice(1, 6, out);
@@ -317,8 +321,8 @@ public class Crossbowman {
         int diceRoll = stat - verdict;
 
         int[] arrowsByAttack = {Math.max(0, arrowsFirst), Math.max(0, arrowsSecond), Math.max(0, arrowsThird), Math.max(0, arrowsFourth)};
-        int bonusPercent = arrowsByAttack[1] * arrowsByAttack[2];
-        out.printf("종언의 장전 보너스: 2회 화살(%d) x 3회 화살(%d) = +%d%%%n", arrowsByAttack[1], arrowsByAttack[2], bonusPercent);
+        int arrowProductBonus = arrowsByAttack[1] * arrowsByAttack[2];
+        out.printf("종언의 장전 보너스: 2회 화살(%d) x 3회 화살(%d) = +%d%%%n", arrowsByAttack[1], arrowsByAttack[2], arrowProductBonus);
 
         double finalDamageMultiplier = 1.0;
         if (distanceCalculation) {
@@ -338,7 +342,7 @@ public class Crossbowman {
                 out.printf("%d회차: 화살 미소모로 공격 생략%n", i + 1);
                 continue;
             }
-            int flatBonus = arrows * concentratedMultiplier + bonusPercent;
+            int flatBonus = arrows * concentratedMultiplier + arrowProductBonus;
             Result attack = calculate(
                     arrows, 6, stat, flatBonus, finalDamageMultiplier, precision, 0, level,
                     externalDamageIncreasePercent, externalFinalDamagePercent, scarletRain, out, diceRoll

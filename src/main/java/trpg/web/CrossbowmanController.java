@@ -48,7 +48,7 @@ public class CrossbowmanController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
         Result result = Crossbowman.plain(
-                req.stat, req.arrows, req.isErrorRemoval, req.isExecutionArrow, req.isDistanceCalc, req.precision,
+                req.stat, req.arrows, req.isErrorRemoval || req.focusedAttack, req.isExecutionArrow, req.isDistanceCalc, req.precision,
                 req.level, req.damageIncrease, req.finalDamageIncrease, req.scarletRainActive, ps
         );
         ps.flush();
@@ -148,4 +148,3 @@ public class CrossbowmanController {
         return buildResponse(result, baos);
     }
 }
-
