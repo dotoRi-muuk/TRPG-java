@@ -334,4 +334,55 @@ public class MagicSwordsman {
         }
     }
 
+    /**
+     * 오라 블레이드 [에클레트] :
+     * [오라 블레이드]를 대체하며, 공격 시 (진행 턴 수)D12 추가 데미지를 부여합니다.
+     * 휴식 시 취소됩니다. (매턴 마나 3 소모)
+     */
+    public static Result auraBladeEclet(PrintStream out) {
+        out.println("마검사-오라 블레이드 [에클레트] 사용");
+        out.println("[오라 블레이드] 효과를 대체합니다.");
+        out.println("효과: 공격 시 (진행 턴 수)D12 추가 데미지, 휴식 시 취소");
+        return new Result(0, 0, true, 3, 0);
+    }
+
+    /**
+     * 에클레어 도미니아 :
+     * 오라 블레이드 [에클레트] 발동 중 사용 가능.
+     * 6D8 피해 + [에클레트] 효과 4회 발동.
+     */
+    public static Result eclairDominia(int stat, int progressTurns, boolean ecletActive, int precision, PrintStream out) {
+        out.println("마검사-에클레어 도미니아 사용");
+        if (!ecletActive) {
+            out.println("실패: 오라 블레이드 [에클레트]가 활성화되어 있지 않습니다.");
+            return new Result(0, 0, false, 0, 0);
+        }
+
+        int verdict = Main.verdict(stat, out);
+        if (verdict <= 0) {
+            return new Result(0, 0, false, 6, 0);
+        }
+        int diceRoll = stat - verdict;
+
+        int damage = Main.dice(6, 8, out);
+        out.printf("기본 데미지 (6D8): %d%n", damage);
+
+        int turns = Math.max(0, progressTurns);
+        int ecletExtra = 0;
+        for (int i = 1; i <= 4; i++) {
+            int add = turns > 0 ? Main.dice(turns, 12, out) : 0;
+            ecletExtra += add;
+            out.printf("[에클레트] 추가 타격 %d/4: %d%n", i, add);
+        }
+        damage += ecletExtra;
+        out.printf("[에클레트] 총 추가 데미지: %d%n", ecletExtra);
+
+        int sideDamage = Main.sideDamage(damage, stat, out, diceRoll);
+        damage += sideDamage;
+        out.printf("데미지 보정치 : %d%n", sideDamage);
+        damage = Main.criticalHit(precision, damage, out);
+        out.printf("최종 데미지 : %d%n", damage);
+        return new Result(0, damage, true, 6, 0);
+    }
+
 }

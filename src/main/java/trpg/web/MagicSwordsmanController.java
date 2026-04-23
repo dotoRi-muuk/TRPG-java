@@ -45,6 +45,10 @@ public class MagicSwordsmanController {
         public int precision;
         /** 받은 데미지 (플로우 오라 전용 수비용) */
         public int damageTaken;
+        /** 에클레트 진행 턴 수 */
+        public int ecletTurns;
+        /** 에클레트 활성화 여부 */
+        public boolean ecletActive;
         /**
          * 이전 행동 소모 마나 — manaSpentSinceRest의 별칭 (프론트엔드 하위호환성)
          * manaSpentSinceRest가 0이고 이 값이 설정된 경우 대신 사용합니다.
@@ -235,5 +239,31 @@ public class MagicSwordsmanController {
         response.put("succeeded", result.succeeded());
         response.put("manaUsed", result.manaUsed());
         return response;
+    }
+
+    /**
+     * 오라 블레이드 [에클레트]
+     * POST /api/magicswordsman/aura-blade-eclet
+     */
+    @PostMapping("/aura-blade-eclet")
+    public Map<String, Object> auraBladeEclet(@RequestBody MagicSwordsmanRequest req) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        Result result = MagicSwordsman.auraBladeEclet(ps);
+        ps.flush();
+        return buildResponse(result, baos);
+    }
+
+    /**
+     * 에클레어 도미니아
+     * POST /api/magicswordsman/eclair-dominia
+     */
+    @PostMapping("/eclair-dominia")
+    public Map<String, Object> eclairDominia(@RequestBody MagicSwordsmanRequest req) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        Result result = MagicSwordsman.eclairDominia(req.intelligence, req.ecletTurns, req.ecletActive, req.precision, ps);
+        ps.flush();
+        return buildResponse(result, baos);
     }
 }

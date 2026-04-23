@@ -321,6 +321,62 @@ class BladeMaster {
     }
 
     /**
+     * 무사 섬멸의 칼날 [시] :
+     * 이후 공격 시 주사위 1개당 D4 추가 데미지를 부여하고 검흔을 부여합니다. (매턴 마나 4, 쿨타임 8턴)
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체
+     */
+    fun annihilationBladeCast(out: PrintStream): Result {
+        out.println("무사 - 섬멸의 칼날 [시] 사용")
+        out.println("효과: 이후 공격 시 주사위 1개당 D4 추가 데미지, 검흔 부여")
+        return Result(0, 0, true, 4, 0)
+    }
+
+    /**
+     * 무사 섬멸의 칼날 [종] :
+     * 적에게 (검흔)D12 피해를 입히고 작열을 제거하며 [시] 효과를 종료합니다. (마나 10, 쿨타임 6턴)
+     *
+     * @param stat 사용할 스탯
+     * @param scarCount 검흔 개수
+     * @param precision 정밀 스탯
+     * @param level 레벨
+     * @param out 출력 스트림
+     * @return 결과 객체
+     */
+    fun annihilationBladeEnd(
+        stat: Int,
+        scarCount: Int,
+        precision: Int,
+        level: Int,
+        out: PrintStream
+    ): Result {
+        out.println("무사 - 섬멸의 칼날 [종] 사용")
+        if (scarCount <= 0) {
+            out.println("검흔이 없어 피해를 줄 수 없습니다.")
+            out.println("작열 제거, 섬멸의 칼날 [시] 효과 종료")
+            return Result(0, 0, false, 10, 0)
+        }
+
+        val verdict = Main.verdict(stat, out)
+        if (verdict <= 0) {
+            return Result(0, 0, false, 10, 0)
+        }
+        val diceRoll = stat - verdict
+        val baseDamage = Main.dice(scarCount, 12, out)
+        out.println("검흔 폭발 기본 데미지 : $baseDamage")
+
+        val sideDamage = Main.sideDamage(baseDamage, stat, out, diceRoll)
+        val preCritDamage = baseDamage + sideDamage
+        out.println("데미지 보정치 : $sideDamage")
+        val critDamage = Main.criticalHit(precision, preCritDamage, out)
+        val finalDamage = applyLevelMultiplier(critDamage, level, out)
+
+        out.println("작열 제거, 섬멸의 칼날 [시] 효과 종료")
+        return Result(0, finalDamage, true, 10, 0)
+    }
+
+    /**
      * 무사 각오 : 스스로에게 D6의 피해를 입힙니다. 다음 적중한 공격 데미지가 2배로 증가합니다. (마나 3 소모, 쿨타임 5턴)
      *
      * @param out 출력 스트림

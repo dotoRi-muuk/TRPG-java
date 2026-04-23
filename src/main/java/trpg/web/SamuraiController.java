@@ -1,5 +1,6 @@
 package trpg.web;
 
+import main.Main;
 import main.Result;
 import main.secondary.warrior.BladeMaster;
 import org.springframework.web.bind.annotation.*;
@@ -34,14 +35,26 @@ public class SamuraiController {
         public int currentHP;
         public int maxHP;
         public int consumedStamina;
+        public int scarCount;
         public int precision;
         public int level;
+        public int damageIncrease;
+        public int finalDamageIncrease = 100;
     }
 
-    private static Map<String, Object> buildResponse(Result result, ByteArrayOutputStream baos) {
+    private static int applyExternalDamage(Result result, SamuraiRequest req, PrintStream ps) {
+        int baseDamage = result.damageDealt();
+        int finalDamagePercent = Math.max(0, req.finalDamageIncrease);
+        ps.printf("외부 보정 적용: 데미지 증가 %+d%%, 최종 데미지 %d%%%n", req.damageIncrease, finalDamagePercent);
+        return Main.calculateDamage(baseDamage, req.damageIncrease, finalDamagePercent / 100.0, ps);
+    }
+
+    private static Map<String, Object> buildResponse(Result result, SamuraiRequest req, ByteArrayOutputStream baos, PrintStream ps) {
+        int finalDamage = applyExternalDamage(result, req, ps);
+        ps.flush();
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("log", baos.toString(StandardCharsets.UTF_8));
-        response.put("damage", result.damageDealt());
+        response.put("damage", finalDamage);
         response.put("succeeded", result.succeeded());
         response.put("staminaUsed", result.staminaUsed());
         return response;
@@ -63,9 +76,7 @@ public class SamuraiController {
         BladeMaster bm = new BladeMaster();
         Result result = bm.plain(req.stat, isOneStrikeKill(req), req.kakugo, req.seishaKetsudan,
                 false, false, false, req.precision, req.level, ps);
-        ps.flush();
-
-        return buildResponse(result, baos);
+        return buildResponse(result, req, baos, ps);
     }
 
     /**
@@ -80,9 +91,7 @@ public class SamuraiController {
         BladeMaster bm = new BladeMaster();
         Result result = bm.flash(req.stat, req.isMula, isOneStrikeKill(req), req.kakugo, req.seishaKetsudan,
                 false, false, false, req.precision, req.level, ps);
-        ps.flush();
-
-        return buildResponse(result, baos);
+        return buildResponse(result, req, baos, ps);
     }
 
     /**
@@ -97,9 +106,7 @@ public class SamuraiController {
         BladeMaster bm = new BladeMaster();
         Result result = bm.rampage(req.stat, req.isMula, isOneStrikeKill(req), req.kakugo, req.seishaKetsudan,
                 false, false, false, req.precision, req.level, ps);
-        ps.flush();
-
-        return buildResponse(result, baos);
+        return buildResponse(result, req, baos, ps);
     }
 
     /**
@@ -114,9 +121,7 @@ public class SamuraiController {
         BladeMaster bm = new BladeMaster();
         Result result = bm.flashStrike(req.stat, req.isMula, isOneStrikeKill(req), req.kakugo, req.seishaKetsudan,
                 false, false, false, req.precision, req.level, ps);
-        ps.flush();
-
-        return buildResponse(result, baos);
+        return buildResponse(result, req, baos, ps);
     }
 
     /**
@@ -131,9 +136,7 @@ public class SamuraiController {
         BladeMaster bm = new BladeMaster();
         Result result = bm.terminus(req.stat, req.consumedStamina, req.isMula, isOneStrikeKill(req),
                 req.kakugo, req.seishaKetsudan, false, false, false, req.precision, req.level, ps);
-        ps.flush();
-
-        return buildResponse(result, baos);
+        return buildResponse(result, req, baos, ps);
     }
 
     /**
@@ -148,8 +151,41 @@ public class SamuraiController {
         BladeMaster bm = new BladeMaster();
         Result result = bm.blooming(req.stat, req.isMula, isOneStrikeKill(req), req.kakugo, req.seishaKetsudan,
                 false, false, false, req.precision, req.level, ps);
+        return buildResponse(result, req, baos, ps);
+    }
+
+    /**
+     * 섬멸의 칼날 [시]
+     * POST /api/samurai/annihilation-blade-cast
+     */
+    @PostMapping("/annihilation-blade-cast")
+    public Map<String, Object> annihilationBladeCast(@RequestBody SamuraiRequest req) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        BladeMaster bm = new BladeMaster();
+        Result result = bm.annihilationBladeCast(ps);
         ps.flush();
 
-        return buildResponse(result, baos);
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("log", baos.toString(StandardCharsets.UTF_8));
+        response.put("damage", result.damageDealt());
+        response.put("succeeded", result.succeeded());
+        response.put("manaUsed", result.manaUsed());
+        return response;
+    }
+
+    /**
+     * 섬멸의 칼날 [종]
+     * POST /api/samurai/annihilation-blade-end
+     */
+    @PostMapping("/annihilation-blade-end")
+    public Map<String, Object> annihilationBladeEnd(@RequestBody SamuraiRequest req) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        BladeMaster bm = new BladeMaster();
+        Result result = bm.annihilationBladeEnd(req.stat, req.scarCount, req.precision, req.level, ps);
+        return buildResponse(result, req, baos, ps);
     }
 }

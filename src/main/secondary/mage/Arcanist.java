@@ -182,4 +182,51 @@ public class Arcanist {
         return new Result(baseDamage, 0, true, 0, 0);
     }
 
+    /**
+     * 엘레아 엑시디움 노바 :
+     * 4D20 + 6D4 + D50의 피해를 입히고,
+     * 공격 주사위 기본값만큼 마나를 회복하며, 회복 마나의 1/5만큼 스킬 3개의 쿨타임을 감소시킵니다.
+     * (영창 16턴, 마나 40-레벨, 쿨타임 20턴)
+     */
+    public static Result eleaExcidiumNova(int stat, int level, int precision, PrintStream out) {
+        out.println("마도사-엘레아 엑시디움 노바 사용");
+
+        int verdict = Main.verdict(stat, out);
+        if (verdict <= 0) return new Result(0, 0, false, Math.max(0, 40 - level), 0);
+        int diceRoll = stat - verdict;
+
+        int rawDiceDamage = Main.dice(4, 20, out) + Main.dice(6, 4, out) + Main.dice(1, 50, out);
+        out.printf("기본 데미지 (4D20 + 6D4 + D50) : %d%n", rawDiceDamage);
+
+        int sideDamage = Main.sideDamage(rawDiceDamage, stat, out, diceRoll);
+        int finalDamage = rawDiceDamage + sideDamage;
+        out.printf("데미지 보정치 : %d%n", sideDamage);
+        finalDamage = Main.criticalHit(precision, finalDamage, out);
+        out.printf("최종 데미지 : %d%n", finalDamage);
+
+        int manaRecover = rawDiceDamage;
+        int cooldownReduction = manaRecover / 5;
+        int manaCost = Math.max(0, 40 - level);
+        int netMana = manaCost - manaRecover;
+        out.printf("마나 회복: 공격 주사위 기본값만큼 %d 회복%n", manaRecover);
+        out.printf("쿨타임 감소: 회복 마나의 1/5 = %d (스킬 3개)%n", cooldownReduction);
+        out.printf("마나 소모: (40 - 레벨) = %d, 순마나 변화: %d%n", manaCost, -netMana);
+
+        return new Result(0, finalDamage, true, netMana, 0);
+    }
+
+    /**
+     * 마나 회로 수복 :
+     * 영창을 진행하며 지난 (영창 진행량)턴 동안 사용한 마나의 1/3을 회복합니다. (마나 3, 쿨타임 6턴)
+     */
+    public static Result manaCircuitRestoration(int chantProgress, int manaSpentDuringChant, PrintStream out) {
+        out.println("마도사-마나 회로 수복 사용");
+        int recover = Math.max(0, manaSpentDuringChant) / 3;
+        int netManaUsed = 3 - recover;
+        out.printf("영창 진행량: %d턴%n", Math.max(0, chantProgress));
+        out.printf("지난 %d턴 사용 마나의 1/3 회복: %d%n", Math.max(0, chantProgress), recover);
+        out.printf("순마나 변화: %d (양수=소모, 음수=회복)%n", netManaUsed);
+        return new Result(0, 0, true, netManaUsed, 0);
+    }
+
 }

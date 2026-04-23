@@ -30,6 +30,8 @@ public class MasterArcherController {
         public int damageIncrease;
         public int finalDamageIncrease = 100;
         public int actionCount = 1;
+        public int weaponCount = 1;
+        public boolean nextActionFailed;
     }
 
     private static Map<String, Object> buildResponse(Result result, ByteArrayOutputStream baos) {
@@ -112,5 +114,26 @@ public class MasterArcherController {
     public Map<String, Object> finaleArrow(@RequestBody MasterArcherRequest req) {
         return execute(req, MasterArcherPassive.NONE, true);
     }
-}
 
+    @PostMapping("/mana-weapon")
+    public Map<String, Object> manaWeapon(@RequestBody MasterArcherRequest req) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        Result result = MasterArcher.manaWeapon(req.weaponCount, ps);
+        ps.flush();
+        Map<String, Object> response = buildResponse(result, baos);
+        response.put("manaUsed", result.manaUsed());
+        return response;
+    }
+
+    @PostMapping("/phantom-shift")
+    public Map<String, Object> phantomShift(@RequestBody MasterArcherRequest req) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+        Result result = MasterArcher.phantomShift(req.nextActionFailed, ps);
+        ps.flush();
+        Map<String, Object> response = buildResponse(result, baos);
+        response.put("manaUsed", result.manaUsed());
+        return response;
+    }
+}

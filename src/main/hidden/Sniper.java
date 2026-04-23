@@ -196,4 +196,40 @@ public class Sniper {
         return calculate(5, 20, stat, vitalAim, deathBullet, secure, assemble, load, aim,
                 sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, 10, out);
     }
+
+    /**
+     * 뇌광파쇄탄환 : [뇌광관통탄환]을 장전합니다. (마나 13, 쿨타임 20턴)
+     */
+    public static Result thunderBreakRound(PrintStream out) {
+        out.println("저격수-뇌광파쇄탄환 사용");
+        out.println("[뇌광관통탄환] 장전 완료");
+        return new Result(0, 0, true, 13, 0);
+    }
+
+    /**
+     * 전격필중저격 : [뇌광파쇄탄환]이 있을 때 사용 가능. 5D20 + 7D12 피해, 적 2턴 행동불가. (스태미나 17)
+     */
+    public static Result electricSureShot(int stat, boolean hasThunderBreakRound, int precision, PrintStream out) {
+        out.println("저격수-전격필중저격 사용");
+        if (!hasThunderBreakRound) {
+            out.println("실패: [뇌광파쇄탄환]이 장전되어 있지 않습니다.");
+            return new Result(0, 0, false, 0, 0);
+        }
+
+        int verdict = Main.verdict(stat, out);
+        if (verdict <= 0) {
+            return new Result(0, 0, false, 0, 17);
+        }
+
+        int damage = Main.dice(5, 20, out) + Main.dice(7, 12, out);
+        out.printf("기본 데미지 (5D20 + 7D12) : %d%n", damage);
+
+        int sideDmg = Main.sideDamage(damage, stat, out);
+        damage += sideDmg;
+        out.printf("데미지 보정치 : %d%n", sideDmg);
+        damage = Main.criticalHit(precision, damage, out);
+        out.printf("최종 데미지 : %d%n", damage);
+        out.println("효과: 적에게 2턴 행동불가 부여");
+        return new Result(0, damage, true, 0, 17);
+    }
 }

@@ -36,6 +36,7 @@ public class DamageController {
         public boolean conviction;
         public boolean heightenedSenses;
         public int precision;
+        public boolean hasThunderBreakRound;
     }
 
     /**
@@ -82,6 +83,46 @@ public class DamageController {
 
         Result result = Sniper.fire(req.stat, vitalAim, req.deathBullet, req.secure, req.assemble, req.load, req.aim,
                 req.sureHit, req.stabilize, req.immersion, req.conviction, req.heightenedSenses, req.numBuffs, req.precision, ps);
+        ps.flush();
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("log", baos.toString(StandardCharsets.UTF_8));
+        response.put("damage", result.damageDealt());
+        response.put("succeeded", result.succeeded());
+        response.put("staminaUsed", result.staminaUsed());
+        return response;
+    }
+
+    /**
+     * 뇌광파쇄탄환 장전
+     * POST /api/sniper/thunder-break-round
+     */
+    @PostMapping("/thunder-break-round")
+    public Map<String, Object> thunderBreakRound() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        Result result = Sniper.thunderBreakRound(ps);
+        ps.flush();
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("log", baos.toString(StandardCharsets.UTF_8));
+        response.put("damage", result.damageDealt());
+        response.put("succeeded", result.succeeded());
+        response.put("manaUsed", result.manaUsed());
+        return response;
+    }
+
+    /**
+     * 전격필중저격
+     * POST /api/sniper/electric-sure-shot
+     */
+    @PostMapping("/electric-sure-shot")
+    public Map<String, Object> electricSureShot(@RequestBody SniperRequest req) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        Result result = Sniper.electricSureShot(req.stat, req.hasThunderBreakRound, req.precision, ps);
         ps.flush();
 
         Map<String, Object> response = new LinkedHashMap<>();
