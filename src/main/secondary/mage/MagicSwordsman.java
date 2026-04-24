@@ -334,4 +334,107 @@ public class MagicSwordsman {
         }
     }
 
+    /**
+     * 오라 블레이드 [에클레트] : [오라 블레이드]의 효과를 대신합니다.
+     * 공격 시 (진행 턴 수)D12의 추가 데미지를 가합니다. 휴식 시 취소됩니다.
+     * (매턴 마나 3 소모)
+     *
+     * @param activeTurns 현재 에클레트 진행 턴 수 (0이면 첫 활성화)
+     * @param out         출력 스트림
+     * @return 결과 객체 (마나 3 소모)
+     */
+    public static Result auraBladEclat(int activeTurns, PrintStream out) {
+        out.println("마검사-오라 블레이드 [에클레트] 사용");
+        out.println("오라 블레이드의 효과를 대신합니다. 공격 시 (진행 턴 수)D12 추가 데미지 부여.");
+        out.printf("현재 진행 턴 수: %d → 다음 공격에 %dD12 추가 데미지 적용.%n", activeTurns, activeTurns);
+        out.println("매턴 마나 3 소모. 휴식 시 효과 취소됩니다.");
+        return new Result(0, 0, true, 3, 0);
+    }
+
+    /**
+     * 에클레어 도미니아 : 오라 블레이드 [에클레트] 발동 중에 사용 가능합니다.
+     * 6D8의 피해를 입힙니다. 오라 블레이드 [에클레트]의 효과를 4회 발동합니다.
+     *
+     * @param stat        사용할 스탯
+     * @param activeTurns 에클레트 진행 턴 수 (각 회당 추가 (activeTurns)D12 데미지)
+     * @param lastMana    이전 휴식 시점의 마나 (마나 축적 패시브용)
+     * @param currentMana 현재 마나 (마나 축적 패시브용)
+     * @param overload    오버로드 적용 여부 (최종 데미지 2배, 마나 소모 2배)
+     * @param ethailSolar 에테일 솔라 적용 여부 (최종 데미지 3배, 마나 소모 없음)
+     * @param shiftLifter 쉬프트리스터 적용 여부 (마나 대신 스태미나 소모)
+     * @param precision   정밀 스탯
+     * @param out         출력 스트림
+     * @return 결과 객체
+     */
+    public static Result eclaireDominia(int stat, int activeTurns,
+                                         int lastMana, int currentMana,
+                                         boolean overload, boolean ethailSolar, boolean shiftLifter,
+                                         int precision, PrintStream out) {
+        out.println("마검사-에클레어 도미니아 사용");
+        if (activeTurns <= 0) {
+            out.println("[오라 블레이드 에클레트]가 활성화되어 있지 않아 사용할 수 없습니다.");
+            return new Result(0, 0, false, 0, 0);
+        }
+
+        int verdict = Main.verdict(stat, out);
+        if (verdict <= 0) {
+            return new Result(0, 0, false, 3 * (overload ? 2 : 1), 0);
+        }
+        int diceRoll = stat - verdict;
+
+        // 6D8 기본 피해
+        int baseDamage = Main.dice(6, 8, out);
+        out.printf("6D8 기본 데미지: %d%n", baseDamage);
+
+        // 오라 블레이드 [에클레트] 효과 4회 발동: 각 회당 (activeTurns)D12 추가 데미지
+        int eclatBonus = 0;
+        for (int i = 1; i <= 4; i++) {
+            int bonus = Main.dice(activeTurns, 12, out);
+            out.printf("에클레트 효과 %d회차: %dD12 = %d%n", i, activeTurns, bonus);
+            eclatBonus += bonus;
+        }
+        out.printf("에클레트 4회 발동 추가 데미지 합계: %d%n", eclatBonus);
+        baseDamage += eclatBonus;
+        out.printf("기본 데미지 합계 (6D8 + 에클레트 4회): %d%n", baseDamage);
+
+        // (100 + 데미지 증가율)% 구성
+        int flatBonus = 0;
+        if (lastMana > currentMana) {
+            int manaDiff = lastMana - currentMana;
+            int manaAccumulationBonus = manaDiff * 20;
+            out.printf("마나 축적 패시브 적용: [이전 마나 - 현재 마나] * 20%% = +%d%%%n", manaAccumulationBonus);
+            flatBonus += manaAccumulationBonus;
+        }
+        out.println("오라 블레이드 패시브 적용: 데미지 +300%. 마나 소모 2배 증가");
+        flatBonus += 300;
+        int manaUse = 3 * 2; // 오라 블레이드 마나 소모 2배
+
+        // (최종 데미지)% 구성
+        double finalMultiplier = 1.0;
+        if (overload) {
+            out.println("오버로드 적용: 최종 데미지 2배. 마나 소모 2배 증가");
+            finalMultiplier *= 2.0;
+            manaUse *= 2;
+        }
+        if (ethailSolar) {
+            out.println("에테일 솔라 적용: 최종 데미지 3배. 마나 소모 없음");
+            finalMultiplier *= 3.0;
+            manaUse = 0;
+        }
+
+        int damage = Main.calculateDamage(baseDamage, flatBonus, finalMultiplier, out);
+        int sideDmg = Main.sideDamage(damage, stat, out, diceRoll);
+        damage += sideDmg;
+        out.printf("데미지 보정치 : %d%n", sideDmg);
+        damage = Main.criticalHit(precision, damage, out);
+        out.printf("최종 데미지 : %d%n", damage);
+
+        if (shiftLifter) {
+            out.printf("쉬프트리스터 적용: 마나 대신 스태미나 %d 소모, 마나 %d 회복.%n", manaUse, manaUse);
+            return new Result(0, damage, true, -manaUse, manaUse);
+        }
+        return new Result(0, damage, true, manaUse, 0);
+    }
+
 }
+

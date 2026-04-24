@@ -160,6 +160,75 @@ public class Sniper {
     }
 
     /**
+     * 뇌광파쇄탄환 : [뇌광관통탄환]을 장전합니다. (마나 13, 쿨타임 20턴)
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체 (마나 13 소모)
+     */
+    public static Result lightningBlastLoad(PrintStream out) {
+        out.println("저격수-뇌광파쇄탄환 사용");
+        out.println("[뇌광관통탄환]을 장전합니다. (마나 13, 쿨타임 20턴)");
+        return new Result(0, 0, true, 13, 0);
+    }
+
+    /**
+     * 전격필중저격 : [뇌광파쇄탄환]이 있을 때 사용할 수 있습니다.
+     * 5D20, 7D12의 피해를 입힙니다. 이후 적에게 2턴 행동불가를 부여합니다. (스태미나 17)
+     *
+     * @param stat             사용할 스탯
+     * @param hasLightningBullet [뇌광파쇄탄환] 보유 여부
+     * @param vitalAim         급소조준 적용 여부 (5턴 이상 공격X 시 최종 데미지 x2)
+     * @param deathBullet      죽음의 탄환 적용 여부 (기본 공격 미사용 시 발사 데미지 +400%)
+     * @param secure           확보 기술 적용 여부 (정조준 버프 카운트)
+     * @param assemble         조립 기술 적용 여부 (최종 데미지 x1.5, 정조준 버프 카운트)
+     * @param load             장전 기술 적용 여부 (정조준 버프 카운트)
+     * @param aim              조준 기술 적용 여부 (수비 무시, 정조준 버프 카운트)
+     * @param sureHit          필즉 스킬 적용 여부 (확정 명중)
+     * @param stabilize        안정화 스킬 적용 여부 (데미지 -50%, 주사위 복제)
+     * @param immersion        몰입 스킬 적용 여부 (데미지 +100%)
+     * @param conviction       확신 스킬 적용 여부 (최종 데미지 x2.5)
+     * @param heightenedSenses 신경 극대화 스킬 적용 여부 (데미지 +1000%)
+     * @param numBuffs         추가 외부 버프 수 (정조준 패시브에 반영)
+     * @param precision        정밀 스탯
+     * @param out              출력 스트림
+     * @return 결과 객체
+     */
+    public static Result lightningPrecisionSnipe(int stat, boolean hasLightningBullet,
+                                                  boolean vitalAim, boolean deathBullet,
+                                                  boolean secure, boolean assemble, boolean load, boolean aim,
+                                                  boolean sureHit, boolean stabilize, boolean immersion,
+                                                  boolean conviction, boolean heightenedSenses,
+                                                  int numBuffs, int precision, PrintStream out) {
+        out.println("저격수-전격필중저격 사용");
+
+        if (!hasLightningBullet) {
+            out.println("[뇌광파쇄탄환]이 없어 사용할 수 없습니다.");
+            return new Result(0, 0, false, 0, 17);
+        }
+
+        int verdict = Main.verdict(stat, out);
+        int diceRoll = stat - verdict;
+        if (verdict <= 0) {
+            if (sureHit) {
+                out.println("필즉 스킬 적용: 확정 명중");
+            } else {
+                return new Result(0, 0, false, 0, 17);
+            }
+        }
+
+        out.println("전격필중저격: 5D20 + 7D12 데미지");
+        int damage5d20 = calculate(5, 20, stat, vitalAim, deathBullet, secure, assemble, load, aim,
+                sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, 0, out, diceRoll).damageDealt();
+        int damage7d12 = calculate(7, 12, stat, vitalAim, deathBullet, secure, assemble, load, aim,
+                sureHit, stabilize, immersion, conviction, heightenedSenses, numBuffs, precision, 0, out, diceRoll).damageDealt();
+        int totalDamage = damage5d20 + damage7d12;
+        out.printf("전격필중저격 총 데미지 (5D20 + 7D12): %d + %d = %d%n", damage5d20, damage7d12, totalDamage);
+        out.println("적에게 2턴 행동불가 부여. (스태미나 17)");
+
+        return new Result(0, totalDamage, true, 0, 17);
+    }
+
+    /**
      * 발사: 탄환을 소모하여 대상에게 5D20의 피해를 입힙니다. (스태미나 10 소모)
      *
      * @param stat             사용할 스탯
