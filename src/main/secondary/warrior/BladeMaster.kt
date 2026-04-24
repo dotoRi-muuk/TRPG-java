@@ -480,6 +480,77 @@ class BladeMaster {
         )
     }
 
+    /**
+     * 무사 섬멸의 칼날 [시] : 이 스킬 시전 이후에 사용하는 공격에 대해 주사위 하나당 D4의 추가 데미지를 입히며 검흔을 부여합니다.
+     * (매턴 마나 4 소모, 쿨타임 8턴)
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체 (마나 4 소모)
+     */
+    fun annihilationBladeStart(out: PrintStream): Result {
+        out.println("무사 - 섬멸의 칼날 [시] 사용")
+        out.println("효과: 이후에 사용하는 공격에 대해 주사위 하나당 D4의 추가 데미지를 입히며 검흔을 부여합니다.")
+        out.println("지속: 매턴 마나 4 소모. 쿨타임 8턴.")
+        return Result(0, 0, true, 4, 0)
+    }
+
+    /**
+     * 무사 섬멸의 칼날 [종] : 적에게 (검흔)D12의 피해를 입힙니다. 작열을 제거하고 '섬멸의 칼날 [시]'의 효과를 종료합니다.
+     * (마나 10, 쿨타임 6턴)
+     *
+     * @param stat      사용할 스탯
+     * @param scarCount 현재 검흔 수 (주사위 개수)
+     * @param objectI   물아 모드 적용 여부 (기술 데미지 100% 증가, x2.0)
+     * @param oneStrikeKill 일격필살 적용 여부 (남은 체력 40% 이하 데미지 2배)
+     * @param resolve   각오 스킬 사용 여부 (데미지 2배)
+     * @param lifeOrDeath 생사결단 스킬 사용 여부 (데미지 3배)
+     * @param despair   절명 스킬 사용 여부 (치명타 배율 2.5배)
+     * @param limitBreak 극한돌파 스킬 사용 여부 (데미지% 절반만큼 추가)
+     * @param moonHide  월은 스킬 사용 여부 (데미지 100% 증가)
+     * @param precision 정밀 스탯 (치명타 판정)
+     * @param level     레벨 (최종 데미지 배율 적용)
+     * @param out       출력 스트림
+     * @return 결과 객체
+     */
+    fun annihilationBladeEnd(
+        stat: Int,
+        scarCount: Int,
+        objectI: Boolean,
+        oneStrikeKill: Boolean,
+        resolve: Boolean,
+        lifeOrDeath: Boolean,
+        despair: Boolean,
+        limitBreak: Boolean,
+        moonHide: Boolean,
+        precision: Int,
+        level: Int,
+        out: PrintStream
+    ): Result {
+        out.println("무사 - 섬멸의 칼날 [종] 사용")
+        out.printf("검흔 수: %d → %dD12 피해%n", scarCount, scarCount)
+        val result = normalAttack(
+            stat,
+            maxOf(scarCount, 1),
+            12,
+            10,
+            objectI,
+            oneStrikeKill,
+            resolve,
+            lifeOrDeath,
+            false,
+            despair,
+            limitBreak,
+            moonHide,
+            precision,
+            level,
+            out
+        )
+        if (result.succeeded()) {
+            out.println("섬멸의 칼날 [종] 효과: 작열 제거, '섬멸의 칼날 [시]' 효과 종료.")
+        }
+        return result
+    }
+
     private fun applyLevelMultiplier(damage: Int, level: Int, out: PrintStream): Int {
         val multiplier = 100 + level * level
         val levelDamage = damage * multiplier / 100

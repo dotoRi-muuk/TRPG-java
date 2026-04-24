@@ -182,4 +182,100 @@ public class Arcanist {
         return new Result(baseDamage, 0, true, 0, 0);
     }
 
+    /**
+     * 엘레아 엑시디움 노바 : 4D20, 6D4, D50의 피해를 입힙니다.
+     * 공격 주사위의 판정된 기본 값만큼 마나를 회복합니다.
+     * 회복한 마나의 5분의 1만큼 스킬 3개의 쿨타임을 감소시킵니다.
+     * (영창 16턴, 마나 40-레벨, 쿨타임 20턴)
+     *
+     * @param stat         사용할 스탯
+     * @param level        캐릭터 레벨 (마나 소모 = 40 - 레벨)
+     * @param condensation 영창 진행 턴 수 (응집 : 영창 진행 턴 수 * 50% 만큼 데미지 증가)
+     * @param annihilator  어나일레이터 패시브 활성화 여부 (데미지 3배 증가, 마나 소모 2배)
+     * @param precision    정밀 스탯
+     * @param out          출력 스트림
+     * @return 결과 객체 (manaUsed는 순소모, 음수이면 순회복)
+     */
+    public static Result eleaExidiumNova(int stat, int level, int condensation, boolean annihilator, int precision, PrintStream out) {
+        out.println("마도사-엘레아 엑시디움 노바 사용");
+        int baseMana = Math.max(0, 40 - level);
+        if (annihilator) baseMana *= 2;
+
+        int verdict = Main.verdict(stat, out);
+        if (verdict <= 0) return new Result(0, 0, false, baseMana, 0);
+        int diceRoll = stat - verdict;
+
+        // 4D20 + 6D4 + 1D50
+        int d20Damage = Main.dice(4, 20, out);
+        out.printf("4D20 결과: %d%n", d20Damage);
+        int d4Damage = Main.dice(6, 4, out);
+        out.printf("6D4 결과: %d%n", d4Damage);
+        int d50Damage = Main.dice(1, 50, out);
+        out.printf("D50 결과: %d%n", d50Damage);
+
+        int rawTotal = d20Damage + d4Damage + d50Damage;
+        out.printf("기본 데미지 합계 : %d%n", rawTotal);
+
+        // 응집 패시브
+        if (condensation > 0) {
+            double condensationBonus = condensation * 0.5 + 1.0;
+            out.printf("응집 스킬 적용: 영창 진행 턴 수 %d * 50%% 만큼 데미지 증가%n", condensation);
+            rawTotal = (int) (rawTotal * condensationBonus);
+            out.printf("응집 스킬 적용 데미지 : %d%n", rawTotal);
+        }
+
+        // 어나일레이터 패시브
+        if (annihilator) {
+            out.println("어나일레이터 스킬 적용: 데미지 3배 증가");
+            rawTotal *= 3;
+            out.printf("어나일레이터 적용 데미지 : %d%n", rawTotal);
+        }
+
+        // 마력의 범람 패시브
+        if (baseMana > 0) {
+            double manaOverflowBonus = baseMana * 0.3;
+            out.printf("마력의 범람 패시브 적용: 마나 %d * 30%% = +%.1f 데미지%n", baseMana, manaOverflowBonus);
+            rawTotal += (int) manaOverflowBonus;
+        }
+
+        int sideDamage = Main.sideDamage(rawTotal, stat, out, diceRoll);
+        rawTotal += sideDamage;
+        out.printf("데미지 보정치 : %d%n", sideDamage);
+        rawTotal = Main.criticalHit(precision, rawTotal, out);
+        out.printf("최종 데미지 : %d%n", rawTotal);
+
+        // 마나 회복: 공격 주사위 기본값(d20+d4+d50 합) 만큼 회복
+        int manaRecovered = d20Damage + d4Damage + d50Damage;
+        out.printf("마나 회복: 공격 주사위 기본 값 합계 %d 회복%n", manaRecovered);
+
+        // 쿨타임 감소: 회복한 마나 / 5 만큼 스킬 3개 쿨타임 감소
+        int cooldownReduction = manaRecovered / 5;
+        out.printf("쿨타임 감소: 회복 마나 %d / 5 = %d 턴만큼 스킬 3개 쿨타임 감소%n", manaRecovered, cooldownReduction);
+
+        int netMana = baseMana - manaRecovered;
+        out.printf("마나 소모 %d - 회복 %d = 순 마나 변화: %d (음수이면 순 회복)%n", baseMana, manaRecovered, netMana);
+        return new Result(0, rawTotal, true, netMana, 0);
+    }
+
+    /**
+     * 마나 회로 수복 : 영창을 진행합니다.
+     * 지난 (영창 진행량)턴 동안 사용한 마나의 3분의 1을 회복합니다.
+     * (마나 3, 쿨타임 6턴)
+     *
+     * @param chantProgress    영창 진행 턴 수
+     * @param manaUsedInPeriod 지난 (영창 진행량)턴 동안 사용한 마나
+     * @param out              출력 스트림
+     * @return 결과 객체 (manaUsed = 3 - 회복량, 음수이면 순수 회복)
+     */
+    public static Result manaCircuitRestoration(int chantProgress, int manaUsedInPeriod, PrintStream out) {
+        out.println("마도사-마나 회로 수복 사용");
+        out.printf("영창 진행량: %d턴. 지난 %d턴 동안 사용한 마나: %d%n", chantProgress, chantProgress, manaUsedInPeriod);
+        int manaRecovered = manaUsedInPeriod / 3;
+        out.printf("회복할 마나: %d / 3 = %d%n", manaUsedInPeriod, manaRecovered);
+        int netMana = 3 - manaRecovered;
+        out.printf("마나 소모 3 - 회복 %d = 순 마나 변화: %d (음수이면 순수 회복)%n", manaRecovered, netMana);
+        return new Result(0, 0, true, netMana, 0);
+    }
+
 }
+

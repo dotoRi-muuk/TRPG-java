@@ -86,7 +86,8 @@ public class SkillService {
             new SubclassInfo("버서커", "main.secondary.warrior.Berserker", true),
             new SubclassInfo("무사", "main.secondary.warrior.BladeMaster", true),
             new SubclassInfo("기사", "main.secondary.warrior.Knight", true),
-            new SubclassInfo("창술사", "main.secondary.warrior.SpearMaster", true)
+            new SubclassInfo("창술사", "main.secondary.warrior.SpearMaster", true),
+            new SubclassInfo("웨폰마스터", "main.secondary.warrior.WeaponMaster", true)
         ));
     }
 
@@ -182,6 +183,18 @@ public class SkillService {
      * Execute a skill with the given parameters.
      */
     public SkillResult executeSkill(String subclassName, String methodName, Map<String, Object> params) {
+        return executeSkill(subclassName, methodName, params, 0, 0, 100);
+    }
+
+    /**
+     * Execute a skill with the given parameters and global damage modifiers.
+     *
+     * @param externalDamageBonus      직업 외 데미지 증가값 (합연산 %)
+     * @param level                    레벨 (최종 데미지 (100+레벨²)% 적용)
+     * @param externalFinalDamageMult  직업 외 최종 데미지 배율 (%, 100 = 기본)
+     */
+    public SkillResult executeSkill(String subclassName, String methodName, Map<String, Object> params,
+                                    int level, int externalDamageBonus, int externalFinalDamageMult) {
         SubclassInfo classInfo = findSubclassInfo(subclassName);
         if (classInfo == null) {
             return new SkillResult(false, "클래스를 찾을 수 없습니다: " + subclassName, null);
@@ -241,8 +254,45 @@ public class SkillService {
                 // Handle Result record
                 if (result.getClass().getName().equals("main.Result")) {
                     try {
+                        int damageDealt = (int) result.getClass().getMethod("damageDealt").invoke(result);
+
+                        // Apply global external modifiers to damageDealt
+                        // Formula: [(직업 데미지) × (100 + externalDamageBonus)%] × (100 + level²)% × externalFinalDamageMult%
+                        if (damageDealt > 0 && (externalDamageBonus != 0 || level != 0 || externalFinalDamageMult != 100)) {
+                            StringBuilder modLog = new StringBuilder(output);
+                            modLog.append(String.format("%n[외부 효과 적용]%n"));
+                            modLog.append(String.format("직업 데미지: %d%n", damageDealt));
+
+                            double afterDmgBonus = damageDealt * (100.0 + externalDamageBonus) / 100.0;
+                            if (externalDamageBonus != 0) {
+                                modLog.append(String.format("데미지 증가값 +%d%% 적용: %d × (100 + %d) / 100 = %.1f%n",
+                                        externalDamageBonus, damageDealt, externalDamageBonus, afterDmgBonus));
+                            }
+
+                            int levelMultiplier = 100 + level * level;
+                            double afterLevel = afterDmgBonus * levelMultiplier / 100.0;
+                            if (level != 0) {
+                                modLog.append(String.format("레벨 %d 배율 (%d%%) 적용: %.1f × %d / 100 = %.1f%n",
+                                        level, levelMultiplier, afterDmgBonus, levelMultiplier, afterLevel));
+                            } else {
+                                afterLevel = afterDmgBonus;
+                            }
+
+                            double afterFinalMult = afterLevel * externalFinalDamageMult / 100.0;
+                            if (externalFinalDamageMult != 100) {
+                                modLog.append(String.format("최종 데미지 배율 %d%% 적용: %.1f × %d / 100 = %.1f%n",
+                                        externalFinalDamageMult, afterLevel, externalFinalDamageMult, afterFinalMult));
+                            } else {
+                                afterFinalMult = afterLevel;
+                            }
+
+                            damageDealt = (int) afterFinalMult;
+                            modLog.append(String.format("최종 데미지 (외부 효과 적용): %d%n", damageDealt));
+                            resultData.put("output", modLog.toString());
+                        }
+
                         resultData.put("damageTaken", result.getClass().getMethod("damageTaken").invoke(result));
-                        resultData.put("damageDealt", result.getClass().getMethod("damageDealt").invoke(result));
+                        resultData.put("damageDealt", damageDealt);
                         resultData.put("succeeded", result.getClass().getMethod("succeeded").invoke(result));
                         resultData.put("manaUsed", result.getClass().getMethod("manaUsed").invoke(result));
                         resultData.put("staminaUsed", result.getClass().getMethod("staminaUsed").invoke(result));
@@ -390,6 +440,19 @@ public class SkillService {
             case "limitBreak" -> "극한돌파";
             case "moonHide" -> "월은";
             case "deflect" -> "빗겨내기";
+            case "annihilationBladeStart" -> "섬멸의 칼날 [시]";
+            case "annihilationBladeEnd" -> "섬멸의 칼날 [종]";
+            case "manaWeapon" -> "마나 웨폰";
+            case "illusionSwitch" -> "허상 전환";
+            case "opportunityCapture" -> "기회 포착";
+            case "cycle" -> "순환";
+            case "instantSwap" -> "순간 교체";
+            case "lightningBlastLoad" -> "뇌광파쇄탄환";
+            case "lightningPrecisionSnipe" -> "전격필중저격";
+            case "eleaExidiumNova" -> "엘레아 엑시디움 노바";
+            case "manaCircuitRestoration" -> "마나 회로 수복";
+            case "auraBladEclat" -> "오라 블레이드 [에클레트]";
+            case "eclaireDominia" -> "에클레어 도미니아";
             case "downwardStrike" -> "내려치기";
             case "bash" -> "후려치기";
             case "headStrike" -> "머리치기";
@@ -547,6 +610,23 @@ public class SkillService {
             case "turnsSustained" -> "지속 턴 수";
             case "totalCast" -> "총 영창 시간";
             case "remainingCast" -> "남은 영창 시간";
+            case "scarCount" -> "검흔 수";
+            case "weaponsGenerated" -> "생성할 무기 수";
+            case "weaponCount" -> "소지한 무기 수";
+            case "essenceWeapons" -> "정수 부여 무기 수";
+            case "weaponSwitched" -> "지난 턴 무기 교체 여부";
+            case "boldness" -> "과감함 패시브 여부";
+            case "unavailableWeapons" -> "사용 불가 무기 수";
+            case "revivedEssenceWeapons" -> "소생된 정수 부여 무기 수";
+            case "hasLightningBullet" -> "[뇌광파쇄탄환] 보유 여부";
+            case "manaUsedInPeriod" -> "기간 내 사용한 마나";
+            case "chantProgress" -> "영창 진행량 (턴 수)";
+            case "activeTurns" -> "에클레트 진행 턴 수";
+            case "manaUsedLastTurn" -> "이전 턴 마나 사용 여부";
+            case "manaSpentSinceRest" -> "이전 휴식 이후 소모 마나";
+            case "manaSpentInPreviousAction" -> "이전 행동 소모 마나";
+            case "scatteringSwordDance" -> "흩날리는 검무 여부";
+            case "consumedStamina" -> "소모 스태미나";
             default -> paramName;
         };
     }

@@ -54,7 +54,11 @@ public class SkillApiController {
      */
     @PostMapping("/execute")
     public SkillService.SkillResult executeSkill(@RequestBody ExecuteRequest request) {
-        return skillService.executeSkill(request.subclass, request.skill, request.params);
+        int level = request.level != null ? request.level : 0;
+        int externalDamageBonus = request.externalDamageBonus != null ? request.externalDamageBonus : 0;
+        int externalFinalDamageMult = request.externalFinalDamageMult != null ? request.externalFinalDamageMult : 100;
+        return skillService.executeSkill(request.subclass, request.skill, request.params,
+                level, externalDamageBonus, externalFinalDamageMult);
     }
 
     /**
@@ -64,6 +68,12 @@ public class SkillApiController {
         public String subclass;
         public String skill;
         public Map<String, Object> params;
+        /** 레벨 (최종 데미지 (100+레벨²)% 적용). 기본값 0 (미적용). */
+        public Integer level;
+        /** 직업 외 데미지 증가값 (합연산 %). 기본값 0 (미적용). */
+        public Integer externalDamageBonus;
+        /** 직업 외 최종 데미지 배율 (%, 100 = 기본). 기본값 100. */
+        public Integer externalFinalDamageMult;
 
         public String getSubclass() { return subclass; }
         public void setSubclass(String subclass) { this.subclass = subclass; }
@@ -71,5 +81,11 @@ public class SkillApiController {
         public void setSkill(String skill) { this.skill = skill; }
         public Map<String, Object> getParams() { return params; }
         public void setParams(Map<String, Object> params) { this.params = params; }
+        public Integer getLevel() { return level; }
+        public void setLevel(Integer level) { this.level = level; }
+        public Integer getExternalDamageBonus() { return externalDamageBonus; }
+        public void setExternalDamageBonus(Integer externalDamageBonus) { this.externalDamageBonus = externalDamageBonus; }
+        public Integer getExternalFinalDamageMult() { return externalFinalDamageMult; }
+        public void setExternalFinalDamageMult(Integer externalFinalDamageMult) { this.externalFinalDamageMult = externalFinalDamageMult; }
     }
 }
