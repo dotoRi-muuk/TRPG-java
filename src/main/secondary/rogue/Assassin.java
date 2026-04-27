@@ -282,6 +282,38 @@ public class Assassin {
     }
 
     /**
+     * 필살 : 마지막으로 [암살]을 적중한 적에게 [치명적 외상]을 부여합니다.
+     * 해당 적은 다음 [암살]로 받는 최종 데미지가 200%로 증가하고 이후 행동불가를 1회 얻습니다.
+     * (마나 6, 쿨타임 7턴)
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체 (마나 6 소모)
+     */
+    public static Result lethalBlow(PrintStream out) {
+        out.println("암살자-필살 사용");
+        out.println("마지막으로 [암살]을 적중한 적에게 [치명적 외상] 부여.");
+        out.println("[치명적 외상]: 다음 [암살] 최종 데미지 200% 증가, 이후 행동불가 1회.");
+        return new Result(0, 0, true, 6, 0);
+    }
+
+    /**
+     * 예리 : 영창을 진행합니다. 영창을 진행한 1턴당 다음 공격까지의 정밀 스탯이 3 증가합니다.
+     * 해당 스킬은 지혜 판정이 불가능합니다.
+     * (마나 4, 쿨타임 3턴)
+     *
+     * @param chantProgress 영창 진행 턴 수 (턴당 정밀 스탯 +3)
+     * @param out           출력 스트림
+     * @return 결과 객체 (마나 4 소모)
+     */
+    public static Result sharpness(int chantProgress, PrintStream out) {
+        out.println("암살자-예리 사용");
+        int precisionBonus = chantProgress * 3;
+        out.printf("영창 진행량: %d턴 → 정밀 스탯 +%d (다음 공격까지 적용)%n", chantProgress, precisionBonus);
+        out.println("지혜 판정 불가.");
+        return new Result(0, 0, true, 4, 0);
+    }
+
+    /**
      * 위장: 민첩 판정 성공 시 적의 공격을 회피할 수 있습니다.
      * 신속 판정에 성공할 경우 전장 이탈이 가능하며, 2턴 후 강제로 전장에 복귀합니다.
      * (마나 7 소모)

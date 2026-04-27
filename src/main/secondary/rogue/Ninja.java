@@ -249,6 +249,39 @@ public class Ninja {
                 resistanceType, 0, -3, precision, out, diceRoll);
     }
 
+    /**
+     * 초신속 : 턴을 1회 얻습니다. 단 이번 턴동안 받는 데미지가 100% 상승합니다.
+     * 해당 스킬은 턴을 소모하지 않습니다.
+     * (마나 5)
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체 (마나 5 소모)
+     */
+    public static Result superSpeed(PrintStream out) {
+        out.println("닌자-초신속 사용");
+        out.println("!턴 소모 없음!");
+        out.println("추가 턴 1회 획득. 이번 턴 받는 데미지 100% 상승.");
+        return new Result(0, 0, true, -5, 0);
+    }
+
+    /**
+     * 제어 : 적에게 피해를 입거나 자신이 적을 공격하는 데에 실패할 때까지
+     * (자신이 피해를 입지 않고 적에게 피해를 입힌 턴의 수) x 50% 만큼 데미지가 증가합니다.
+     * 해당 효과의 누적 턴 수는 스킬을 발동한 시점으로 고정됩니다.
+     * (마나 7, 쿨타임 11턴)
+     *
+     * @param accumulatedTurns 피해를 입지 않고 적에게 피해를 입힌 누적 턴 수 (스킬 발동 시점 고정)
+     * @param out              출력 스트림
+     * @return 결과 객체 (마나 7 소모)
+     */
+    public static Result control(int accumulatedTurns, PrintStream out) {
+        out.println("닌자-제어 사용");
+        int damageBonus = accumulatedTurns * 50;
+        out.printf("누적 턴 수 %d × 50%% = 데미지 +%d%% 적용%n", accumulatedTurns, damageBonus);
+        out.println("적에게 피해를 입거나 공격 실패 시 효과 종료.");
+        return new Result(0, 0, true, -7, 0);
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // 버프 / 유틸리티 스킬 (데미지 없음, 상태 변화 반환)
     // ─────────────────────────────────────────────────────────────────────────

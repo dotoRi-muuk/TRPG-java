@@ -379,6 +379,42 @@ public class Poacher {
     }
 
     /**
+     * 대구경파쇄산탄 탄환 : [대구경파쇄산탄 탄환]을 장전합니다.
+     * 다음 기본 공격의 피해가 4D4는 4D10으로, 4D8은 3D40으로 변경됩니다.
+     * 다음 기본 공격이 16의 스태미나를 소모합니다.
+     * (마나 15 소모, 쿨타임 10턴)
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체 (마나 15 소모)
+     */
+    public static Result largeCaliberFragBullet(PrintStream out) {
+        out.println("밀렵꾼-대구경파쇄산탄 탄환 사용");
+        out.println("[대구경파쇄산탄 탄환] 장전.");
+        out.println("다음 기본 공격: 4D4 → 4D10, 4D8 → 3D40으로 변경.");
+        out.println("다음 기본 공격 시 스태미나 16 추가 소모.");
+        return new Result(0, 0, true, 15, 0);
+    }
+
+    /**
+     * 대구경충격벅샷 탄환 : [대구경충격벅샷 탄환]을 장전합니다.
+     * 이후 수비 대신에 기본 공격을 진행할 수 있습니다.
+     * 4D4는 3D10으로, 4D8은 2D50으로 변경됩니다.
+     * 다음 기본 공격이 20의 스태미나를 소모하고 적의 공격을 취소시킵니다.
+     * (마나 16, 쿨타임 12턴)
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체 (마나 16 소모)
+     */
+    public static Result largeCaliberShockBuckshot(PrintStream out) {
+        out.println("밀렵꾼-대구경충격벅샷 탄환 사용");
+        out.println("[대구경충격벅샷 탄환] 장전.");
+        out.println("이후 수비 대신 기본 공격 진행 가능.");
+        out.println("다음 기본 공격: 4D4 → 3D10, 4D8 → 2D50으로 변경.");
+        out.println("다음 기본 공격 시 스태미나 20 추가 소모 및 적의 공격 취소.");
+        return new Result(0, 0, true, 16, 0);
+    }
+
+    /**
      * 압도 : 압도 버프를 활성화합니다. 데미지 5배 효과를 부여합니다.
      *
      * @param out 출력 스트림

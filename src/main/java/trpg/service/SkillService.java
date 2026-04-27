@@ -468,6 +468,16 @@ public class SkillService {
             case "splendor" -> "현란함";
             case "acceleration" -> "가속";
             case "adaptation" -> "적응";
+            case "lethalBlow" -> "필살";
+            case "sharpness" -> "예리";
+            case "superSpeed" -> "초신속";
+            case "control" -> "제어";
+            case "supremeBadLuck" -> "최강의 불운";
+            case "lucky" -> "럭키";
+            case "perfectComboShot" -> "퍼펙트 콤보샷";
+            case "weightedJudgment" -> "가중 심판";
+            case "largeCaliberFragBullet" -> "대구경파쇄산탄 탄환";
+            case "largeCaliberShockBuckshot" -> "대구경충격벅샷 탄환";
             default -> methodName;
         };
     }
@@ -627,6 +637,11 @@ public class SkillService {
             case "manaSpentInPreviousAction" -> "이전 행동 소모 마나";
             case "scatteringSwordDance" -> "흩날리는 검무 여부";
             case "consumedStamina" -> "소모 스태미나";
+            case "accumulatedTurns" -> "누적 턴 수 (피해 미수신 & 피해 부여)";
+            case "originalLuck" -> "원래 운 스탯";
+            case "durationTurns" -> "지속 시간 (턴 수)";
+            case "reactivate" -> "재사용 여부";
+            case "counterCount" -> "반격 횟수";
             default -> paramName;
         };
     }
