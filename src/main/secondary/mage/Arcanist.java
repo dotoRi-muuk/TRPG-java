@@ -55,19 +55,20 @@ public class Arcanist {
      * @param magicLandTurns  마력의 땅 영창 진행 턴 수 (마력의 땅 : 영창 진행 턴 수 * 70% 만큼 데미지 증가)
      * @param annihilator     어나일레이터 스킬 활성화 여부 (최종 데미지 5배, 마나 소모 2배)
      * @param global          광역 사용 여부 (true: 4D20, false: 10D12)
+     * @param additionalMana  넘치는 지혜 패시브로 추가 소모한 마나 (마력의 범람 계산에 포함)
      * @param precision       정밀 스탯
      * @param out             출력 스트림
      * @return 결과 객체
      */
-    public static Result lumenConversion(int stat, int magicLandTurns, boolean annihilator, boolean global, int precision, PrintStream out) {
+    public static Result lumenConversion(int stat, int magicLandTurns, boolean annihilator, boolean global, int additionalMana, int precision, PrintStream out) {
         out.println("마도사-루멘 컨버전 사용");
 
         if (global) {
             out.println("광역 사용: 4D20");
-            return basicAttack(stat, magicLandTurns, 4, 20, annihilator, 15, 18, precision, out);
+            return basicAttack(stat, magicLandTurns, 4, 20, annihilator, 15, 18, additionalMana, precision, out);
         } else {
             out.println("1인 사용: 10D12");
-            return basicAttack(stat, magicLandTurns, 10, 12, annihilator, 15, 18, precision, out);
+            return basicAttack(stat, magicLandTurns, 10, 12, annihilator, 15, 18, additionalMana, precision, out);
         }
     }
 
@@ -77,14 +78,15 @@ public class Arcanist {
      * @param stat           사용할 스탯
      * @param magicLandTurns 마력의 땅 영창 진행 턴 수 (마력의 땅 : 영창 진행 턴 수 * 70% 만큼 데미지 증가)
      * @param annihilator    어나일레이터 스킬 활성화 여부 (최종 데미지 5배, 마나 소모 2배)
+     * @param additionalMana 넘치는 지혜 패시브로 추가 소모한 마나 (마력의 범람 계산에 포함)
      * @param precision      정밀 스탯
      * @param out            출력 스트림
      * @return 결과 객체
      */
-    public static Result etherCatastrophe(int stat, int magicLandTurns, boolean annihilator, int precision, PrintStream out) {
+    public static Result etherCatastrophe(int stat, int magicLandTurns, boolean annihilator, int additionalMana, int precision, PrintStream out) {
         out.println("마도사-에테르 카타스트로피 사용");
 
-        return basicAttack(stat, magicLandTurns, 5, 20, annihilator, 7, 10, precision, out);
+        return basicAttack(stat, magicLandTurns, 5, 20, annihilator, 7, 10, additionalMana, precision, out);
     }
 
     /**
@@ -93,14 +95,15 @@ public class Arcanist {
      * @param stat           사용할 스탯
      * @param magicLandTurns 마력의 땅 영창 진행 턴 수 (마력의 땅 : 영창 진행 턴 수 * 70% 만큼 데미지 증가)
      * @param annihilator    어나일레이터 스킬 활성화 여부 (최종 데미지 5배, 마나 소모 2배)
+     * @param additionalMana 넘치는 지혜 패시브로 추가 소모한 마나 (마력의 범람 계산에 포함)
      * @param precision      정밀 스탯
      * @param out            출력 스트림
      * @return 결과 객체
      */
-    public static Result manaBullet(int stat, int magicLandTurns, boolean annihilator, int precision, PrintStream out) {
+    public static Result manaBullet(int stat, int magicLandTurns, boolean annihilator, int additionalMana, int precision, PrintStream out) {
         out.println("마도사-마력탄 사용");
 
-        return basicAttack(stat, magicLandTurns, 5, 4, annihilator, 2, 0, precision, out);
+        return basicAttack(stat, magicLandTurns, 5, 4, annihilator, 2, 0, additionalMana, precision, out);
     }
 
     /**
@@ -108,7 +111,7 @@ public class Arcanist {
      * <p>
      * 데미지 공식: [(기본 데미지) x (100 + 데미지)%] x (최종 데미지)% x (주사위 보정)
      * <p>
-     * - (100 + 데미지)%: 마력의 땅(+magicLandTurns*70%), 마력의 범람(+mana*40%)
+     * - (100 + 데미지)%: 마력의 땅(+magicLandTurns*70%), 마력의 범람(+(mana+additionalMana)*40%)
      * - (최종 데미지)%: 어나일레이터(x5)
      * - (주사위 보정): sideDamage (판정 주사위 재사용) + 정밀 판정(치명타)
      *
@@ -119,16 +122,26 @@ public class Arcanist {
      * @param annihilator    어나일레이터 스킬 활성화 여부 (최종 데미지 5배, 마나 소모 2배)
      * @param mana           기본 마나 소모량
      * @param cast           해당 스킬의 원래 영창 시간 (마도학 패시브 판정에 사용)
+     * @param additionalMana 넘치는 지혜 패시브로 추가 소모한 마나 (마력의 범람 계산에 포함)
      * @param precision      정밀 스탯
      * @param out            출력 스트림
      * @return 결과 객체
      */
-    private static Result basicAttack(int stat, int magicLandTurns, int dices, int sides, boolean annihilator, int mana, int cast, int precision, PrintStream out) {
+    private static Result basicAttack(int stat, int magicLandTurns, int dices, int sides, boolean annihilator, int mana, int cast, int additionalMana, int precision, PrintStream out) {
         int verdict = Main.verdict(stat, out);
 
-        if (annihilator) mana *= 2;
+        if (annihilator) {
+            mana *= 2;
+            additionalMana *= 2;
+        }
 
-        if (verdict <= 0) return new Result(0, 0, false, mana, 0);
+        int totalMana = mana + additionalMana;
+
+        if (additionalMana > 0) {
+            out.printf("넘치는 지혜 패시브 적용: 기본 마나 %d + 추가 마나 %d = 총 마나 %d%n", mana, additionalMana, totalMana);
+        }
+
+        if (verdict <= 0) return new Result(0, 0, false, totalMana, 0);
         int diceRoll = stat - verdict;
 
         int baseDamage = Main.dice(dices, sides, out);
@@ -145,9 +158,9 @@ public class Arcanist {
         }
 
         // 마력의 범람 패시브: (해당 스킬 영창 시작으로부터 소모한 총 마나) * 40% 만큼 최종 데미지 증가
-        if (mana > 0) {
-            int manaOverflowBonus = mana * 40;
-            out.printf("마력의 범람 패시브 적용: (해당 스킬 영창 시작으로부터 소모한 총 마나) * 40%% 만큼 데미지 증가 (+%d%%)%n", manaOverflowBonus);
+        if (totalMana > 0) {
+            int manaOverflowBonus = totalMana * 40;
+            out.printf("마력의 범람 패시브 적용: (해당 스킬 영창 시작으로부터 소모한 총 마나 %d) * 40%% 만큼 데미지 증가 (+%d%%)%n", totalMana, manaOverflowBonus);
             flatBonus += manaOverflowBonus;
         }
 
@@ -177,13 +190,13 @@ public class Arcanist {
             int i = random.nextInt(10) + 1;
             if (i <= cast) {
                 out.printf("마도학 패시브 적용: 영창 시간 %d * 10%% 확률로 적의 수비를 무시함 (주사위 결과: %d, 성공)%n", cast, i);
-                return new Result(damage, 0, true, mana, 0);
+                return new Result(damage, 0, true, totalMana, 0);
             } else {
                 out.printf("마도학 패시브 적용: 영창 시간 %d * 10%% 확률로 적의 수비를 무시함 (주사위 결과: %d, 실패)%n", cast, i);
             }
         }
 
-        return new Result(damage, 0, true, mana, 0);
+        return new Result(damage, 0, true, totalMana, 0);
     }
 
     /**
@@ -246,17 +259,27 @@ public class Arcanist {
      * @param level          캐릭터 레벨 (마나 소모 = 40 - 레벨)
      * @param magicLandTurns 마력의 땅 영창 진행 턴 수 (마력의 땅 : 영창 진행 턴 수 * 70% 만큼 데미지 증가)
      * @param annihilator    어나일레이터 스킬 활성화 여부 (최종 데미지 5배, 마나 소모 2배)
+     * @param additionalMana 넘치는 지혜 패시브로 추가 소모한 마나 (마력의 범람 계산에 포함)
      * @param precision      정밀 스탯
      * @param out            출력 스트림
      * @return 결과 객체 (manaUsed는 순소모, 음수이면 순회복)
      */
-    public static Result eleaExidiumNova(int stat, int level, int magicLandTurns, boolean annihilator, int precision, PrintStream out) {
+    public static Result eleaExidiumNova(int stat, int level, int magicLandTurns, boolean annihilator, int additionalMana, int precision, PrintStream out) {
         out.println("마도사-엘레아 엑시디움 노바 사용");
         int baseMana = Math.max(0, 40 - level);
-        if (annihilator) baseMana *= 2;
+        if (annihilator) {
+            baseMana *= 2;
+            additionalMana *= 2;
+        }
+
+        int totalMana = baseMana + additionalMana;
+
+        if (additionalMana > 0) {
+            out.printf("넘치는 지혜 패시브 적용: 기본 마나 %d + 추가 마나 %d = 총 마나 %d%n", baseMana, additionalMana, totalMana);
+        }
 
         int verdict = Main.verdict(stat, out);
-        if (verdict <= 0) return new Result(0, 0, false, baseMana, 0);
+        if (verdict <= 0) return new Result(0, 0, false, totalMana, 0);
         int diceRoll = stat - verdict;
 
         // 4D20 + 6D4 + 1D50
@@ -281,9 +304,9 @@ public class Arcanist {
         }
 
         // 마력의 범람 패시브: (해당 스킬 영창 시작으로부터 소모한 총 마나) * 40% 만큼 최종 데미지 증가
-        if (baseMana > 0) {
-            int manaOverflowBonus = baseMana * 40;
-            out.printf("마력의 범람 패시브 적용: (해당 스킬 영창 시작으로부터 소모한 총 마나) * 40%% 만큼 데미지 증가 (+%d%%)%n", manaOverflowBonus);
+        if (totalMana > 0) {
+            int manaOverflowBonus = totalMana * 40;
+            out.printf("마력의 범람 패시브 적용: (해당 스킬 영창 시작으로부터 소모한 총 마나 %d) * 40%% 만큼 데미지 증가 (+%d%%)%n", totalMana, manaOverflowBonus);
             flatBonus += manaOverflowBonus;
         }
 
@@ -315,8 +338,8 @@ public class Arcanist {
         int cooldownReduction = manaRecovered / 5;
         out.printf("쿨타임 감소: 회복 마나 %d / 5 = %d 턴만큼 스킬 3개 쿨타임 감소%n", manaRecovered, cooldownReduction);
 
-        int netMana = baseMana - manaRecovered;
-        out.printf("마나 소모 %d - 회복 %d = 순 마나 변화: %d (음수이면 순 회복)%n", baseMana, manaRecovered, netMana);
+        int netMana = totalMana - manaRecovered;
+        out.printf("마나 소모 %d - 회복 %d = 순 마나 변화: %d (음수이면 순 회복)%n", totalMana, manaRecovered, netMana);
         return new Result(0, damage, true, netMana, 0);
     }
 
