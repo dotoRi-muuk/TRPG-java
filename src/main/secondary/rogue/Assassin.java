@@ -39,19 +39,24 @@ public class Assassin {
      * 공통 공격 처리 (새 데미지 공식 적용)
      * 데미지 = [(기본 데미지) x (100 + 데미지 증가)%] x (최종 데미지)% x (주사위 보정)
      *
-     * @param skillName      스킬 이름
-     * @param stat           판정에 사용할 스탯
-     * @param diceCount      주사위 수
-     * @param diceFaces      주사위 면 수
-     * @param precision      정밀 스탯 (치명타 판정용)
-     * @param damageIncrease 데미지 증가 % (덧셈 보정)
-     * @param finalMultiplier 최종 데미지 배율 (곱셈 보정)
-     * @param staminaCost    스태미나 소모량
-     * @param out            출력 스트림
+     * @param skillName               스킬 이름
+     * @param stat                    판정에 사용할 스탯
+     * @param diceCount               주사위 수
+     * @param diceFaces               주사위 면 수
+     * @param precision               정밀 스탯 (치명타 판정용)
+     * @param classDamageIncrease     직업 데미지 증가 % (덧셈 보정)
+     * @param classFinalMultiplier    직업 최종 데미지 배율 (곱셈 보정)
+     * @param staminaCost             스태미나 소모량
+     * @param level                   레벨 ((100 + level²)% 최종 데미지 적용)
+     * @param externalDamageIncrease  외부 데미지 증가 % (합연산)
+     * @param externalFinalDamagePct  외부 최종 데미지 배율 % (곱연산, 100 = 기본)
+     * @param out                     출력 스트림
      * @return 결과 객체
      */
     private static Result commonAttack(String skillName, int stat, int diceCount, int diceFaces, int precision,
-                                       int damageIncrease, double finalMultiplier, int staminaCost, PrintStream out) {
+                                       int classDamageIncrease, double classFinalMultiplier, int staminaCost,
+                                       int level, int externalDamageIncrease, int externalFinalDamagePct,
+                                       PrintStream out) {
         out.println("암살자-" + skillName + " 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict < 0) {
@@ -65,7 +70,14 @@ public class Assassin {
         double diceModifier = computeDiceModifier(stat, diceRoll);
         out.printf("주사위 보정: %.2f\n", diceModifier);
 
-        int damage = Main.calculateDamage(baseDamage, damageIncrease, finalMultiplier, diceModifier, out);
+        int totalDamageIncrease = classDamageIncrease + externalDamageIncrease;
+        double levelMultiplier = (100 + (long) level * level) / 100.0;
+        double extFinalMultiplier = externalFinalDamagePct / 100.0;
+        double totalFinalMultiplier = classFinalMultiplier * levelMultiplier * extFinalMultiplier;
+        out.printf("레벨 최종 배율: (100 + %d^2)%% = %.0f%%%n", level, levelMultiplier * 100);
+        out.printf("외부 데미지 증가: +%d%%, 외부 최종 데미지: %d%%%n", externalDamageIncrease, externalFinalDamagePct);
+
+        int damage = Main.calculateDamage(baseDamage, totalDamageIncrease, totalFinalMultiplier, diceModifier, out);
         damage = Main.criticalHit(precision, damage, out);
         out.printf("최종 데미지 : %d%n", damage);
         return new Result(0, damage, true, 0, staminaCost);
@@ -78,18 +90,25 @@ public class Assassin {
      * 패시브 '생사여탈' 적용 시 최종 데미지 추가 x2
      * 스킬 '확인 사살' 적용 시 최종 데미지 추가 x2
      * 버프 '포착' 적용 시 최종 데미지 x2.5
+     * 스킬 '필살' 적용 시 최종 데미지 x2 (치명적 외상)
      *
      * @param stat                   판정에 사용할 스탯
      * @param assassinationTarget    '암살 대상' 패시브 적용 여부 (전장 복귀 턴, 최종 데미지 x4)
      * @param powerOverLifeAndDeath  '생사여탈' 패시브 적용 여부 (전투 시작 턴, 최종 데미지 x2)
      * @param confirmKill            '확인 사살' 스킬 적용 여부 (다음 암살 데미지 x2)
      * @param targetLocked           '포착' 버프 적용 여부 (최종 데미지 x2.5)
+     * @param lethalWound            '필살' 스킬의 치명적 외상 적용 여부 (최종 데미지 x2)
      * @param precision              정밀 스탯 (치명타 판정용)
+     * @param level                  레벨
+     * @param externalDamageIncrease 외부 데미지 증가 %
+     * @param externalFinalDamagePct 외부 최종 데미지 배율 %
      * @param out                    출력 스트림
      * @return 결과 객체
      */
     public static Result assassinate(int stat, boolean assassinationTarget, boolean powerOverLifeAndDeath,
-                                     boolean confirmKill, boolean targetLocked, int precision, PrintStream out) {
+                                     boolean confirmKill, boolean targetLocked, boolean lethalWound,
+                                     int precision, int level, int externalDamageIncrease, int externalFinalDamagePct,
+                                     PrintStream out) {
         double finalMultiplier = 1.0;
         if (assassinationTarget) {
             out.println("'암살 대상' 패시브 적용: 최종 데미지 x4 (400%)");
@@ -107,97 +126,163 @@ public class Assassin {
             out.println("'포착' 버프 적용: 최종 데미지 x2.5 (250%)");
             finalMultiplier *= 2.5;
         }
-        return commonAttack("암살", stat, 4, 20, precision, 0, finalMultiplier, 44, out);
+        if (lethalWound) {
+            out.println("'필살' 치명적 외상 적용: 최종 데미지 x2 (200%)");
+            finalMultiplier *= 2.0;
+        }
+        return commonAttack("암살", stat, 4, 20, precision, 0, finalMultiplier, 44,
+                level, externalDamageIncrease, externalFinalDamagePct, out);
     }
 
     /**
      * 기본 공격: 대상에게 1D6의 데미지를 입힙니다.
      *
-     * @param stat                판정에 사용할 스탯
-     * @param assassinationTarget '암살 대상' 패시브 적용 여부 (최종 데미지 x4)
-     * @param precision           정밀 스탯 (치명타 판정용)
-     * @param out                 출력 스트림
+     * @param stat                   판정에 사용할 스탯
+     * @param assassinationTarget    '암살 대상' 패시브 적용 여부 (최종 데미지 x4)
+     * @param precision              정밀 스탯 (치명타 판정용)
+     * @param level                  레벨
+     * @param externalDamageIncrease 외부 데미지 증가 %
+     * @param externalFinalDamagePct 외부 최종 데미지 배율 %
+     * @param out                    출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, boolean assassinationTarget, int precision, PrintStream out) {
+    public static Result plain(int stat, boolean assassinationTarget, int precision,
+                               int level, int externalDamageIncrease, int externalFinalDamagePct, PrintStream out) {
         double finalMultiplier = 1.0;
         if (assassinationTarget) {
             out.println("'암살 대상' 패시브 적용: 최종 데미지 x4 (400%)");
             finalMultiplier = 4.0;
         }
-        return commonAttack("기본 공격", stat, 1, 6, precision, 0, finalMultiplier, 0, out);
+        return commonAttack("기본 공격", stat, 1, 6, precision, 0, finalMultiplier, 0,
+                level, externalDamageIncrease, externalFinalDamagePct, out);
     }
 
     /**
      * 급소 찌르기: 대상에게 4D12의 피해를 입힙니다. (스태미나 13 소모)
      *
-     * @param stat                판정에 사용할 스탯
-     * @param assassinationTarget '암살 대상' 패시브 적용 여부 (최종 데미지 x4)
-     * @param precision           정밀 스탯 (치명타 판정용)
-     * @param out                 출력 스트림
+     * @param stat                   판정에 사용할 스탯
+     * @param assassinationTarget    '암살 대상' 패시브 적용 여부 (최종 데미지 x4)
+     * @param precision              정밀 스탯 (치명타 판정용)
+     * @param level                  레벨
+     * @param externalDamageIncrease 외부 데미지 증가 %
+     * @param externalFinalDamagePct 외부 최종 데미지 배율 %
+     * @param out                    출력 스트림
      * @return 결과 객체
      */
-    public static Result vitalPointStab(int stat, boolean assassinationTarget, int precision, PrintStream out) {
+    public static Result vitalPointStab(int stat, boolean assassinationTarget, int precision,
+                                        int level, int externalDamageIncrease, int externalFinalDamagePct,
+                                        PrintStream out) {
         double finalMultiplier = 1.0;
         if (assassinationTarget) {
             out.println("'암살 대상' 패시브 적용: 최종 데미지 x4 (400%)");
             finalMultiplier = 4.0;
         }
-        return commonAttack("급소 찌르기", stat, 4, 12, precision, 0, finalMultiplier, 13, out);
+        return commonAttack("급소 찌르기", stat, 4, 12, precision, 0, finalMultiplier, 13,
+                level, externalDamageIncrease, externalFinalDamagePct, out);
     }
 
     /**
      * 목 긋기: 대상에게 1D20의 피해를 입힙니다. (스태미나 3 소모)
      *
-     * @param stat                판정에 사용할 스탯
-     * @param assassinationTarget '암살 대상' 패시브 적용 여부 (최종 데미지 x4)
-     * @param precision           정밀 스탯 (치명타 판정용)
-     * @param out                 출력 스트림
+     * @param stat                   판정에 사용할 스탯
+     * @param assassinationTarget    '암살 대상' 패시브 적용 여부 (최종 데미지 x4)
+     * @param precision              정밀 스탯 (치명타 판정용)
+     * @param level                  레벨
+     * @param externalDamageIncrease 외부 데미지 증가 %
+     * @param externalFinalDamagePct 외부 최종 데미지 배율 %
+     * @param out                    출력 스트림
      * @return 결과 객체
      */
-    public static Result throatSlit(int stat, boolean assassinationTarget, int precision, PrintStream out) {
+    public static Result throatSlit(int stat, boolean assassinationTarget, int precision,
+                                    int level, int externalDamageIncrease, int externalFinalDamagePct,
+                                    PrintStream out) {
         double finalMultiplier = 1.0;
         if (assassinationTarget) {
             out.println("'암살 대상' 패시브 적용: 최종 데미지 x4 (400%)");
             finalMultiplier = 4.0;
         }
-        return commonAttack("목 긋기", stat, 1, 20, precision, 0, finalMultiplier, 3, out);
+        return commonAttack("목 긋기", stat, 1, 20, precision, 0, finalMultiplier, 3,
+                level, externalDamageIncrease, externalFinalDamagePct, out);
     }
 
     /**
      * 손목 긋기: 대상에게 4D8의 피해를 입힙니다. (스태미나 10 소모)
      *
-     * @param stat                판정에 사용할 스탯
-     * @param assassinationTarget '암살 대상' 패시브 적용 여부 (최종 데미지 x4)
-     * @param precision           정밀 스탯 (치명타 판정용)
-     * @param out                 출력 스트림
+     * @param stat                   판정에 사용할 스탯
+     * @param assassinationTarget    '암살 대상' 패시브 적용 여부 (최종 데미지 x4)
+     * @param precision              정밀 스탯 (치명타 판정용)
+     * @param level                  레벨
+     * @param externalDamageIncrease 외부 데미지 증가 %
+     * @param externalFinalDamagePct 외부 최종 데미지 배율 %
+     * @param out                    출력 스트림
      * @return 결과 객체
      */
-    public static Result wristSlit(int stat, boolean assassinationTarget, int precision, PrintStream out) {
+    public static Result wristSlit(int stat, boolean assassinationTarget, int precision,
+                                   int level, int externalDamageIncrease, int externalFinalDamagePct,
+                                   PrintStream out) {
         double finalMultiplier = 1.0;
         if (assassinationTarget) {
             out.println("'암살 대상' 패시브 적용: 최종 데미지 x4 (400%)");
             finalMultiplier = 4.0;
         }
-        return commonAttack("손목 긋기", stat, 4, 8, precision, 0, finalMultiplier, 10, out);
+        return commonAttack("손목 긋기", stat, 4, 8, precision, 0, finalMultiplier, 10,
+                level, externalDamageIncrease, externalFinalDamagePct, out);
     }
 
     /**
      * 후방 공격: 대상에게 3D12의 피해를 입힙니다. (스태미나 12 소모)
      *
-     * @param stat                판정에 사용할 스탯
-     * @param assassinationTarget '암살 대상' 패시브 적용 여부 (최종 데미지 x4)
-     * @param precision           정밀 스탯 (치명타 판정용)
-     * @param out                 출력 스트림
+     * @param stat                   판정에 사용할 스탯
+     * @param assassinationTarget    '암살 대상' 패시브 적용 여부 (최종 데미지 x4)
+     * @param precision              정밀 스탯 (치명타 판정용)
+     * @param level                  레벨
+     * @param externalDamageIncrease 외부 데미지 증가 %
+     * @param externalFinalDamagePct 외부 최종 데미지 배율 %
+     * @param out                    출력 스트림
      * @return 결과 객체
      */
-    public static Result backStab(int stat, boolean assassinationTarget, int precision, PrintStream out) {
+    public static Result backStab(int stat, boolean assassinationTarget, int precision,
+                                  int level, int externalDamageIncrease, int externalFinalDamagePct,
+                                  PrintStream out) {
         double finalMultiplier = 1.0;
         if (assassinationTarget) {
             out.println("'암살 대상' 패시브 적용: 최종 데미지 x4 (400%)");
             finalMultiplier = 4.0;
         }
-        return commonAttack("후방 공격", stat, 3, 12, precision, 0, finalMultiplier, 12, out);
+        return commonAttack("후방 공격", stat, 3, 12, precision, 0, finalMultiplier, 12,
+                level, externalDamageIncrease, externalFinalDamagePct, out);
+    }
+
+    /**
+     * 필살: 마지막으로 [암살]을 적중한 적에게 [치명적 외상]을 부여합니다.
+     * 해당 적은 다음 [암살]로 받는 최종 데미지가 200%로 증가하고 이후 행동불가를 1회 얻습니다.
+     * (마나 6, 쿨타임 7턴)
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체 (마나 6 소모)
+     */
+    public static Result lethal(PrintStream out) {
+        out.println("암살자-필살 사용");
+        out.println("[치명적 외상] 부여: 다음 [암살] 최종 데미지 200%, 이후 행동불가 1회");
+        out.println("마나 6 소모");
+        return new Result(0, 0, true, 6, 0);
+    }
+
+    /**
+     * 예리: 영창을 진행합니다. 영창을 진행한 1턴당 다음 공격까지의 정밀 스탯이 3 증가합니다.
+     * 해당 스킬은 지혜 판정이 불가능합니다.
+     * (마나 4, 쿨타임 3턴)
+     *
+     * @param chantTurns 영창을 진행한 턴 수
+     * @param out        출력 스트림
+     * @return 결과 객체 (마나 4 소모, 정밀 스탯 증가량 반환)
+     */
+    public static Result keen(int chantTurns, PrintStream out) {
+        out.println("암살자-예리 사용 (지혜 판정 불가)");
+        int precisionBonus = chantTurns * 3;
+        out.printf("영창 %d턴 → 정밀 스탯 +%d (다음 공격까지 적용)%n", chantTurns, precisionBonus);
+        out.println("마나 4 소모");
+        return new Result(0, 0, true, 4, 0);
     }
 
     /**
