@@ -26,33 +26,42 @@ public class Ninja {
      * 데미지 계산 공식 적용
      * [(기본 데미지) x (100 + 데미지)%] x (최종 데미지)% x (주사위 보정)
      *
-     * @param baseDamage            주사위로 굴린 기본 데미지
-     * @param illusion              환영 패시브(은신 상태 시 최종 데미지 x2)
-     * @param ideologySeal          이념 봉인 스킬(데미지 +300%)
-     * @param applyClone            분신 패시브 적용 여부(데미지 x0.75)
-     * @param resistanceType        내성 종류 ("none", "pain", "fear") - fear 시 최종 데미지 x2
-     * @param stat                  주사위 보정에 사용할 스탯
-     * @param staminaChange         스태미나 변화량
-     * @param manaChange            마나 변화량
-     * @param precision             정밀 스탯 (치명타 판정)
-     * @param out                   출력 스트림
-     * @param diceRoll              판정에서 사용한 주사위 값 (stat - verdict)
+     * @param baseDamage             주사위로 굴린 기본 데미지
+     * @param illusion               환영 패시브(은신 상태 시 최종 데미지 x2)
+     * @param ideologySeal           이념 봉인 스킬(데미지 +300%)
+     * @param applyClone             분신 패시브 적용 여부(데미지 x0.75)
+     * @param resistanceType         내성 종류 ("none", "pain", "fear") - fear 시 최종 데미지 x2
+     * @param stat                   주사위 보정에 사용할 스탯
+     * @param staminaChange          스태미나 변화량
+     * @param manaChange             마나 변화량
+     * @param precision              정밀 스탯 (치명타 판정)
+     * @param level                  레벨 ((100 + level²)% 최종 데미지)
+     * @param externalDamageIncrease 외부 데미지 증가 % (합연산)
+     * @param externalFinalDamagePct 외부 최종 데미지 배율 % (곱연산, 100 = 기본)
+     * @param out                    출력 스트림
+     * @param diceRoll               판정에서 사용한 주사위 값 (stat - verdict)
      * @return 결과 객체
      */
     private static Result applyNinjaDamageLogic(int baseDamage, int stat, boolean illusion,
                                                 boolean ideologySeal, boolean applyClone,
                                                 String resistanceType, int staminaChange,
                                                 int manaChange, int precision,
+                                                int level, int externalDamageIncrease, int externalFinalDamagePct,
                                                 PrintStream out, int diceRoll) {
         // (100 + 데미지)% — 가산 보너스
-        int flatBonus = 0;
+        int flatBonus = externalDamageIncrease;
         if (ideologySeal) {
             out.println("이념 봉인 스킬 적용: 데미지 +300%");
             flatBonus += 300;
         }
 
         // (최종 데미지)% — 곱연산 배율
-        double finalDamageMultiplier = 1.0;
+        double levelMultiplier = (100 + (long) level * level) / 100.0;
+        double extFinalMultiplier = externalFinalDamagePct / 100.0;
+        double finalDamageMultiplier = levelMultiplier * extFinalMultiplier;
+        out.printf("레벨 최종 배율: (100 + %d^2)%% = %.0f%%%n", level, levelMultiplier * 100);
+        out.printf("외부 데미지 증가: +%d%%, 외부 최종 데미지: %d%%%n", externalDamageIncrease, externalFinalDamagePct);
+
         if (applyClone) {
             out.println("분신 패시브 적용: 데미지 75%로 감소");
             finalDamageMultiplier *= 0.75;
@@ -83,17 +92,21 @@ public class Ninja {
     /**
      * 닌자 기본공격 : 대상에게 1D6의 데미지를 입힙니다.
      *
-     * @param stat           사용할 스탯
-     * @param illusion       환영 패시브(은신 상태 시 최종 데미지 x2)
-     * @param ideologySeal   이념 봉인 스킬(데미지 +300%)
-     * @param resistanceType 내성 종류 ("none", "pain", "fear")
-     * @param precision      정밀 스탯
-     * @param out            출력 스트림
+     * @param stat                   사용할 스탯
+     * @param illusion               환영 패시브(은신 상태 시 최종 데미지 x2)
+     * @param ideologySeal           이념 봉인 스킬(데미지 +300%)
+     * @param resistanceType         내성 종류 ("none", "pain", "fear")
+     * @param precision              정밀 스탯
+     * @param level                  레벨
+     * @param externalDamageIncrease 외부 데미지 증가 %
+     * @param externalFinalDamagePct 외부 최종 데미지 배율 %
+     * @param out                    출력 스트림
      * @return 결과 객체
      */
     public static Result plain(int stat, boolean illusion,
                                boolean ideologySeal, String resistanceType,
-                               int precision, PrintStream out) {
+                               int precision, int level, int externalDamageIncrease, int externalFinalDamagePct,
+                               PrintStream out) {
         out.println("닌자-기본공격 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -103,23 +116,27 @@ public class Ninja {
         int diceRoll = stat - verdict;
         int baseDamage = Main.dice(1, 6, out);
         return applyNinjaDamageLogic(baseDamage, stat, illusion, ideologySeal, true,
-                resistanceType, 0, 0, precision, out, diceRoll);
+                resistanceType, 0, 0, precision, level, externalDamageIncrease, externalFinalDamagePct, out, diceRoll);
     }
 
     /**
      * 일격 : 대상에게 2D6의 피해를 입힙니다. (스태미나 2 소모)
      *
-     * @param stat           사용할 스탯
-     * @param illusion       환영 패시브(은신 상태 시 최종 데미지 x2)
-     * @param ideologySeal   이념 봉인 스킬(데미지 +300%)
-     * @param resistanceType 내성 종류 ("none", "pain", "fear")
-     * @param precision      정밀 스탯
-     * @param out            출력 스트림
+     * @param stat                   사용할 스탯
+     * @param illusion               환영 패시브(은신 상태 시 최종 데미지 x2)
+     * @param ideologySeal           이념 봉인 스킬(데미지 +300%)
+     * @param resistanceType         내성 종류 ("none", "pain", "fear")
+     * @param precision              정밀 스탯
+     * @param level                  레벨
+     * @param externalDamageIncrease 외부 데미지 증가 %
+     * @param externalFinalDamagePct 외부 최종 데미지 배율 %
+     * @param out                    출력 스트림
      * @return 결과 객체
      */
     public static Result strike(int stat, boolean illusion,
                                 boolean ideologySeal, String resistanceType,
-                                int precision, PrintStream out) {
+                                int precision, int level, int externalDamageIncrease, int externalFinalDamagePct,
+                                PrintStream out) {
         out.println("닌자-일격 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) {
@@ -128,23 +145,27 @@ public class Ninja {
         int diceRoll = stat - verdict;
         int baseDamage = Main.dice(2, 6, out);
         return applyNinjaDamageLogic(baseDamage, stat, illusion, ideologySeal, true,
-                resistanceType, -2, 0, precision, out, diceRoll);
+                resistanceType, -2, 0, precision, level, externalDamageIncrease, externalFinalDamagePct, out, diceRoll);
     }
 
     /**
      * 난도 : 대상에게 3D8의 피해를 입힙니다. (스태미나 4 소모)
      *
-     * @param stat           사용할 스탯
-     * @param illusion       환영 패시브(은신 상태 시 최종 데미지 x2)
-     * @param ideologySeal   이념 봉인 스킬(데미지 +300%)
-     * @param resistanceType 내성 종류 ("none", "pain", "fear")
-     * @param precision      정밀 스탯
-     * @param out            출력 스트림
+     * @param stat                   사용할 스탯
+     * @param illusion               환영 패시브(은신 상태 시 최종 데미지 x2)
+     * @param ideologySeal           이념 봉인 스킬(데미지 +300%)
+     * @param resistanceType         내성 종류 ("none", "pain", "fear")
+     * @param precision              정밀 스탯
+     * @param level                  레벨
+     * @param externalDamageIncrease 외부 데미지 증가 %
+     * @param externalFinalDamagePct 외부 최종 데미지 배율 %
+     * @param out                    출력 스트림
      * @return 결과 객체
      */
     public static Result slash(int stat, boolean illusion,
                                boolean ideologySeal, String resistanceType,
-                               int precision, PrintStream out) {
+                               int precision, int level, int externalDamageIncrease, int externalFinalDamagePct,
+                               PrintStream out) {
         out.println("닌자-난도 사용");
         int verdict = Main.verdict(stat, out);
         if (verdict <= 0) {
@@ -153,23 +174,27 @@ public class Ninja {
         int diceRoll = stat - verdict;
         int baseDamage = Main.dice(3, 8, out);
         return applyNinjaDamageLogic(baseDamage, stat, illusion, ideologySeal, true,
-                resistanceType, -4, 0, precision, out, diceRoll);
+                resistanceType, -4, 0, precision, level, externalDamageIncrease, externalFinalDamagePct, out, diceRoll);
     }
 
     /**
      * 투척 표창 : 표창 1개를 소모하여 발동합니다. 대상에게 D8의 피해를 입힙니다. 이 기술은 턴을 소모하지 않습니다.
      *
-     * @param stat           사용할 스탯
-     * @param illusion       환영 패시브(은신 상태 시 최종 데미지 x2)
-     * @param ideologySeal   이념 봉인 스킬(데미지 +300%)
-     * @param resistanceType 내성 종류 ("none", "pain", "fear")
-     * @param precision      정밀 스탯
-     * @param out            출력 스트림
+     * @param stat                   사용할 스탯
+     * @param illusion               환영 패시브(은신 상태 시 최종 데미지 x2)
+     * @param ideologySeal           이념 봉인 스킬(데미지 +300%)
+     * @param resistanceType         내성 종류 ("none", "pain", "fear")
+     * @param precision              정밀 스탯
+     * @param level                  레벨
+     * @param externalDamageIncrease 외부 데미지 증가 %
+     * @param externalFinalDamagePct 외부 최종 데미지 배율 %
+     * @param out                    출력 스트림
      * @return 결과 객체
      */
     public static Result throwShuriken(int stat, boolean illusion,
                                        boolean ideologySeal, String resistanceType,
-                                       int precision, PrintStream out) {
+                                       int precision, int level, int externalDamageIncrease, int externalFinalDamagePct,
+                                       PrintStream out) {
         out.println("닌자-투척 표창 사용 (표창 1개 소모)");
         out.println("!턴 소모 없음!");
         int verdict = Main.verdict(stat, out);
@@ -179,24 +204,28 @@ public class Ninja {
         int diceRoll = stat - verdict;
         int baseDamage = Main.dice(1, 8, out);
         return applyNinjaDamageLogic(baseDamage, stat, illusion, ideologySeal, true,
-                resistanceType, 0, 0, precision, out, diceRoll);
+                resistanceType, 0, 0, precision, level, externalDamageIncrease, externalFinalDamagePct, out, diceRoll);
     }
 
     /**
      * 환영난무 : '환영' 패시브(은신) 활성화 중에만 발동 가능합니다. 대상에게 8D6의 피해를 입히며,
      * 다음 턴까지 분신 패시브의 데미지 감소 효과를 제거합니다. (스태미나 4 소모)
      *
-     * @param stat           사용할 스탯
-     * @param illusion       환영 패시브(은신 상태여야 발동 가능, 최종 데미지 x2)
-     * @param ideologySeal   이념 봉인 스킬(데미지 +300%)
-     * @param resistanceType 내성 종류 ("none", "pain", "fear")
-     * @param precision      정밀 스탯
-     * @param out            출력 스트림
+     * @param stat                   사용할 스탯
+     * @param illusion               환영 패시브(은신 상태여야 발동 가능, 최종 데미지 x2)
+     * @param ideologySeal           이념 봉인 스킬(데미지 +300%)
+     * @param resistanceType         내성 종류 ("none", "pain", "fear")
+     * @param precision              정밀 스탯
+     * @param level                  레벨
+     * @param externalDamageIncrease 외부 데미지 증가 %
+     * @param externalFinalDamagePct 외부 최종 데미지 배율 %
+     * @param out                    출력 스트림
      * @return 결과 객체
      */
     public static Result phantomDance(int stat, boolean illusion,
                                       boolean ideologySeal, String resistanceType,
-                                      int precision, PrintStream out) {
+                                      int precision, int level, int externalDamageIncrease, int externalFinalDamagePct,
+                                      PrintStream out) {
         out.println("닌자-환영난무 사용");
         if (!illusion) {
             out.println("실패: 환영(은신) 상태가 아님");
@@ -212,27 +241,31 @@ public class Ninja {
         int baseDamage = Main.dice(8, 6, out);
         // 환영난무는 분신 패시브 감소 효과를 제거하므로 applyClone = false
         return applyNinjaDamageLogic(baseDamage, stat, illusion, ideologySeal, false,
-                resistanceType, -4, 0, precision, out, diceRoll);
+                resistanceType, -4, 0, precision, level, externalDamageIncrease, externalFinalDamagePct, out, diceRoll);
     }
 
     /**
      * 일점투척 : 보유한 모든 표창을 소모합니다. 각 표창마다 D10의 피해를 입힙니다.
      * 민첩과 신속 판정이 동시에 필요합니다. (마나 3 소모)
      *
-     * @param dex            민첩 스탯
-     * @param speed          신속 스탯
-     * @param numShurikens   보유한 표창 개수
-     * @param illusion       환영 패시브(은신 상태 시 최종 데미지 x2)
-     * @param ideologySeal   이념 봉인 스킬(데미지 +300%)
-     * @param resistanceType 내성 종류 ("none", "pain", "fear")
-     * @param precision      정밀 스탯
-     * @param out            출력 스트림
+     * @param dex                    민첩 스탯
+     * @param speed                  신속 스탯
+     * @param numShurikens           보유한 표창 개수
+     * @param illusion               환영 패시브(은신 상태 시 최종 데미지 x2)
+     * @param ideologySeal           이념 봉인 스킬(데미지 +300%)
+     * @param resistanceType         내성 종류 ("none", "pain", "fear")
+     * @param precision              정밀 스탯
+     * @param level                  레벨
+     * @param externalDamageIncrease 외부 데미지 증가 %
+     * @param externalFinalDamagePct 외부 최종 데미지 배율 %
+     * @param out                    출력 스트림
      * @return 결과 객체
      */
     public static Result allOutThrow(int dex, int speed, int numShurikens,
                                      boolean illusion,
                                      boolean ideologySeal, String resistanceType,
-                                     int precision, PrintStream out) {
+                                     int precision, int level, int externalDamageIncrease, int externalFinalDamagePct,
+                                     PrintStream out) {
         out.println("닌자-일점투척 사용");
         out.printf("표창 %d개 전량 소모\n", numShurikens);
 
@@ -246,7 +279,40 @@ public class Ninja {
         int diceRoll = dex - verdict1;
         int baseDamage = Main.dice(numShurikens, 10, out);
         return applyNinjaDamageLogic(baseDamage, dex, illusion, ideologySeal, true,
-                resistanceType, 0, -3, precision, out, diceRoll);
+                resistanceType, 0, -3, precision, level, externalDamageIncrease, externalFinalDamagePct, out, diceRoll);
+    }
+
+    /**
+     * 초신속: 턴을 1회 얻습니다. 단 이번 턴동안 받는 데미지가 100% 상승합니다.
+     * 해당 스킬은 턴을 소모하지 않습니다. (마나 5)
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체 (마나 5 소모)
+     */
+    public static Result ultraSpeed(PrintStream out) {
+        out.println("닌자-초신속 사용");
+        out.println("턴 1회 획득, 이번 턴 받는 데미지 100% 상승");
+        out.println("!턴 소모 없음!");
+        out.println("마나 5 소모");
+        return new Result(0, 0, true, -5, 0);
+    }
+
+    /**
+     * 제어: 적에게 피해를 입거나 자신이 적을 공격하는 데에 실패할 때까지
+     * (자신이 피해를 입지 않고 적에게 피해를 입힌 턴의 수) x 50%만큼 데미지가 증가합니다.
+     * 해당 효과의 누적 턴 수는 스킬을 발동한 시점으로 고정됩니다. (마나 7, 쿨타임 11턴)
+     *
+     * @param uninterruptedTurns 스킬 발동 시점까지 연속으로 피해를 주고 받지 않은 턴 수
+     * @param out                출력 스트림
+     * @return 결과 객체 (마나 7 소모)
+     */
+    public static Result control(int uninterruptedTurns, PrintStream out) {
+        out.println("닌자-제어 사용");
+        int damageBonus = uninterruptedTurns * 50;
+        out.printf("연속 무피격 공격 %d턴 → 데미지 +%d%% 적용%n", uninterruptedTurns, damageBonus);
+        out.println("적 피해 또는 공격 실패 시 효과 종료");
+        out.println("마나 7 소모");
+        return new Result(0, 0, true, -7, 0);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
