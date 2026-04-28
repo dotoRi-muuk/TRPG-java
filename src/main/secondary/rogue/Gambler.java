@@ -200,4 +200,47 @@ public class Gambler {
         return executeSkill("기본공격", stat, luckStat, decreasedLuck, precision, out, 6, 0, 0, 0, 0);
     }
 
+    /**
+     * 최강의 불운: n턴 동안 [운] 스탯이 0으로 감소합니다.
+     * 재사용하여 (원래 운 스탯) × (지속 시간의 절반)만큼 운 스탯이 상승합니다.
+     * (마나 6)
+     *
+     * @param originalLuck  원래 운 스탯
+     * @param durationTurns 지속 시간 (턴 수)
+     * @param reactivate    재사용 여부
+     * @param out           출력 스트림
+     * @return 결과 객체 (마나 6 소모)
+     */
+    public static Result supremeMisfortune(int originalLuck, int durationTurns, boolean reactivate, PrintStream out) {
+        out.println("겜블러-최강의 불운 사용");
+        out.println("마나 6 소모");
+        if (!reactivate) {
+            out.printf("%d턴 동안 [운] 스탯이 0으로 감소합니다%n", durationTurns);
+            return new Result(0, 0, true, 6, 0);
+        } else {
+            int luckIncrease = (int)(originalLuck * (durationTurns / 2.0));
+            out.printf("재사용: [운] 스탯 +%d%n", luckIncrease);
+            out.printf("계산: 원래 운 스탯 %d × 지속 시간의 절반 %.1f = %d%n",
+                    originalLuck, durationTurns / 2.0, luckIncrease);
+            return new Result(0, 0, true, 6, 0, Map.of(Stat.LUCK, luckIncrease));
+        }
+    }
+
+    /**
+     * 럭키: 적에게 공격 당하기 직전에 사용할 수 있습니다.
+     * 해당 공격을 확정적으로 회피합니다. D20의 [운]을 잃습니다.
+     * (마나 3, 쿨타임 6턴)
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체 (마나 3 소모, 운 스탯 D20 감소)
+     */
+    public static Result lucky(PrintStream out) {
+        out.println("겜블러-럭키 사용");
+        out.println("적의 공격 확정 회피!");
+        int luckLoss = Main.dice(1, 20, out);
+        out.printf("D20 결과: %d → [운] 스탯 -%d%n", luckLoss, luckLoss);
+        out.println("마나 3 소모, 쿨타임 6턴");
+        return new Result(0, 0, true, 3, 0, Map.of(Stat.LUCK, -luckLoss));
+    }
+
 }

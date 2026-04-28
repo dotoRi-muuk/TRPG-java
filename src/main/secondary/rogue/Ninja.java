@@ -254,6 +254,43 @@ public class Ninja {
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
+     * 초신속: 턴을 1회 얻습니다. 단 이번 턴동안 받는 데미지가 100% 상승합니다.
+     * 해당 스킬은 턴을 소모하지 않습니다.
+     * (마나 5)
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체 (마나 5 소모)
+     */
+    public static Result ultraSpeed(PrintStream out) {
+        out.println("닌자-초신속 사용");
+        out.println("!턴 소모 없음!");
+        out.println("턴 1회 획득");
+        out.println("이번 턴 동안 받는 데미지 100% 상승");
+        out.println("마나 5 소모");
+        return new Result(0, 0, true, -5, 0);
+    }
+
+    /**
+     * 제어: 적에게 피해를 입거나 자신이 적을 공격하는 데에 실패할 때까지
+     * (자신이 피해를 입지 않고 적에게 피해를 입힌 턴의 수) × 50%만큼 데미지가 증가합니다.
+     * 해당 효과의 누적 턴 수는 스킬을 발동한 시점으로 고정됩니다.
+     * (마나 7, 쿨타임 11턴)
+     *
+     * @param consecutiveTurns 스킬 발동 시점에 누적된 연속 성공 턴 수
+     * @param out              출력 스트림
+     * @return 결과 객체 (마나 7 소모)
+     */
+    public static Result control(int consecutiveTurns, PrintStream out) {
+        out.println("닌자-제어 사용");
+        int damageBonus = consecutiveTurns * 50;
+        out.printf("연속 성공 턴 수: %d%n", consecutiveTurns);
+        out.printf("데미지 증가: %d × 50%% = +%d%%%n", consecutiveTurns, damageBonus);
+        out.println("적에게 피해를 입거나 공격 실패 시 효과 종료");
+        out.println("마나 7 소모, 쿨타임 11턴");
+        return new Result(0, 0, true, -7, 0);
+    }
+
+    /**
      * 이념 봉인 : 3턴간 다음 효과를 부여합니다. (마나 15 소모)
      * <ul>
      *   <li>가하는 데미지 +300% (공식의 가산 보너스 적용)</li>
