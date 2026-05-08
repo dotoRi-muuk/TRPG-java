@@ -23,24 +23,25 @@ public class Ninja {
      * @param stat              주사위 보정에 사용할 스탯
      * @param stealthActive     은신(환영 패시브) 활성화 여부 (최종 데미지 x2)
      * @param doppelgangerActive 분신 패시브 활성화 여부 (데미지 x0.75)
-     * @param ideologySealActive 이념 봉인 스킬 활성화 여부 (데미지 +500%)
+     * @param ideologySealActive 이념 봉인 스킬 활성화 여부 (데미지 +300%)
      * @param resistanceType    내성 종류 ("none", "pain", "fear") - fear 시 최종 데미지 x2
      * @param staminaUsed       소모 스태미나
      * @param out               출력 스트림
+     * @param verdictResult     판정 결과값 (stat - dice)
      * @return 결과 객체
      */
     public static Result calculate(int dices, int sides, int stat,
                                    boolean stealthActive, boolean doppelgangerActive,
                                    boolean ideologySealActive, String resistanceType,
-                                   int staminaUsed, PrintStream out) {
+                                   int staminaUsed, int verdictResult, PrintStream out) {
         int damage = Main.dice(dices, sides, out);
         out.printf("기본 데미지 : %d\n", damage);
 
-        // (100 + 데미지)% 계산 - 이념 봉인 시 +500% 가산
+        // (100 + 데미지)% 계산 - 이념 봉인 시 +300% 가산
         int flatBonus = 0;
         if (ideologySealActive) {
-            out.println("이념 봉인 스킬 적용: 데미지 +500%");
-            flatBonus += 500;
+            out.println("이념 봉인 스킬 적용: 데미지 +300%");
+            flatBonus += 300;
         }
 
         // (최종 데미지)% 계산 - 은신, 분신, 내성 적용
@@ -58,13 +59,12 @@ public class Ninja {
             finalDamageMultiplier *= 2.0;
         }
 
-        // [(기본 데미지) x (100 + 데미지)%] x (최종 데미지)%
-        damage = Main.calculateDamage(damage, flatBonus, finalDamageMultiplier, out);
+        // 주사위 보정 = 1.0 + Max(0, 판정 결과값) * 0.1
+        double diceModifier = 1.0 + (Math.max(0, verdictResult) * 0.1);
+        out.printf("주사위 보정 배율 : 1 + max(0, %d) * 0.1 = %.2f%n", verdictResult, diceModifier);
 
-        // 주사위 보정 = 1.0 + Max(0, 스탯 - D20) * 0.1
-        int sideDmg = Main.sideDamage(damage, stat, out);
-        damage += sideDmg;
-        out.printf("데미지 보정치 : %d\n", sideDmg);
+        // [(기본 데미지) x (100 + 데미지)%] x (최종 데미지)% x (주사위 보정)
+        damage = Main.calculateDamage(damage, flatBonus, finalDamageMultiplier, diceModifier, out);
         out.printf("최종 데미지 : %d\n", damage);
 
         return new Result(0, damage, true, 0, staminaUsed);
@@ -93,7 +93,7 @@ public class Ninja {
             return new Result(0, 0, false, 0, 2);
         }
 
-        return calculate(2, 6, str, stealthActive, doppelgangerActive, ideologySealActive, resistanceType, 2, out);
+        return calculate(2, 6, str, stealthActive, doppelgangerActive, ideologySealActive, resistanceType, 2, verdict, out);
     }
 
     /**
@@ -119,7 +119,7 @@ public class Ninja {
             return new Result(0, 0, false, 0, 4);
         }
 
-        return calculate(3, 8, str, stealthActive, doppelgangerActive, ideologySealActive, resistanceType, 4, out);
+        return calculate(3, 8, str, stealthActive, doppelgangerActive, ideologySealActive, resistanceType, 4, verdict, out);
     }
 
     /**
@@ -145,7 +145,7 @@ public class Ninja {
             return new Result(0, 0, false, 0, 0);
         }
 
-        return calculate(1, 8, dex, stealthActive, doppelgangerActive, ideologySealActive, resistanceType, 0, out);
+        return calculate(1, 8, dex, stealthActive, doppelgangerActive, ideologySealActive, resistanceType, 0, verdict, out);
     }
 
     /**
@@ -178,7 +178,7 @@ public class Ninja {
         }
 
         // 환영난무는 분신 패시브 감소 효과를 제거하므로 doppelgangerActive = false
-        return calculate(8, 6, dex, stealthActive, false, ideologySealActive, resistanceType, 4, out);
+        return calculate(8, 6, dex, stealthActive, false, ideologySealActive, resistanceType, 4, verdict, out);
     }
 
     /**
@@ -216,8 +216,8 @@ public class Ninja {
         // (100 + 데미지)% 계산
         int flatBonus = 0;
         if (ideologySealActive) {
-            out.println("이념 봉인 스킬 적용: 데미지 +500%");
-            flatBonus += 500;
+            out.println("이념 봉인 스킬 적용: 데미지 +300%");
+            flatBonus += 300;
         }
 
         // (최종 데미지)% 계산
@@ -235,11 +235,9 @@ public class Ninja {
             finalDamageMultiplier *= 2.0;
         }
 
-        damage = Main.calculateDamage(damage, flatBonus, finalDamageMultiplier, out);
-
-        int sideDmg = Main.sideDamage(damage, dex, out);
-        damage += sideDmg;
-        out.printf("데미지 보정치 : %d\n", sideDmg);
+        double diceModifier = 1.0 + (Math.max(0, verdict1) * 0.1);
+        out.printf("주사위 보정 배율 : 1 + max(0, %d) * 0.1 = %.2f%n", verdict1, diceModifier);
+        damage = Main.calculateDamage(damage, flatBonus, finalDamageMultiplier, diceModifier, out);
         out.printf("최종 데미지 : %d\n", damage);
 
         return new Result(0, damage, true, -3, 0);
