@@ -524,7 +524,7 @@ public class SkillService {
             case "judge" -> "심판자 여부";
             case "judgementTarget" -> "심판 대상 여부";
             case "warning" -> "경고 여부";
-            case "counterAttackCount", "weightedJudgmentCounterCount" -> "지금까지 시행한 반격 횟수";
+            case "weightedJudgmentCounterCount" -> "지금까지 시행한 반격 횟수";
             case "isHeavyString" -> "무거운 시위 여부";
             case "isFirstTarget" -> "첫 대상 여부";
             case "isEmergency" -> "긴급 사격 여부";
