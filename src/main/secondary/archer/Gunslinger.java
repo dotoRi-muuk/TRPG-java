@@ -23,12 +23,12 @@ public class Gunslinger {
         return finalDamage;
     }
 
-    private static int getWeightedJudgmentBonus(int counterAttackCount, PrintStream out) {
-        if (counterAttackCount <= 0) {
+    private static int getWeightedJudgmentBonus(int weightedJudgmentCounterCount, PrintStream out) {
+        if (weightedJudgmentCounterCount <= 0) {
             return 0;
         }
-        int bonus = counterAttackCount * 30;
-        out.printf("가중 심판 적용: 반격 %d회 → 데미지 +%d%%%n", counterAttackCount, bonus);
+        int bonus = weightedJudgmentCounterCount * 30;
+        out.printf("가중 심판 적용: 반격 %d회 → 데미지 +%d%%%n", weightedJudgmentCounterCount, bonus);
         return bonus;
     }
 
@@ -40,7 +40,7 @@ public class Gunslinger {
      * @param out         출력 스트림
      * @return 결과 객체
      */
-    public static Result backStab(int stat, int damageTaken, int counterAttackCount, int precision, PrintStream out) {
+    public static Result backStab(int stat, int damageTaken, int weightedJudgmentCounterCount, int precision, PrintStream out) {
         out.println("건슬링거-백스탭 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -48,7 +48,7 @@ public class Gunslinger {
         if (verdict <= 0) return new Result(damageTaken, 0, false, 0, 3);
 
         out.print("백스탭 반격 데미지 적용: 데미지 배율 1.5배\n");
-        int damageIncreasePercent = getWeightedJudgmentBonus(counterAttackCount, out);
+        int damageIncreasePercent = getWeightedJudgmentBonus(weightedJudgmentCounterCount, out);
         int finalDamage = calculateAttackDamage(damageTaken, verdict, damageIncreasePercent, 1.5, precision, out);
         return new Result(0, finalDamage, true, 0, 3);
     }
@@ -61,7 +61,7 @@ public class Gunslinger {
      * @param out        출력 스트림
      * @return 결과 객체
      */
-    public static Result opportunity(int stat, int baseDamage, int counterAttackCount, int precision, PrintStream out) {
+    public static Result opportunity(int stat, int baseDamage, int weightedJudgmentCounterCount, int precision, PrintStream out) {
         out.println("건슬링거-활약 기회 사용");
 
         int verdict = Main.verdict(stat, out);
@@ -69,7 +69,7 @@ public class Gunslinger {
         if (verdict <= 0) return new Result(0, 0, false, 0, 0);
 
         out.print("활약 기회 신속 적용: 데미지 배율 1.5배\n");
-        int damageIncreasePercent = getWeightedJudgmentBonus(counterAttackCount, out);
+        int damageIncreasePercent = getWeightedJudgmentBonus(weightedJudgmentCounterCount, out);
         int finalDamage = calculateAttackDamage(baseDamage, verdict, damageIncreasePercent, 1.5, precision, out);
         return new Result(0, finalDamage, true, 0, 0);
     }
