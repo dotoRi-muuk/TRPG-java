@@ -12,6 +12,35 @@ import java.io.PrintStream;
  */
 public class Poacher {
 
+    private static int calculateAttackDamage(int baseDamage, int verdict, int damageIncreasePercent,
+                                             double finalMultiplier, int precision, PrintStream out) {
+        out.printf("기본 데미지 : %d%n", baseDamage);
+        double diceModifier = 1.0 + Math.max(0, verdict) * 0.1;
+        out.printf("주사위 보정: %.2f%n", diceModifier);
+        int finalDamage = Main.calculateDamage(baseDamage, damageIncreasePercent, finalMultiplier, diceModifier, out);
+        finalDamage = Main.criticalHit(precision, finalDamage, out);
+        out.printf("최종 데미지 : %d%n", finalDamage);
+        return finalDamage;
+    }
+
+    private static double getFinalMultiplier(boolean hunting, boolean contemptForTheWeak, boolean overwhelm, PrintStream out) {
+        double finalMultiplier = 1.0;
+        if (hunting) {
+            out.println("사냥 패시브 적용: 디버프 대상 데미지 2배");
+            finalMultiplier *= 2.0;
+        }
+        if (contemptForTheWeak) {
+            out.println("약자멸시 스킬 적용: 데미지 3배");
+            finalMultiplier *= 3.0;
+        }
+        if (overwhelm) {
+            out.println("압도 스킬 적용: 데미지 5배");
+            finalMultiplier *= 5.0;
+        }
+        out.printf("최종 데미지 배율 : %.2f%n", finalMultiplier);
+        return finalMultiplier;
+    }
+
     /**
      * 덫 깔기 : 적이 공격 시도 시 판정을 시행합니다. 판정 성공 시 3D10의 데미지를 입힙니다.
      *
@@ -39,32 +68,9 @@ public class Poacher {
         int verdict = Main.verdict(effectiveStat, out);
 
         if (verdict <= 0) return new Result(damageTaken, 0, false, 0, staminaChange);
-        int diceRoll = effectiveStat - verdict;
-
         int baseDamage = Main.dice(3, 10, out);
-        float modifier = 1.0f;
-        out.printf("기본 데미지 : %d\n", baseDamage);
-
-        if (hunting) {
-            out.println("사냥 패시브 적용: 디버프 대상 데미지 2배");
-            modifier *= 2.0f;
-        }
-        if (contemptForTheWeak) {
-            out.println("약자멸시 스킬 적용: 데미지 3배");
-            modifier *= 3.0f;
-        }
-        if (overwhelm) {
-            out.println("압도 스킬 적용: 데미지 5배");
-            modifier *= 5.0f;
-        }
-        int finalDamage = (int) (baseDamage * modifier);
-        out.printf("최종 데미지 : %d\n", finalDamage);
-
-        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out, diceRoll);
-        finalDamage += sideDamage;
-        out.printf("데미지 보정치 : %d\n", sideDamage);
-        finalDamage = Main.criticalHit(precision, finalDamage, out);
-        out.printf("최종 데미지 : %d\n", finalDamage);
+        double finalMultiplier = getFinalMultiplier(hunting, contemptForTheWeak, overwhelm, out);
+        int finalDamage = calculateAttackDamage(baseDamage, verdict, 0, finalMultiplier, precision, out);
         out.println("Defense Disabled");
         return new Result(damageTaken, finalDamage, true, 0, staminaChange);
     }
@@ -95,32 +101,9 @@ public class Poacher {
         int verdict = Main.verdict(effectiveStat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 0);
-        int diceRoll = effectiveStat - verdict;
-
         int baseDamage = Main.dice(3, 8, out);
-        float modifier = 1.0f;
-        out.printf("기본 데미지 : %d\n", baseDamage);
-
-        if (hunting) {
-            out.println("사냥 패시브 적용: 디버프 대상 데미지 2배");
-            modifier *= 2.0f;
-        }
-        if (contemptForTheWeak) {
-            out.println("약자멸시 스킬 적용: 데미지 3배");
-            modifier *= 3.0f;
-        }
-        if (overwhelm) {
-            out.println("압도 스킬 적용: 데미지 5배");
-            modifier *= 5.0f;
-        }
-        int finalDamage = (int) (baseDamage * modifier);
-        out.printf("최종 데미지 : %d\n", finalDamage);
-
-        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out, diceRoll);
-        finalDamage += sideDamage;
-        out.printf("데미지 보정치 : %d\n", sideDamage);
-        finalDamage = Main.criticalHit(precision, finalDamage, out);
-        out.printf("최종 데미지 : %d\n", finalDamage);
+        double finalMultiplier = getFinalMultiplier(hunting, contemptForTheWeak, overwhelm, out);
+        int finalDamage = calculateAttackDamage(baseDamage, verdict, 0, finalMultiplier, precision, out);
         return new Result(0, finalDamage, true, 0, staminaChange);
     }
 
@@ -150,32 +133,9 @@ public class Poacher {
         int verdict = Main.verdict(effectiveStat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, staminaChange);
-        int diceRoll = effectiveStat - verdict;
-
         int baseDamage = Main.dice(3, 8, out);
-        float modifier = 1.0f;
-        out.printf("기본 데미지 : %d\n", baseDamage);
-
-        if (hunting) {
-            out.println("사냥 패시브 적용: 디버프 대상 데미지 2배");
-            modifier *= 2.0f;
-        }
-        if (contemptForTheWeak) {
-            out.println("약자멸시 스킬 적용: 데미지 3배");
-            modifier *= 3.0f;
-        }
-        if (overwhelm) {
-            out.println("압도 스킬 적용: 데미지 5배");
-            modifier *= 5.0f;
-        }
-        int finalDamage = (int) (baseDamage * modifier);
-        out.printf("배율 적용 데미지 : %d\n", finalDamage);
-
-        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out, diceRoll);
-        finalDamage += sideDamage;
-        out.printf("데미지 보정치 : %d\n", sideDamage);
-        finalDamage = Main.criticalHit(precision, finalDamage, out);
-        out.printf("최종 데미지 : %d\n", finalDamage);
+        double finalMultiplier = getFinalMultiplier(hunting, contemptForTheWeak, overwhelm, out);
+        int finalDamage = calculateAttackDamage(baseDamage, verdict, 0, finalMultiplier, precision, out);
         out.println("적에게 행동 불가 부여 (다음 턴까지)");
         return new Result(0, finalDamage, true, 0, staminaChange);
     }
@@ -206,32 +166,9 @@ public class Poacher {
         int verdict = Main.verdict(effectiveStat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, staminaChange);
-        int diceRoll = effectiveStat - verdict;
-
         int baseDamage = Main.dice(5, 12, out);
-        float modifier = 1.0f;
-        out.printf("기본 데미지 : %d\n", baseDamage);
-
-        if (hunting) {
-            out.println("사냥 패시브 적용: 디버프 대상 데미지 2배");
-            modifier *= 2.0f;
-        }
-        if (contemptForTheWeak) {
-            out.println("약자멸시 스킬 적용: 데미지 3배");
-            modifier *= 3.0f;
-        }
-        if (overwhelm) {
-            out.println("압도 스킬 적용: 데미지 5배");
-            modifier *= 5.0f;
-        }
-        int finalDamage = (int) (baseDamage * modifier);
-        out.printf("최종 데미지 : %d\n", finalDamage);
-
-        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out, diceRoll);
-        finalDamage += sideDamage;
-        out.printf("데미지 보정치 : %d\n", sideDamage);
-        finalDamage = Main.criticalHit(precision, finalDamage, out);
-        out.printf("최종 데미지 : %d\n", finalDamage);
+        double finalMultiplier = getFinalMultiplier(hunting, contemptForTheWeak, overwhelm, out);
+        int finalDamage = calculateAttackDamage(baseDamage, verdict, 0, finalMultiplier, precision, out);
         return new Result(0, finalDamage, true, 0, staminaChange);
     }
 
@@ -247,7 +184,9 @@ public class Poacher {
      * @param out                  출력 스트림
      * @return 결과 객체
      */
-    public static Result plain(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak, boolean overwhelm, boolean reload, int precision, PrintStream out) {
+    public static Result plain(int stat, boolean hunting, boolean survivalOfTheFittest, boolean contemptForTheWeak,
+                               boolean overwhelm, boolean reload, boolean largeCaliberFragmentationShellLoaded,
+                               boolean largeCaliberImpactBuckshotShellLoaded, int precision, PrintStream out) {
         int staminaChange = 0;
 
         out.println("밀렵꾼-기본공격 사용");
@@ -262,7 +201,6 @@ public class Poacher {
         int verdict = Main.verdict(effectiveStat, out);
 
         if (verdict <= 0) return new Result(0, 0, false, 0, 0);
-        int diceRoll = effectiveStat - verdict;
 
         int dices = 4, sides = 4; // 기본값 4D4
 
@@ -274,7 +212,42 @@ public class Poacher {
             sides = 8;
             buckshotApplied = true;
         }
-        if (reload) {
+        boolean applyFragmentationShell = largeCaliberFragmentationShellLoaded;
+        boolean applyImpactBuckshotShell = largeCaliberImpactBuckshotShellLoaded;
+        if (applyFragmentationShell && applyImpactBuckshotShell) {
+            out.println("특수 탄환 중복 입력: 대구경충격벅샷 탄환을 우선 적용합니다.");
+            applyFragmentationShell = false;
+        }
+
+        if (applyImpactBuckshotShell) {
+            staminaChange = 20;
+            if (reload) {
+                out.println("대구경충격벅샷 탄환 적용: 장전 효과는 적용되지 않습니다.");
+            }
+            if (buckshotApplied) {
+                out.println("대구경충격벅샷 탄환 적용: 데미지 주사위 4D8 -> 2D50");
+                dices = 2;
+                sides = 50;
+            } else {
+                out.println("대구경충격벅샷 탄환 적용: 데미지 주사위 4D4 -> 3D10");
+                dices = 3;
+                sides = 10;
+            }
+        } else if (applyFragmentationShell) {
+            staminaChange = 16;
+            if (reload) {
+                out.println("대구경파쇄산탄 탄환 적용: 장전 효과는 적용되지 않습니다.");
+            }
+            if (buckshotApplied) {
+                out.println("대구경파쇄산탄 탄환 적용: 데미지 주사위 4D8 -> 3D40");
+                dices = 3;
+                sides = 40;
+            } else {
+                out.println("대구경파쇄산탄 탄환 적용: 데미지 주사위 4D4 -> 4D10");
+                dices = 4;
+                sides = 10;
+            }
+        } else if (reload) {
             staminaChange += 3;
             if (buckshotApplied) {
                 out.println("장전 기술 적용: 데미지 주사위 4D12로 변경");
@@ -286,29 +259,11 @@ public class Poacher {
         }
 
         int baseDamage = Main.dice(dices, sides, out);
-        float modifier = 1.0f;
-        out.printf("기본 데미지 : %d\n", baseDamage);
-
-        if (hunting) {
-            out.println("사냥 패시브 적용: 디버프 대상 데미지 2배");
-            modifier *= 2.0f;
+        double finalMultiplier = getFinalMultiplier(hunting, contemptForTheWeak, overwhelm, out);
+        int finalDamage = calculateAttackDamage(baseDamage, verdict, 0, finalMultiplier, precision, out);
+        if (applyImpactBuckshotShell) {
+            out.println("적의 공격을 취소시킵니다.");
         }
-        if (contemptForTheWeak) {
-            out.println("약자멸시 스킬 적용: 데미지 3배");
-            modifier *= 3.0f;
-        }
-        if (overwhelm) {
-            out.println("압도 스킬 적용: 데미지 5배");
-            modifier *= 5.0f;
-        }
-        int finalDamage = (int) (baseDamage * modifier);
-        out.printf("최종 데미지 : %d\n", finalDamage);
-
-        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out, diceRoll);
-        finalDamage += sideDamage;
-        out.printf("데미지 보정치 : %d\n", sideDamage);
-        finalDamage = Main.criticalHit(precision, finalDamage, out);
-        out.printf("최종 데미지 : %d\n", finalDamage);
         return new Result(0, finalDamage, true, 0, staminaChange);
     }
 
@@ -349,32 +304,9 @@ public class Poacher {
         int verdict = Main.verdict(effectiveStat, out);
 
         if (verdict <= 0) return new Result(damageTaken, 0, false, 6, 0);
-        int diceRoll = effectiveStat - verdict;
-
         int baseDamage = Main.dice(5, 12, out);
-        float modifier = 1.0f;
-        out.printf("기본 데미지 : %d\n", baseDamage);
-
-        if (hunting) {
-            out.println("사냥 패시브 적용: 디버프 대상 데미지 2배");
-            modifier *= 2.0f;
-        }
-        if (contemptForTheWeak) {
-            out.println("약자멸시 스킬 적용: 데미지 3배");
-            modifier *= 3.0f;
-        }
-        if (overwhelm) {
-            out.println("압도 스킬 적용: 데미지 5배");
-            modifier *= 5.0f;
-        }
-        int finalDamage = (int) (baseDamage * modifier);
-        out.printf("최종 데미지 : %d\n", finalDamage);
-
-        int sideDamage = Main.sideDamage(finalDamage, effectiveStat, out, diceRoll);
-        finalDamage += sideDamage;
-        out.printf("데미지 보정치 : %d\n", sideDamage);
-        finalDamage = Main.criticalHit(precision, finalDamage, out);
-        out.printf("최종 데미지 : %d\n", finalDamage);
+        double finalMultiplier = getFinalMultiplier(hunting, contemptForTheWeak, overwhelm, out);
+        int finalDamage = calculateAttackDamage(baseDamage, verdict, 0, finalMultiplier, precision, out);
         return new Result(damageTaken, finalDamage, true, 6, 0);
     }
 
@@ -400,5 +332,38 @@ public class Poacher {
         out.println("밀렵꾼-전리품 사용");
         out.println("전리품 획득");
         return new Result(0, 0, true, 5, 0);
+    }
+
+    /**
+     * 대구경파쇄산탄 탄환 : 다음 기본 공격의 피해를 강화하는 특수 탄환을 장전합니다. 장전 시 즉시 마나 15를 소모합니다.
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체
+     */
+    public static Result largeCaliberFragmentationShell(PrintStream out) {
+        out.println("밀렵꾼-대구경파쇄산탄 탄환 사용");
+        out.println("장전 시 마나 15를 소모합니다.");
+        out.println("[대구경파쇄산탄 탄환] 장전");
+        out.println("다음 기본 공격: 4D4 -> 4D10, 산탄 적용 시 4D8 -> 3D40");
+        out.println("다음 기본 공격 스태미나 소모: 16 (쿨타임 10턴)");
+        return new Result(0, 0, true, 15, 0);
+    }
+
+    /**
+     * 대구경충격벅샷 탄환 : 수비 대신 기본 공격을 수행할 수 있도록 특수 탄환을 장전합니다.
+     * 실제 수비 대체 공격과 적 공격 취소는 해당 탄환이 적용된 다음 기본 공격에서 처리됩니다.
+     * 장전 시 즉시 마나 16을 소모합니다.
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체
+     */
+    public static Result largeCaliberImpactBuckshotShell(PrintStream out) {
+        out.println("밀렵꾼-대구경충격벅샷 탄환 사용");
+        out.println("장전 시 마나 16을 소모합니다.");
+        out.println("[대구경충격벅샷 탄환] 장전");
+        out.println("다음 기본 공격: 4D4 -> 3D10, 산탄 적용 시 4D8 -> 2D50");
+        out.println("수비 대신 기본 공격을 진행하고 적의 공격을 취소시킵니다.");
+        out.println("다음 기본 공격 스태미나 소모: 20 (쿨타임 12턴)");
+        return new Result(0, 0, true, 16, 0);
     }
 }
