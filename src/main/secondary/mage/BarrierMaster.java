@@ -113,11 +113,18 @@ public class BarrierMaster {
             damageModifier /= reductionBonus;
         }
 
-        int damageAfterModifier = (int) (baseDamage * damageModifier);
-        out.printf("배율 적용 후 데미지 : %d%n", damageAfterModifier);
-        int sideDamage = Main.sideDamage(damageAfterModifier, stat, out, diceRoll);
-        damageAfterModifier += sideDamage;
-        out.printf("데미지 보정치 : %d%n", sideDamage);
+        // [피해 공식 통일]
+        // 피해 = (기본 데미지) x (100 + 데미지)% x (최종 데미지)% x (주사위 보정)
+        // - bonusPercent: 결계술사 plain에서는 별도 합연산 데미지 증가값이 없어 0 사용
+        // - finalPercent: 위에서 계산한 결계 배율(damageModifier)을 % 값으로 변환
+        // - diceModifier: 기존 sideDamage 추가값 공식을 multiplier로 환산해 동일 의미 유지
+        int bonusPercent = 0;
+        double finalPercent = damageModifier * 100.0;
+        int statBonus = Math.max(0, stat - diceRoll);
+        double diceModifier = 1.0 + statBonus * 0.1;
+        out.printf("주사위 보정 배율: 1 + (%d x 0.1) = %.2f%n", statBonus, diceModifier);
+        int damageAfterModifier = Main.calculateSkillDamage(baseDamage, bonusPercent, finalPercent, diceModifier, out);
+
         damageAfterModifier = Main.criticalHit(precision, damageAfterModifier, out);
         out.printf("최종 데미지 : %d%n", damageAfterModifier);
         return new Result(0, damageAfterModifier, true, 0, 0);
