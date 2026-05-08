@@ -212,12 +212,14 @@ public class Poacher {
             sides = 8;
             buckshotApplied = true;
         }
-        if (largeCaliberFragmentationShellLoaded && largeCaliberImpactBuckshotShellLoaded) {
+        boolean applyFragmentationShell = largeCaliberFragmentationShellLoaded;
+        boolean applyImpactBuckshotShell = largeCaliberImpactBuckshotShellLoaded;
+        if (applyFragmentationShell && applyImpactBuckshotShell) {
             out.println("특수 탄환 중복 입력: 대구경충격벅샷 탄환을 우선 적용합니다.");
-            largeCaliberFragmentationShellLoaded = false;
+            applyFragmentationShell = false;
         }
 
-        if (largeCaliberImpactBuckshotShellLoaded) {
+        if (applyImpactBuckshotShell) {
             staminaChange = 20;
             if (reload) {
                 out.println("대구경충격벅샷 탄환 적용: 장전 효과는 적용되지 않습니다.");
@@ -231,7 +233,7 @@ public class Poacher {
                 dices = 3;
                 sides = 10;
             }
-        } else if (largeCaliberFragmentationShellLoaded) {
+        } else if (applyFragmentationShell) {
             staminaChange = 16;
             if (reload) {
                 out.println("대구경파쇄산탄 탄환 적용: 장전 효과는 적용되지 않습니다.");
@@ -259,7 +261,7 @@ public class Poacher {
         int baseDamage = Main.dice(dices, sides, out);
         double finalMultiplier = getFinalMultiplier(hunting, contemptForTheWeak, overwhelm, out);
         int finalDamage = calculateAttackDamage(baseDamage, verdict, 0, finalMultiplier, precision, out);
-        if (largeCaliberImpactBuckshotShellLoaded) {
+        if (applyImpactBuckshotShell) {
             out.println("적의 공격을 취소시킵니다.");
         }
         return new Result(0, finalDamage, true, 0, staminaChange);
