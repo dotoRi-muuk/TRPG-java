@@ -66,17 +66,16 @@ public class Ninja {
             finalDamageMultiplier *= 2.0;
         }
 
-        // [(기본 데미지) x (100 + 데미지)%] x (최종 데미지)%
-        int damage = Main.calculateDamage(baseDamage, flatBonus, finalDamageMultiplier, out);
+        // 주사위 보정 배율 (1 + max(0, 판정결과) * 0.1)
+        double diceModifier = 1.0 + (Math.max(0, diceRoll) * 0.1);
+        out.printf("주사위 보정 배율 : 1 + max(0, %d) * 0.1 = %.2f%n", diceRoll, diceModifier);
 
-        // 주사위 보정
-        int sideDamage = Main.sideDamage(damage, stat, out, diceRoll);
-        damage += sideDamage;
-        out.printf("데미지 보정치 : %d\n", sideDamage);
+        // [(기본 데미지) x (100 + 데미지)%] x (최종 데미지)% x (주사위 보정)
+        int damage = Main.calculateDamage(baseDamage, flatBonus, finalDamageMultiplier, diceModifier, out);
 
         // 치명타 판정
         damage = Main.criticalHit(precision, damage, out);
-        out.printf("최종 데미지 : %d\n", damage);
+        out.printf("치명타 적용 후 최종 데미지 : %d\n", damage);
         return new Result(0, damage, true, manaChange, staminaChange);
     }
 
