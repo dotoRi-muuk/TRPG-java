@@ -276,7 +276,7 @@ public class Trickster {
 
     /**
      * 최종 데미지 계산 공식:
-     * 피해 = (기본 데미지) x (100 + 데미지)% x (최종 데미지)% x (주사위 보정)
+     * 피해 = [(기본 데미지) x (100 + 데미지)%] x (최종 데미지)% x (주사위 보정)
      *
      * @param rawDamage             기본 주사위 데미지
      * @param damageIncreasePercent 데미지 증가 합계 (additive %)

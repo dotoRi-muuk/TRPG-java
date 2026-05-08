@@ -63,9 +63,7 @@ class SpearMaster {
         val baseDamage = Main.dice(1, 6, out)
         out.println("기본 데미지 : $baseDamage")
         val diceRoll = Main.dice(1, 20, out)
-        val statBonus = kotlin.math.max(0, stat - diceRoll)
-        val diceModifier = 1.0 + statBonus * 0.1
-        out.println("주사위 보정 배율: 1 + ($statBonus x 0.1) = %.2f".format(diceModifier))
+        val diceModifier = calculateDiceModifier(stat, diceRoll, out)
         val totalDamage = Main.calculateSkillDamage(baseDamage, 0.0, 100.0, diceModifier, out)
         out.println("공식 적용 데미지 : $totalDamage")
         val critDamage = Main.criticalHit(precision, totalDamage, out)
@@ -337,6 +335,13 @@ class SpearMaster {
         return levelDamage
     }
 
+    private fun calculateDiceModifier(stat: Int, diceRoll: Int, out: java.io.PrintStream): Double {
+        val statBonus = kotlin.math.max(0, stat - diceRoll)
+        val diceModifier = 1.0 + statBonus * 0.1
+        out.printf("주사위 보정 배율: 1 + (%d x 0.1) = %.2f%n", statBonus, diceModifier)
+        return diceModifier
+    }
+
     private fun normalAttack(
         stat: Int,
         agi: Int,
@@ -366,7 +371,6 @@ class SpearMaster {
         val diceRoll = effectiveStat - verdict
         val baseDamage = Main.dice(dices, sides, out)
         out.println("기본 데미지 : $baseDamage")
-        var damageIncreasePercent = 0
         var finalDamageMultiplier = 1.0
         if (combo) {
             finalDamageMultiplier *= 2.0
@@ -379,14 +383,12 @@ class SpearMaster {
             finalDamageMultiplier *= 0.5
             out.println("약점파악 패시브 적용: 기본 기술 데미지 50% 감소")
         }
-        if (isSplendorActive && splendorTurns > 0) {
+        val damageIncreasePercent = if (isSplendorActive && splendorTurns > 0) {
             val damageIncrease = splendorTurns * 50
-            damageIncreasePercent += damageIncrease
             out.println("현란함 스킬 적용: 데미지 ${damageIncrease}% 증가")
-        }
-        val statBonus = kotlin.math.max(0, effectiveStat - diceRoll)
-        val diceModifier = 1.0 + statBonus * 0.1
-        out.println("주사위 보정 배율: 1 + ($statBonus x 0.1) = %.2f".format(diceModifier))
+            damageIncrease
+        } else 0
+        val diceModifier = calculateDiceModifier(effectiveStat, diceRoll, out)
         var damage = Main.calculateSkillDamage(
             baseDamage,
             damageIncreasePercent.toDouble(),

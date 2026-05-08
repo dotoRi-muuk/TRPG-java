@@ -118,7 +118,7 @@ public class BarrierMaster {
         // - bonusPercent: 결계술사 plain에서는 별도 합연산 데미지 증가값이 없어 0 사용
         // - finalPercent: 위에서 계산한 결계 배율(damageModifier)을 % 값으로 변환
         // - diceModifier: 기존 sideDamage 추가값 공식을 multiplier로 환산해 동일 의미 유지
-        int bonusPercent = 0;
+        int bonusPercent = 0; // 이 스킬은 별도 합연산(데미지%) 증가 버프가 없어 0 고정
         double finalPercent = damageModifier * 100.0;
         int statBonus = Math.max(0, stat - diceRoll);
         double diceModifier = 1.0 + statBonus * 0.1;
