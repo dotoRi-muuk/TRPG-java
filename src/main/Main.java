@@ -70,7 +70,32 @@ public class Main {
     }
 
     /**
-     * 데미지 계산 공식
+     * 스킬 피해 계산 공식 (공통)
+     * 피해 = (기본 데미지) x (100 + 데미지)% x (최종 데미지)% x (주사위 보정)
+     *
+     * @param baseDamage   주사위로 계산된 기본 피해 값
+     * @param bonusPercent 버프/강화/상태이상 등으로 더해지는 데미지 증가율(%, 합연산)
+     * @param finalPercent 전체에 적용되는 최종 데미지 보정값(%, 예: 110 = 110%)
+     * @param diceModifier 주사위/특수상태 등에 의한 추가 보정 multiplier (예: 1.3배)
+     * @param out          출력 스트림
+     * @return 공식 적용 후 최종 피해 정수값
+     */
+    public static int calculateSkillDamage(int baseDamage, double bonusPercent, double finalPercent, double diceModifier, PrintStream out) {
+        // Step 1) (기본 데미지) x (100 + 데미지)%
+        double damage = baseDamage * (100.0 + bonusPercent) / 100.0;
+        // Step 2) x (최종 데미지)%
+        damage *= finalPercent / 100.0;
+        // Step 3) x (주사위 보정)
+        damage *= diceModifier;
+
+        int finalDamage = (int) damage;
+        out.printf("데미지 계산(스킬): %d x (100 + %.1f) / 100 x %.1f / 100 x %.2f = %d%n",
+                baseDamage, bonusPercent, finalPercent, diceModifier, finalDamage);
+        return finalDamage;
+    }
+
+    /**
+     * 데미지 계산 공식 (레거시 호환)
      * 최종 데미지 = [(기본 데미지) x (100 + 데미지 증가)%] x (최종 데미지)% x (주사위 보정)
      *
      * @param baseDamage      주사위로 굴린 기본 데미지
@@ -81,10 +106,7 @@ public class Main {
      * @return 최종 계산된 데미지
      */
     public static int calculateDamage(int baseDamage, int flatBonus, double finalMultiplier, double diceModifier, PrintStream out) {
-        int finalDamage = (int)(baseDamage * ((100.0 + flatBonus) / 100.0) * finalMultiplier * diceModifier);
-        out.printf("데미지 계산: [(기본 %d) x (100 + %d)%%] x (최종 %.2f) x (주사위 보정 %.2f) = %d\n",
-                baseDamage, flatBonus, finalMultiplier, diceModifier, finalDamage);
-        return finalDamage;
+        return calculateSkillDamage(baseDamage, flatBonus, finalMultiplier * 100.0, diceModifier, out);
     }
 
     /**

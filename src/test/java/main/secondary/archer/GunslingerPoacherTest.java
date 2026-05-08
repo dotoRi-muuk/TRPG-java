@@ -24,6 +24,17 @@ public class GunslingerPoacherTest {
     }
 
     @Test
+    public void calculateSkillDamageUsesRequestedFormula() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        int damage = Main.calculateSkillDamage(20, 50, 200, 1.2, out);
+
+        assertEquals(72, damage);
+        assertTrue(baos.toString(StandardCharsets.UTF_8).contains("데미지 계산"));
+    }
+
+    @Test
     public void weightedJudgmentConsumesManaWithoutDamage() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(baos, true, StandardCharsets.UTF_8);

@@ -60,12 +60,12 @@ class SpearMaster {
         out: java.io.PrintStream
     ): main.Result {
         out.println("창술사 - 기본 공격 사용")
-        val damage = Main.dice(1, 6, out)
-        out.println("기본 데미지 : $damage")
-        val sideDamage = Main.sideDamage(damage, stat, out)
-        out.println("데미지 보정치 : $sideDamage")
-        val totalDamage = damage + sideDamage
-        out.println("최종 데미지 : $totalDamage")
+        val baseDamage = Main.dice(1, 6, out)
+        out.println("기본 데미지 : $baseDamage")
+        val diceRoll = Main.dice(1, 20, out)
+        val diceModifier = calculateDiceModifier(stat, diceRoll, out)
+        val totalDamage = Main.calculateSkillDamage(baseDamage, 0.0, 100.0, diceModifier, out)
+        out.println("공식 적용 데미지 : $totalDamage")
         val critDamage = Main.criticalHit(precision, totalDamage, out)
         val finalDamage = applyLevelMultiplier(critDamage, level, out)
         return main.Result(0, finalDamage, false, 0, 0)
@@ -335,6 +335,13 @@ class SpearMaster {
         return levelDamage
     }
 
+    private fun calculateDiceModifier(stat: Int, rollResult: Int, out: java.io.PrintStream): Double {
+        val statBonus = kotlin.math.max(0, stat - rollResult)
+        val diceModifier = 1.0 + statBonus * 0.1
+        out.printf("주사위 보정 배율: 1 + (%d x 0.1) = %.2f%n", statBonus, diceModifier)
+        return diceModifier
+    }
+
     private fun normalAttack(
         stat: Int,
         agi: Int,
@@ -362,24 +369,34 @@ class SpearMaster {
             return main.Result(0, 0, false, 0, staminaCost)
         }
         val diceRoll = effectiveStat - verdict
-        var damage = Main.dice(dices, sides, out)
-        out.println("기본 데미지 : $damage")
+        val baseDamage = Main.dice(dices, sides, out)
+        out.println("기본 데미지 : $baseDamage")
+        var finalDamageRatio = 1.0
         if (combo) {
-            damage = (damage * 2)
+            finalDamageRatio *= 2.0
             out.println("약점파악 패시브 적용: [연계] 데미지 2배 증가")
             if (adaptation) {
-                damage = (damage * 3)
+                finalDamageRatio *= 3.0
                 out.println("적응 스킬 적용: [연계] 데미지 3배 증가")
             }
         } else {
-            damage = (damage * 0.5).toInt()
+            finalDamageRatio *= 0.5
             out.println("약점파악 패시브 적용: 기본 기술 데미지 50% 감소")
         }
-        if (isSplendorActive && splendorTurns > 0) {
+        val damageIncreasePercent = if (isSplendorActive && splendorTurns > 0) {
             val damageIncrease = splendorTurns * 50
-            damage = (damage * (1 + splendorTurns * 0.5)).toInt()
             out.println("현란함 스킬 적용: 데미지 ${damageIncrease}% 증가")
-        }
+            damageIncrease
+        } else 0
+        val diceModifier = calculateDiceModifier(effectiveStat, diceRoll, out)
+        var damage = Main.calculateSkillDamage(
+            baseDamage,
+            damageIncreasePercent.toDouble(),
+            finalDamageRatio * 100.0,
+            diceModifier,
+            out
+        )
+        out.println("공식 적용 데미지 : $damage")
         out.println("빈틈 패시브 적용 시도!")
         if (combo && Main.verdict(effectiveAgi, out) > 0) {
             out.println("빈틈 패시브 적용: 민첩 판정 성공으로 추가 공격 가능")
@@ -387,11 +404,7 @@ class SpearMaster {
             out.println("추가 공격 데미지 : $extraDamage")
             damage += extraDamage
         }
-        val sideDamage = Main.sideDamage(damage, effectiveStat, out, diceRoll)
-        out.println("데미지 보정치 : $sideDamage")
-        val totalDamage = damage + sideDamage
-        out.println("최종 데미지 : $totalDamage")
-        val critDamage = Main.criticalHit(precision, totalDamage, out)
+        val critDamage = Main.criticalHit(precision, damage, out)
         val finalDamage = applyLevelMultiplier(critDamage, level, out)
         return main.Result(0, finalDamage, true, 0, staminaCost)
     }

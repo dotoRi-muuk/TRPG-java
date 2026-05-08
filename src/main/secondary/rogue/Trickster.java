@@ -276,34 +276,36 @@ public class Trickster {
 
     /**
      * 최종 데미지 계산 공식:
-     * [(기본 데미지) * (100 + 데미지 증가)%] * (최종 데미지 배율)% * (주사위 보정)
+     * 피해 = [(기본 데미지) x (100 + 데미지)%] x (최종 데미지)% x (주사위 보정)
      *
-     * @param rawDamage            기본 주사위 데미지
+     * @param rawDamage             기본 주사위 데미지
      * @param damageIncreasePercent 데미지 증가 합계 (additive %)
      * @param finalDamageMultiplier 최종 데미지 배율 (multiplicative, e.g. 2.0 = 200%)
-     * @param stat                 판정 스탯 (주사위 보정에 사용)
-     * @param skillName            스킬 이름 (로그 출력용)
-     * @param precision            정밀 스탯 (치명타 판정에 사용)
-     * @param out                  출력 스트림
-     * @param diceRoll             판정 주사위 값 (주사위 보정에 사용)
+     * @param stat                  판정 스탯 (주사위 보정에 사용)
+     * @param skillName             스킬 이름 (로그 출력용)
+     * @param precision             정밀 스탯 (치명타 판정에 사용)
+     * @param out                   출력 스트림
+     * @param diceRoll              판정 주사위 값 (주사위 보정에 사용)
      * @return 최종 데미지
      */
     private static int calculateFinalDamage(int rawDamage, int damageIncreasePercent, double finalDamageMultiplier, int stat, String skillName, int precision, PrintStream out, int diceRoll) {
-        // Step 1: [(기본 데미지) * (100 + 데미지 증가)%]
-        int afterIncrease = (int)(rawDamage * (100 + damageIncreasePercent) / 100.0);
-        out.printf("[%s] 기본 데미지 %d * (100 + %d) / 100 = %d%n", skillName, rawDamage, damageIncreasePercent, afterIncrease);
+        // 주사위 보정 multiplier:
+        // 기존 sideDamage(추가값) 공식을 multiplier로 환산해 동일한 의미를 유지.
+        // sideDamage = damage * max(stat - diceRoll, 0) * 0.1
+        // => damage * (1 + max(stat - diceRoll, 0) * 0.1)
+        int statBonus = Math.max(0, stat - diceRoll);
+        double diceModifier = 1.0 + statBonus * 0.1;
+        out.printf("[%s] 주사위 보정 배율: 1 + (%d x 0.1) = %.2f%n", skillName, statBonus, diceModifier);
 
-        // Step 2: * (최종 데미지 배율)%
-        int afterFinalMultiplier = (int)(afterIncrease * finalDamageMultiplier);
-        out.printf("[%s] 데미지 증가 후 %d * %.2f배 = %d%n", skillName, afterIncrease, finalDamageMultiplier, afterFinalMultiplier);
+        int finalDamageBeforeCritical = Main.calculateSkillDamage(
+                rawDamage,
+                damageIncreasePercent,
+                finalDamageMultiplier * 100.0,
+                diceModifier,
+                out
+        );
 
-        // Step 3: * (주사위 보정) — sideDamage
-        int sideDamage = Main.sideDamage(afterFinalMultiplier, stat, out, diceRoll);
-        int afterSide = afterFinalMultiplier + sideDamage;
-        out.printf("[%s] 주사위 보정 %d + %d = %d%n", skillName, afterFinalMultiplier, sideDamage, afterSide);
-
-        // Step 4: 치명타 판정
-        int finalDmg = Main.criticalHit(precision, afterSide, out);
+        int finalDmg = Main.criticalHit(precision, finalDamageBeforeCritical, out);
         out.printf("[%s] 최종 데미지: %d%n", skillName, finalDmg);
         return finalDmg;
     }
