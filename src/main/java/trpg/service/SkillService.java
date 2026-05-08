@@ -348,6 +348,10 @@ public class SkillService {
             case "focusedFire" -> "일점사";
             case "doubleShot" -> "더블샷";
             case "quickDraw" -> "퀵드로우";
+            case "perfectComboShot" -> "퍼펙트 콤보샷";
+            case "weightedJudgment" -> "가중 심판";
+            case "largeCaliberFragmentationShell" -> "대구경파쇄산탄 탄환";
+            case "largeCaliberImpactBuckshotShell" -> "대구경충격벅샷 탄환";
             case "toss" -> "던지기";
             case "singleShot" -> "단일사격";
             case "luminousArrow" -> "발광 화살";
@@ -498,6 +502,8 @@ public class SkillService {
             case "survivalOfTheFittest" -> "약육강식 패시브 여부";
             case "contemptForTheWeak" -> "약자멸시 스킬 여부";
             case "reload" -> "장전 여부";
+            case "largeCaliberFragmentationShellLoaded" -> "대구경파쇄산탄 탄환 장전 여부";
+            case "largeCaliberImpactBuckshotShellLoaded" -> "대구경충격벅샷 탄환 장전 여부";
             case "loadedArrows" -> "장전된 화살 수";
             case "calculateRange" -> "비거리 계산 여부";
             case "eliminateError" -> "오차 제거 여부";
@@ -518,6 +524,7 @@ public class SkillService {
             case "judge" -> "심판자 여부";
             case "judgementTarget" -> "심판 대상 여부";
             case "warning" -> "경고 여부";
+            case "counterAttackCount", "weightedJudgmentCounterCount" -> "지금까지 시행한 반격 횟수";
             case "isHeavyString" -> "무거운 시위 여부";
             case "isFirstTarget" -> "첫 대상 여부";
             case "isEmergency" -> "긴급 사격 여부";

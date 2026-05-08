@@ -30,6 +30,7 @@ sourceSets {
     main {
         java {
             srcDirs = ['src/main/java', 'src']
+            exclude 'test/**'
         }
         resources {
             srcDirs = ['src/main/resources']
