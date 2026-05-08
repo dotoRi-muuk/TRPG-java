@@ -27,13 +27,13 @@ public class Ninja {
      * @param resistanceType    내성 종류 ("none", "pain", "fear") - fear 시 최종 데미지 x2
      * @param staminaUsed       소모 스태미나
      * @param out               출력 스트림
-     * @param verdictResult     판정 결과값 (stat - dice)
+     * @param verdictResult     판정 결과값
      * @return 결과 객체
      */
-    public static Result calculate(int dices, int sides, int stat,
-                                   boolean stealthActive, boolean doppelgangerActive,
-                                   boolean ideologySealActive, String resistanceType,
-                                   int staminaUsed, int verdictResult, PrintStream out) {
+    private static Result calculate(int dices, int sides, int stat,
+                                    boolean stealthActive, boolean doppelgangerActive,
+                                    boolean ideologySealActive, String resistanceType,
+                                    int staminaUsed, int verdictResult, PrintStream out) {
         int damage = Main.dice(dices, sides, out);
         out.printf("기본 데미지 : %d\n", damage);
 
@@ -59,7 +59,7 @@ public class Ninja {
             finalDamageMultiplier *= 2.0;
         }
 
-        // 주사위 보정 = 1.0 + Max(0, 판정 결과값) * 0.1
+        // 주사위 보정 = 1.0 + max(0, 판정 결과값) * 0.1
         double diceModifier = 1.0 + (Math.max(0, verdictResult) * 0.1);
         out.printf("주사위 보정 배율 : 1 + max(0, %d) * 0.1 = %.2f%n", verdictResult, diceModifier);
 
