@@ -335,8 +335,8 @@ class SpearMaster {
         return levelDamage
     }
 
-    private fun calculateDiceModifier(stat: Int, diceRoll: Int, out: java.io.PrintStream): Double {
-        val statBonus = kotlin.math.max(0, stat - diceRoll)
+    private fun calculateDiceModifier(stat: Int, rollResult: Int, out: java.io.PrintStream): Double {
+        val statBonus = kotlin.math.max(0, stat - rollResult)
         val diceModifier = 1.0 + statBonus * 0.1
         out.printf("주사위 보정 배율: 1 + (%d x 0.1) = %.2f%n", statBonus, diceModifier)
         return diceModifier
@@ -371,16 +371,16 @@ class SpearMaster {
         val diceRoll = effectiveStat - verdict
         val baseDamage = Main.dice(dices, sides, out)
         out.println("기본 데미지 : $baseDamage")
-        var finalDamageMultiplier = 1.0
+        var finalDamageRatio = 1.0
         if (combo) {
-            finalDamageMultiplier *= 2.0
+            finalDamageRatio *= 2.0
             out.println("약점파악 패시브 적용: [연계] 데미지 2배 증가")
             if (adaptation) {
-                finalDamageMultiplier *= 3.0
+                finalDamageRatio *= 3.0
                 out.println("적응 스킬 적용: [연계] 데미지 3배 증가")
             }
         } else {
-            finalDamageMultiplier *= 0.5
+            finalDamageRatio *= 0.5
             out.println("약점파악 패시브 적용: 기본 기술 데미지 50% 감소")
         }
         val damageIncreasePercent = if (isSplendorActive && splendorTurns > 0) {
@@ -392,7 +392,7 @@ class SpearMaster {
         var damage = Main.calculateSkillDamage(
             baseDamage,
             damageIncreasePercent.toDouble(),
-            finalDamageMultiplier * 100.0,
+            finalDamageRatio * 100.0,
             diceModifier,
             out
         )
