@@ -428,6 +428,7 @@ async function calculateNinja(skill) {
     const dex = parseInt(document.getElementById('ninja-dex').value) || 10;
     const speed = parseInt(document.getElementById('ninja-speed').value) || 10;
     const shurikenCount = parseInt(document.getElementById('ninja-shurikenCount').value) || 1;
+    const reflexCount = parseInt(document.getElementById('ninja-reflexCount')?.value) || 0;
     const stealthActive = document.getElementById('ninja-stealthActive').checked;
     const doppelgangerActive = document.getElementById('ninja-doppelgangerActive').checked;
     const ideologySealActive = document.getElementById('ninja-ideologySealActive').checked;
@@ -437,7 +438,7 @@ async function calculateNinja(skill) {
         const response = await fetch(`${API_BASE}/ninja/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ str, dex, speed, shurikenCount, stealthActive, doppelgangerActive, ideologySealActive, resistanceType })
+            body: JSON.stringify({ str, dex, speed, shurikenCount, reflexCount, stealthActive, doppelgangerActive, ideologySealActive, resistanceType })
         });
 
         const data = await response.json();
@@ -1128,7 +1129,9 @@ function getSkillName(job, skill) {
             'mangle': '난도',
             'throw': '투척 표창',
             'phantom-dance': '환영난무',
-            'focused-throw': '일점투척'
+            'focused-throw': '일점투척',
+            'clone-enhance': '분신 강화',
+            'flow-catch': '흐름 잡기'
         },
         gunslinger: {
             'plain': '기본공격',

@@ -26,6 +26,7 @@ public class NinjaController {
         public int dex;
         public int speed;
         public int shurikenCount;
+        public int reflexCount;
         public boolean stealthActive;
         public boolean doppelgangerActive;
         public boolean ideologySealActive;
@@ -55,7 +56,9 @@ public class NinjaController {
         response.put("log", baos.toString(StandardCharsets.UTF_8));
         response.put("damage", result.damageDealt());
         response.put("succeeded", result.succeeded());
+        response.put("manaUsed", result.manaUsed());
         response.put("staminaUsed", result.staminaUsed());
+        response.put("statChanges", result.statChanges());
         return response;
     }
 
@@ -151,6 +154,44 @@ public class NinjaController {
 
         Result result = Ninja.focusedThrow(req.dex, req.speed, shurikens, req.stealthActive,
                 resolveDoppelganger(req), req.ideologySealActive, resolveResistance(req), ps);
+        ps.flush();
+
+        return buildResponse(result, baos);
+    }
+
+    /**
+     * Apply clone enhance buff. Removes doppelganger damage reduction for current turn.
+     * Does not consume turn. (마나 1, 쿨타임 2턴)
+     * POST /api/ninja/clone-enhance
+     *
+     * @param req 요청 본문
+     * @return 계산 결과 (damage, log, succeeded, manaUsed, statChanges)
+     */
+    @PostMapping("/clone-enhance")
+    public Map<String, Object> cloneEnhance(@RequestBody NinjaRequest req) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        Result result = Ninja.cloneEnhance(ps);
+        ps.flush();
+
+        return buildResponse(result, baos);
+    }
+
+    /**
+     * Apply flow catch buff. For next 3 turns, increases STR/DEX/SPEED by reflex activation count.
+     * (마나 6, 쿨타임 10턴)
+     * POST /api/ninja/flow-catch
+     *
+     * @param req 요청 본문 (reflexCount)
+     * @return 계산 결과 (damage, log, succeeded, manaUsed, statChanges)
+     */
+    @PostMapping("/flow-catch")
+    public Map<String, Object> flowCatch(@RequestBody NinjaRequest req) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        Result result = Ninja.flowCatch(req.reflexCount, ps);
         ps.flush();
 
         return buildResponse(result, baos);

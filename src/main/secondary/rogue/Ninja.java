@@ -2,8 +2,10 @@ package main.secondary.rogue;
 
 import main.Main;
 import main.Result;
+import main.Stat;
 
 import java.io.PrintStream;
+import java.util.Map;
 
 /**
  * 닌자
@@ -323,15 +325,17 @@ public class Ninja {
     }
 
     /**
-     * 분신 강화 : 이번 턴에 한해 분신 패시브의 데미지 감소 효과를 제거합니다. (마나 1 소모)
+     * 분신 강화 : 이번 턴에 한해 분신 패시브의 데미지 감소 효과를 제거합니다.
+     * 해당 스킬은 턴을 소모하지 않습니다. (마나 1 소모, 쿨타임 2턴)
      *
      * @param out 출력 스트림
      * @return 결과 객체 (마나 1 소모)
      */
     public static Result cloneEnhance(PrintStream out) {
         out.println("닌자-분신 강화 사용");
+        out.println("!턴 소모 없음!");
         out.println("이번 턴 분신 패시브 데미지 감소 효과 제거");
-        out.println("마나 1 소모");
+        out.println("마나 1 소모, 쿨타임 2턴");
         return new Result(0, 0, true, -1, 0);
     }
 
@@ -356,10 +360,16 @@ public class Ninja {
      * @return 결과 객체 (마나 6 소모)
      */
     public static Result flowCatch(int reflexCount, PrintStream out) {
+        int statBuff = Math.max(0, reflexCount);
         out.println("닌자-흐름 잡기 사용");
-        out.printf("순발력 발동 횟수 %d회 기반 스탯 버프 적용\n", reflexCount);
-        out.println("마나 6 소모");
-        return new Result(0, 0, true, -6, 0);
+        out.printf("순발력 발동 횟수 %d회 기반 버프%n", reflexCount);
+        out.printf("다음 3턴 동안 힘/민첩/신속 +%d%n", statBuff);
+        out.println("마나 6 소모, 쿨타임 10턴");
+        return new Result(0, 0, true, -6, 0, Map.of(
+                Stat.STRENGTH, statBuff,
+                Stat.DEXTERITY, statBuff,
+                Stat.SPEED, statBuff
+        ));
     }
 
     /**

@@ -2,8 +2,10 @@ package main.hidden;
 
 import main.Main;
 import main.Result;
+import main.Stat;
 
 import java.io.PrintStream;
+import java.util.Map;
 
 /**
  * 닌자 (숨겨진 직업)
@@ -27,13 +29,13 @@ public class Ninja {
      * @param resistanceType    내성 종류 ("none", "pain", "fear") - fear 시 최종 데미지 x2
      * @param staminaUsed       소모 스태미나
      * @param out               출력 스트림
-     * @param verdictResult     판정 결과값
+     * @param diceRoll          판정에서 사용한 주사위 값 (stat - verdict)
      * @return 결과 객체
      */
     private static Result calculate(int dices, int sides, int stat,
                                     boolean stealthActive, boolean doppelgangerActive,
                                     boolean ideologySealActive, String resistanceType,
-                                    int staminaUsed, int verdictResult, PrintStream out) {
+                                    int staminaUsed, int diceRoll, PrintStream out) {
         int damage = Main.dice(dices, sides, out);
         out.printf("기본 데미지 : %d\n", damage);
 
@@ -59,9 +61,9 @@ public class Ninja {
             finalDamageMultiplier *= 2.0;
         }
 
-        // 주사위 보정 = 1.0 + max(0, 판정 결과값) * 0.1
-        double diceModifier = 1.0 + (Math.max(0, verdictResult) * 0.1);
-        out.printf("주사위 보정 배율 : 1 + max(0, %d) * 0.1 = %.2f%n", verdictResult, diceModifier);
+        // 주사위 보정 = 1.0 + max(0, 주사위 값) * 0.1
+        double diceModifier = 1.0 + (Math.max(0, diceRoll) * 0.1);
+        out.printf("주사위 보정 배율 : 1 + max(0, %d) * 0.1 = %.2f%n", diceRoll, diceModifier);
 
         // [(기본 데미지) x (100 + 데미지)%] x (최종 데미지)% x (주사위 보정)
         damage = Main.calculateDamage(damage, flatBonus, finalDamageMultiplier, diceModifier, out);
@@ -92,8 +94,8 @@ public class Ninja {
         if (verdict <= 0) {
             return new Result(0, 0, false, 0, 2);
         }
-
-        return calculate(2, 6, str, stealthActive, doppelgangerActive, ideologySealActive, resistanceType, 2, verdict, out);
+        int diceRoll = str - verdict;
+        return calculate(2, 6, str, stealthActive, doppelgangerActive, ideologySealActive, resistanceType, 2, diceRoll, out);
     }
 
     /**
@@ -118,8 +120,8 @@ public class Ninja {
         if (verdict <= 0) {
             return new Result(0, 0, false, 0, 4);
         }
-
-        return calculate(3, 8, str, stealthActive, doppelgangerActive, ideologySealActive, resistanceType, 4, verdict, out);
+        int diceRoll = str - verdict;
+        return calculate(3, 8, str, stealthActive, doppelgangerActive, ideologySealActive, resistanceType, 4, diceRoll, out);
     }
 
     /**
@@ -144,8 +146,8 @@ public class Ninja {
         if (verdict <= 0) {
             return new Result(0, 0, false, 0, 0);
         }
-
-        return calculate(1, 8, dex, stealthActive, doppelgangerActive, ideologySealActive, resistanceType, 0, verdict, out);
+        int diceRoll = dex - verdict;
+        return calculate(1, 8, dex, stealthActive, doppelgangerActive, ideologySealActive, resistanceType, 0, diceRoll, out);
     }
 
     /**
@@ -178,7 +180,8 @@ public class Ninja {
         }
 
         // 환영난무는 분신 패시브 감소 효과를 제거하므로 doppelgangerActive = false
-        return calculate(8, 6, dex, stealthActive, false, ideologySealActive, resistanceType, 4, verdict, out);
+        int diceRoll = dex - verdict;
+        return calculate(8, 6, dex, stealthActive, false, ideologySealActive, resistanceType, 4, diceRoll, out);
     }
 
     /**
@@ -235,11 +238,48 @@ public class Ninja {
             finalDamageMultiplier *= 2.0;
         }
 
-        double diceModifier = 1.0 + (Math.max(0, verdict1) * 0.1);
-        out.printf("주사위 보정 배율 : 1 + max(0, %d) * 0.1 = %.2f%n", verdict1, diceModifier);
+        int diceRoll = dex - verdict1;
+        double diceModifier = 1.0 + (Math.max(0, diceRoll) * 0.1);
+        out.printf("주사위 보정 배율 : 1 + max(0, %d) * 0.1 = %.2f%n", diceRoll, diceModifier);
         damage = Main.calculateDamage(damage, flatBonus, finalDamageMultiplier, diceModifier, out);
         out.printf("최종 데미지 : %d\n", damage);
 
         return new Result(0, damage, true, -3, 0);
+    }
+
+    /**
+     * 분신 강화: 이번 턴 동안 분신 패시브의 데미지 감소 효과를 제거합니다.
+     * 이 스킬은 턴을 소모하지 않습니다. (마나 1 소모, 쿨타임 2턴)
+     *
+     * @param out 출력 스트림
+     * @return 결과 객체
+     */
+    public static Result cloneEnhance(PrintStream out) {
+        out.println("닌자-분신 강화 사용");
+        out.println("!턴 소모 없음!");
+        out.println("이번 턴 분신 패시브 데미지 감소 효과 제거");
+        out.println("마나 1 소모, 쿨타임 2턴");
+        return new Result(0, 0, true, -1, 0);
+    }
+
+    /**
+     * 흐름 잡기: 다음 3턴 동안 순발력 패시브 발동 횟수만큼 힘/민첩/신속을 증가시킵니다.
+     * (마나 6 소모, 쿨타임 10턴)
+     *
+     * @param reflexCount 이번 전투에서 순발력 패시브가 발동된 횟수
+     * @param out         출력 스트림
+     * @return 결과 객체
+     */
+    public static Result flowCatch(int reflexCount, PrintStream out) {
+        int statBuff = Math.max(0, reflexCount);
+        out.println("닌자-흐름 잡기 사용");
+        out.printf("순발력 발동 횟수 %d회 기반 버프%n", reflexCount);
+        out.printf("다음 3턴 동안 힘/민첩/신속 +%d%n", statBuff);
+        out.println("마나 6 소모, 쿨타임 10턴");
+        return new Result(0, 0, true, -6, 0, Map.of(
+                Stat.STRENGTH, statBuff,
+                Stat.DEXTERITY, statBuff,
+                Stat.SPEED, statBuff
+        ));
     }
 }
