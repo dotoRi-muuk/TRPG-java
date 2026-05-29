@@ -653,6 +653,10 @@
                             <label for="ninja-shurikenCount">보유 표창 (일점투척)</label>
                             <input type="number" id="ninja-shurikenCount" value="3" min="1">
                         </div>
+                        <div class="form-group">
+                            <label for="ninja-reflexCount">순발력 발동 횟수 (흐름 잡기)</label>
+                            <input type="number" id="ninja-reflexCount" value="0" min="0">
+                        </div>
                         <div class="form-group checkbox-group">
                             <label>
                                 <input type="checkbox" id="ninja-stealthActive">
@@ -668,7 +672,7 @@
                         <div class="form-group checkbox-group">
                             <label>
                                 <input type="checkbox" id="ninja-ideologySealActive">
-                                이념 봉인 활성화 (데미지 +500%, 분신 무시)
+                                이념 봉인 활성화 (데미지 +300%, 분신 무시)
                             </label>
                         </div>
                         <div class="form-group">
@@ -680,13 +684,15 @@
                             </select>
                         </div>
                     </div>
-                    <p class="note" style="font-size: 0.9em; color: #666;">※ 이념 봉인 활성화 시 분신 패시브 감소 무시. 은신(x2) + 공포내성(x2) 중첩 적용.</p>
+                    <p class="note" style="font-size: 0.9em; color: #666;">※ 이념 봉인 활성화 시 분신 패시브 감소 무시(+300%). 은신(x2) + 공포내성(x2) 중첩 적용.</p>
                     <div class="skill-buttons">
                         <button onclick="calculateNinja('strike')" class="btn btn-skill">일격 (2D6)</button>
                         <button onclick="calculateNinja('mangle')" class="btn btn-skill">난도 (3D8)</button>
                         <button onclick="calculateNinja('throw')" class="btn btn-skill">투척 표창 (D8)</button>
                         <button onclick="calculateNinja('phantom-dance')" class="btn btn-skill">환영난무 (8D6)</button>
                         <button onclick="calculateNinja('focused-throw')" class="btn btn-skill">일점투척 (표창D10)</button>
+                        <button onclick="calculateNinja('clone-enhance')" class="btn btn-skill">분신 강화 (버프)</button>
+                        <button onclick="calculateNinja('flow-catch')" class="btn btn-skill">흐름 잡기 (버프)</button>
                     </div>
                 </div>
 
