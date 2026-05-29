@@ -55,9 +55,11 @@ public class Ninja {
 
         // (최종 데미지)% — 곱연산 배율
         double finalDamageMultiplier = 1.0;
-        if (applyClone) {
+        if (applyClone && !ideologySeal) {
             out.println("분신 패시브 적용: 데미지 75%로 감소");
             finalDamageMultiplier *= 0.75;
+        } else if (applyClone) {
+            out.println("이념 봉인 적용: 분신 패시브 데미지 감소 효과 제거");
         }
         if (illusion) {
             out.println("환영 패시브 적용: 은신 상태 공격 최종 데미지 x2");

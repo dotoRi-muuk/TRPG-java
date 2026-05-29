@@ -22,6 +22,16 @@ import java.io.PrintStream;
  * </ul>
  */
 public class Assassin {
+    private static final String[] MOMENTARY_TURN_EFFECTS = {
+            "시간의 사이를 꿰뚫어: 내 턴에 총 4회 공격합니다.",
+            "뚫린 찰나를 뛰어: 적의 공격으로 입은 피해만큼 체력을 회복합니다.",
+            "처음부터 아무것도 있지 않았던 것 처럼: 모두가 행동 후 5회 행동합니다.",
+            "죽음으로 매꾸리라: 모든 적이 행동 후 행동하며, 찰나 속의 필살 동안 적이 입은 피해의 합만큼 모든 적에게 피해를 입힙니다."
+    };
+
+    private static final String[] MOMENTARY_ALLOWED_TECHNIQUES = {
+            "우누스", "두오", "트레스", "콰투오르", "쿠에", "식스", "세프템", "옥토", "노엠", "데케임"
+    };
 
     /**
      * 주사위 보정 배율 계산 (stat 판정 결과로부터)
@@ -348,5 +358,220 @@ public class Assassin {
 
         return new Result(0, 0, true, 7, 0);
     }
-}
 
+    private static Result momentaryTechniqueAttack(String skillName, int stat, int mainDiceCount, int mainDiceFaces,
+                                                   int precision, boolean momentaryFatalityActive, PrintStream out) {
+        out.println("암살자-" + skillName + " 사용");
+        if (!momentaryFatalityActive) {
+            out.println("실패: [찰나 속의 필살] 지속 중에만 사용할 수 있습니다.");
+            return new Result(0, 0, false, 0, 0);
+        }
+
+        int verdict = Main.verdict(stat, out);
+        if (verdict < 0) {
+            return new Result(0, 0, false, 0, 0);
+        }
+        int diceRoll = stat - verdict;
+
+        int baseDamage = Main.dice(1, 12, out);
+        if (mainDiceCount > 0 && mainDiceFaces > 0) {
+            int additional = Main.dice(mainDiceCount, mainDiceFaces, out);
+            baseDamage += additional;
+            out.printf("%s 추가 데미지(%dD%d): %d%n", skillName, mainDiceCount, mainDiceFaces, additional);
+        }
+        out.printf("%s 기본 데미지(D12 포함): %d%n", skillName, baseDamage);
+
+        double diceModifier = computeDiceModifier(stat, diceRoll);
+        out.printf("주사위 보정: %.2f%n", diceModifier);
+        int damage = Main.calculateDamage(baseDamage, 0, 1.0, diceModifier, out);
+        damage = Main.criticalHit(precision, damage, out);
+        out.printf("%s 최종 데미지 : %d%n", skillName, damage);
+        return new Result(0, damage, true, 0, 0);
+    }
+
+    public static Result momentaryFatality(int turn, boolean alreadyUsedInBattle,
+                                           int damageTakenFromEnemyAttack, int accumulatedDamageDuringEffect,
+                                           PrintStream out) {
+        out.println("암살자-찰나 속의 필살 사용");
+        if (alreadyUsedInBattle) {
+            out.println("실패: 전투 중 1회만 사용 가능합니다.");
+            return new Result(0, 0, false, 0, 0);
+        }
+        if (turn < 1 || turn > 4) {
+            out.println("실패: 찰나 속의 필살은 1~4턴 효과만 존재합니다.");
+            return new Result(0, 0, false, 0, 0);
+        }
+
+        out.println("지속 턴: 4턴");
+        out.println("지속 중 행동불가/공격불가 면역");
+        out.println("지속 중 공격 가능 기술: 우누스~데케임");
+        out.printf("%d턴 효과 발동: %s%n", turn, MOMENTARY_TURN_EFFECTS[turn - 1]);
+        if (turn == 2) {
+            out.printf("회복량: 적 공격으로 입은 피해 %d만큼 회복%n", Math.max(0, damageTakenFromEnemyAttack));
+            return new Result(-Math.max(0, damageTakenFromEnemyAttack), 0, true, 0, 0);
+        }
+        if (turn == 4) {
+            out.printf("폭발 피해: 누적 피해 %d를 모든 적에게 부여%n", Math.max(0, accumulatedDamageDuringEffect));
+            return new Result(0, Math.max(0, accumulatedDamageDuringEffect), true, 0, 0);
+        }
+        return new Result(0, 0, true, 0, 0);
+    }
+
+    public static Result momentaryDeathblow(int turn, boolean alreadyUsedInBattle,
+                                            int damageTakenFromEnemyAttack, int accumulatedDamageDuringEffect,
+                                            PrintStream out) {
+        return momentaryFatality(turn, alreadyUsedInBattle, damageTakenFromEnemyAttack, accumulatedDamageDuringEffect, out);
+    }
+
+    public static Result canUseMomentaryTechnique(String techniqueName, PrintStream out) {
+        for (String allowed : MOMENTARY_ALLOWED_TECHNIQUES) {
+            if (allowed.equals(techniqueName)) {
+                out.printf("사용 가능 기술 확인: [%s] 사용 가능%n", techniqueName);
+                return new Result(0, 0, true, 0, 0);
+            }
+        }
+        out.printf("사용 불가 기술: [%s] - 찰나 속의 필살 중에는 우누스~데케임만 사용 가능%n", techniqueName);
+        return new Result(0, 0, false, 0, 0);
+    }
+
+    public static Result unus(int stat, int precision, boolean momentaryFatalityActive, PrintStream out) {
+        return momentaryTechniqueAttack("우누스", stat, 0, 0, precision, momentaryFatalityActive, out);
+    }
+
+    public static Result duo(int stat, int precision, boolean momentaryFatalityActive, PrintStream out) {
+        return momentaryTechniqueAttack("두오", stat, 2, 20, precision, momentaryFatalityActive, out);
+    }
+
+    public static Result tres(int stat, int precision, boolean momentaryFatalityActive, PrintStream out) {
+        return momentaryTechniqueAttack("트레스", stat, 3, 8, precision, momentaryFatalityActive, out);
+    }
+
+    public static Result quatuor(int stat, int precision, boolean momentaryFatalityActive, PrintStream out) {
+        return momentaryTechniqueAttack("콰투오르", stat, 4, 10, precision, momentaryFatalityActive, out);
+    }
+
+    public static Result quattuor(int stat, int precision, boolean momentaryFatalityActive, PrintStream out) {
+        return quatuor(stat, precision, momentaryFatalityActive, out);
+    }
+
+    public static Result que(int stat, int precision, boolean momentaryFatalityActive, PrintStream out) {
+        return momentaryTechniqueAttack("쿠에", stat, 5, 6, precision, momentaryFatalityActive, out);
+    }
+
+    public static Result six(int stat, int precision, boolean momentaryFatalityActive, PrintStream out) {
+        return momentaryTechniqueAttack("식스", stat, 6, 6, precision, momentaryFatalityActive, out);
+    }
+
+    public static Result sex(int stat, int precision, boolean momentaryFatalityActive, PrintStream out) {
+        return six(stat, precision, momentaryFatalityActive, out);
+    }
+
+    public static Result septem(int stat, int precision, boolean momentaryFatalityActive, PrintStream out) {
+        return momentaryTechniqueAttack("세프템", stat, 7, 8, precision, momentaryFatalityActive, out);
+    }
+
+    public static Result octo(int stat, int precision, boolean momentaryFatalityActive, PrintStream out) {
+        return momentaryTechniqueAttack("옥토", stat, 8, 7, precision, momentaryFatalityActive, out);
+    }
+
+    public static Result noem(int stat, int precision, boolean momentaryFatalityActive, PrintStream out) {
+        return momentaryTechniqueAttack("노엠", stat, 9, 10, precision, momentaryFatalityActive, out);
+    }
+
+    public static Result novem(int stat, int precision, boolean momentaryFatalityActive, PrintStream out) {
+        return noem(stat, precision, momentaryFatalityActive, out);
+    }
+
+    public static Result decem(int stat, int precision, boolean momentaryFatalityActive, PrintStream out) {
+        return momentaryTechniqueAttack("데케임", stat, 10, 12, precision, momentaryFatalityActive, out);
+    }
+
+    public static Result dekeim(int stat, int precision, boolean momentaryFatalityActive, PrintStream out) {
+        return decem(stat, precision, momentaryFatalityActive, out);
+    }
+
+    public static Result throwDagger(int stat, boolean defenseTriggered, int throwMarkBonus, PrintStream out) {
+        return throwDagger(stat, 0, defenseTriggered, throwMarkBonus, out);
+    }
+
+    public static Result throwDagger(int stat, int precision, boolean defenseTriggered, int throwMarkBonus, PrintStream out) {
+        out.println("암살자-투척 사용");
+        if (!defenseTriggered) {
+            out.println("실패: 수비 발동 시에만 사용할 수 있습니다.");
+            return new Result(0, 0, false, 0, 0);
+        }
+        int verdict = Main.verdict(stat, out);
+        if (verdict < 0) {
+            out.println("투척 실패: [단검 표식] 생성 실패");
+            return new Result(0, 0, false, 0, 0);
+        }
+
+        int diceRoll = stat - verdict;
+        int baseDamage = Main.dice(1, 12, out);
+        double diceModifier = computeDiceModifier(stat, diceRoll);
+        int damage = Main.calculateDamage(baseDamage, 0, 1.0, diceModifier, out);
+        damage = Main.criticalHit(precision, damage, out);
+
+        int marksApplied = 1 + Math.max(0, throwMarkBonus);
+        out.printf("적중: [단검 표식] %d개 생성%n", marksApplied);
+        out.println("해당 공격은 적의 수비 효과를 발동시키지 않습니다.");
+        return new Result(0, damage, true, 0, 0);
+    }
+
+    public static Result foreseenAssassination(int stat, boolean hitByDaggerThrow, int precision, PrintStream out) {
+        out.println("암살자-예견된 암살 사용");
+        if (!hitByDaggerThrow) {
+            out.println("실패: [단검 투척]에 적중한 대상에게만 사용 가능합니다.");
+            return new Result(0, 0, false, 0, 0);
+        }
+        return commonAttack("예견된 암살", stat, 1, 80, precision, 0, 1.0, 0, out);
+    }
+
+    public static Result predictedAssassination(int stat, boolean hitByDaggerThrow, int precision, PrintStream out) {
+        return foreseenAssassination(stat, hitByDaggerThrow, precision, out);
+    }
+
+    public static Result namelessSlash(int targetDaggerMarks, PrintStream out) {
+        out.println("암살자-무명참 사용");
+        if (targetDaggerMarks < 5) {
+            out.printf("실패: 대상 [단검 표식]이 5 이상이어야 합니다. (현재 %d)%n", targetDaggerMarks);
+            return new Result(0, 0, false, 0, 0);
+        }
+        out.println("성공: 대상에게 매턴 [단검 표식]을 부여합니다.");
+        out.println("성공: 해당 대상에게 [투척]으로 부여하는 [단검 표식]이 1개 증가합니다.");
+        return new Result(0, 0, true, 0, 0);
+    }
+
+    public static Result conclusion(int stat, int targetDaggerMarks, int allEnemiesDaggerMarks, int precision, PrintStream out) {
+        out.println("암살자-종결 사용");
+        if (targetDaggerMarks < 10) {
+            out.printf("실패: 대상 [단검 표식]이 10 이상이어야 합니다. (현재 %d)%n", targetDaggerMarks);
+            return new Result(0, 0, false, 0, 0);
+        }
+
+        int verdict = Main.verdict(stat, out);
+        if (verdict < 0) {
+            return new Result(0, 0, false, 0, 0);
+        }
+        int diceRoll = stat - verdict;
+
+        int d250 = Main.dice(1, 250, out);
+        int markDamage = 0;
+        for (int i = 0; i < Math.max(0, allEnemiesDaggerMarks); i++) {
+            markDamage += Main.dice(1, 10, out);
+        }
+        int baseDamage = d250 + markDamage;
+        out.printf("종결 기본 데미지: D250(%d) + [모든 적 단검 표식 %d] x D10 합(%d) = %d%n",
+                d250, Math.max(0, allEnemiesDaggerMarks), markDamage, baseDamage);
+
+        double diceModifier = computeDiceModifier(stat, diceRoll);
+        int damage = Main.calculateDamage(baseDamage, 0, 1.0, diceModifier, out);
+        damage = Main.criticalHit(precision, damage, out);
+        out.println("효과: 모든 적의 [단검 표식] 제거");
+        return new Result(0, damage, true, 0, 0);
+    }
+
+    public static Result finalization(int stat, int targetDaggerMarks, int allEnemiesDaggerMarks, int precision, PrintStream out) {
+        return conclusion(stat, targetDaggerMarks, allEnemiesDaggerMarks, precision, out);
+    }
+}

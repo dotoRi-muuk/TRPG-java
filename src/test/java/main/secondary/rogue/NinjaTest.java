@@ -79,4 +79,17 @@ class NinjaTest {
         int diceRoll = Integer.parseInt(matcher.group(1));
         assertTrue(diceRoll >= 1 && diceRoll <= 20);
     }
+
+    @Test
+    void ideologySealRemovesCloneDamageReduction() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        Result result = Ninja.strike(100, false, true, "none", 0, out);
+        String log = baos.toString(StandardCharsets.UTF_8);
+
+        assertTrue(result.succeeded());
+        assertTrue(log.contains("이념 봉인 적용: 분신 패시브 데미지 감소 효과 제거"));
+        assertFalse(log.contains("분신 패시브 적용: 데미지 75%로 감소"));
+    }
 }

@@ -79,4 +79,17 @@ class NinjaTest {
         assertTrue(log.contains("다음 3턴"));
         assertTrue(log.contains("쿨타임 10턴"));
     }
+
+    @Test
+    void ideologySealRemovesDoppelgangerDamageReduction() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        Result result = Ninja.focusedThrow(100, 100, 2, false, true, true, "none", out);
+        String log = baos.toString(StandardCharsets.UTF_8);
+
+        assertTrue(result.succeeded());
+        assertTrue(log.contains("이념 봉인 적용: 분신 패시브 데미지 감소 효과 제거"));
+        assertFalse(log.contains("분신 패시브 적용: 데미지 75%로 감소"));
+    }
 }

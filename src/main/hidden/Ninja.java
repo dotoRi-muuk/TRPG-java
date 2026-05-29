@@ -52,9 +52,11 @@ public class Ninja {
             out.println("환영 패시브 적용: 은신 상태 공격 최종 데미지 x2");
             finalDamageMultiplier *= 2.0;
         }
-        if (doppelgangerActive) {
+        if (doppelgangerActive && !ideologySealActive) {
             out.println("분신 패시브 적용: 데미지 75%로 감소");
             finalDamageMultiplier *= 0.75;
+        } else if (doppelgangerActive) {
+            out.println("이념 봉인 적용: 분신 패시브 데미지 감소 효과 제거");
         }
         if ("fear".equals(resistanceType)) {
             out.println("내성(공포) 적용: 최종 데미지 x2");
@@ -229,9 +231,11 @@ public class Ninja {
             out.println("환영 패시브 적용: 은신 상태 공격 최종 데미지 x2");
             finalDamageMultiplier *= 2.0;
         }
-        if (doppelgangerActive) {
+        if (doppelgangerActive && !ideologySealActive) {
             out.println("분신 패시브 적용: 데미지 75%로 감소");
             finalDamageMultiplier *= 0.75;
+        } else if (doppelgangerActive) {
+            out.println("이념 봉인 적용: 분신 패시브 데미지 감소 효과 제거");
         }
         if ("fear".equals(resistanceType)) {
             out.println("내성(공포) 적용: 최종 데미지 x2");
