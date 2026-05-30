@@ -32,6 +32,12 @@ public class SkillService {
             "lifeShare", "soulReturn", "calculateBondBonus", "calculateSummonCards"
     );
 
+    // Assassin internal/derived skills blocked from direct selection
+    private static final Set<String> ASSASSIN_BLOCKED_SKILLS = Set.of(
+            "startFatalMoment", "triggerFatalMomentTurn",
+            "unus", "duo", "tres", "quattuor", "quinque", "six", "septem", "octo", "novem", "decem"
+    );
+
     static {
         // Initialize primary classes with Korean names
         PRIMARY_CLASSES.put("궁수", "archer");
@@ -135,6 +141,8 @@ public class SkillService {
                 // Skip blocked skills for Summoner
                 if ("main.secondary.mage.Summoner".equals(classInfo.className)
                         && SUMMONER_BLOCKED_SKILLS.contains(method.getName())) continue;
+                if ("main.secondary.rogue.Assassin".equals(classInfo.className)
+                        && ASSASSIN_BLOCKED_SKILLS.contains(method.getName())) continue;
 
                 // Skip duplicate method names (overloads already handled)
                 if (seenMethodNames.contains(method.getName())) continue;
@@ -361,6 +369,7 @@ public class SkillService {
             case "fire" -> "발사";
             case "camouflage" -> "위장";
             case "assassinate" -> "암살";
+            case "fatalMoment" -> "찰나 속의 필살";
             case "vitalPointStab" -> "급소 찌르기";
             case "throatSlit" -> "목 긋기";
             case "wristSlit" -> "손목 긋기";
@@ -646,6 +655,8 @@ public class SkillService {
             case "durationTurns" -> "지속 시간 (턴)";
             case "reactivate" -> "재사용 여부";
             case "targetLocked" -> "포착 버프 여부";
+            case "turnNumber" -> "턴 번호 (1=시간 사이를 꿰뚫어, 2=뚫린 찰나를 뛰어, 3=처음부터 아무것도 있지 않았던것 처럼, 4=죽음으로 매꾸리라)";
+            case "additionalDamage" -> "추가 데미지 (4턴 전용)";
             default -> paramName;
         };
     }

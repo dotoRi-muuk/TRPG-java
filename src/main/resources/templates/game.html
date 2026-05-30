@@ -464,6 +464,7 @@
 
         function loadParameters() {
             const skillName = document.getElementById('skill').value;
+            const subclass = document.getElementById('subclass').value;
             const paramsSection = document.getElementById('paramsSection');
             const paramsContainer = document.getElementById('paramsContainer');
             const executeBtn = document.getElementById('executeBtn');
@@ -498,10 +499,22 @@
                             </div>
                         `;
                     } else if (param.type === 'int') {
-                        item.innerHTML = `
-                            <label for="param_${param.name}">${param.displayName}</label>
-                            <input type="number" id="param_${param.name}" name="${param.name}" value="10">
-                        `;
+                        if (subclass === '암살자' && skillName === 'fatalMoment' && param.name === 'turnNumber') {
+                            item.innerHTML = `
+                                <label for="param_${param.name}">${param.displayName}</label>
+                                <select id="param_${param.name}" name="${param.name}">
+                                    <option value="1">1 - 시간 사이를 꿰뚫어</option>
+                                    <option value="2">2 - 뚫린 찰나를 뛰어</option>
+                                    <option value="3">3 - 처음부터 아무것도 있지 않았던것 처럼</option>
+                                    <option value="4">4 - 죽음으로 매꾸리라</option>
+                                </select>
+                            `;
+                        } else {
+                            item.innerHTML = `
+                                <label for="param_${param.name}">${param.displayName}</label>
+                                <input type="number" id="param_${param.name}" name="${param.name}" value="10">
+                            `;
+                        }
                     } else if (param.type === 'double') {
                         item.innerHTML = `
                             <label for="param_${param.name}">${param.displayName}</label>
@@ -522,13 +535,35 @@
                             <input type="text" id="param_${param.name}" name="${param.name}">
                         `;
                     }
+
+                    if (subclass === '암살자' && skillName === 'fatalMoment' && param.name === 'additionalDamage') {
+                        item.id = 'assassin-additionalDamage-item';
+                    }
                     
                     paramsContainer.appendChild(item);
                 });
                 paramsSection.classList.add('show');
+                setupAssassinFatalMomentSlot(subclass, skillName);
             }
             
             executeBtn.disabled = false;
+        }
+
+        function setupAssassinFatalMomentSlot(subclass, skillName) {
+            if (subclass !== '암살자' || skillName !== 'fatalMoment') return;
+            const turnSelect = document.getElementById('param_turnNumber');
+            const additionalDamageItem = document.getElementById('assassin-additionalDamage-item');
+            const additionalDamageInput = document.getElementById('param_additionalDamage');
+            if (!turnSelect || !additionalDamageItem || !additionalDamageInput) return;
+
+            const toggleAdditionalDamage = () => {
+                const show = turnSelect.value === '4';
+                additionalDamageItem.style.display = show ? '' : 'none';
+                if (!show) additionalDamageInput.value = '0';
+            };
+
+            turnSelect.addEventListener('change', toggleAdditionalDamage);
+            toggleAdditionalDamage();
         }
 
         function getEnumOptions(enumName) {

@@ -106,4 +106,36 @@ class AssassinTest {
         int damage = Main.calculateSkillDamage(100, 50, 120, 1.3, System.out);
         assertEquals(234, damage);
     }
+
+    @Test
+    void fatalMomentTurnSelectionWorksWithExtraDamageOnTurnFour() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        Result turn1 = Assassin.fatalMoment(100, 0, 1, 0, out);
+        assertTrue(turn1.succeeded());
+        assertTrue(turn1.damageDealt() > 0);
+        assertTrue(baos.toString(StandardCharsets.UTF_8).contains("시간 사이를 꿰뚫어"));
+
+        baos.reset();
+        Result turn2 = Assassin.fatalMoment(100, 0, 2, 0, out);
+        assertTrue(turn2.succeeded());
+        assertEquals(0, turn2.damageDealt());
+        assertTrue(baos.toString(StandardCharsets.UTF_8).contains("뚫린 찰나를 뛰어"));
+
+        baos.reset();
+        Result turn3 = Assassin.fatalMoment(100, 0, 3, 0, out);
+        assertTrue(turn3.succeeded());
+        assertTrue(turn3.damageDealt() > 0);
+        assertTrue(baos.toString(StandardCharsets.UTF_8).contains("처음부터 아무것도 있지 않았던것 처럼"));
+
+        int extraDamage = 77;
+        baos.reset();
+        Result turn4 = Assassin.fatalMoment(100, 0, 4, extraDamage, out);
+        assertTrue(turn4.succeeded());
+        assertTrue(turn4.damageDealt() >= extraDamage);
+        String log = baos.toString(StandardCharsets.UTF_8);
+        assertTrue(log.contains("죽음으로 매꾸리라"));
+        assertTrue(log.contains("추가 데미지 적용: +" + extraDamage));
+    }
 }
