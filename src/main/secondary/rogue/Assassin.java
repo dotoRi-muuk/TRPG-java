@@ -460,6 +460,58 @@ public class Assassin {
     }
 
     /**
+     * 찰나 속의 필살 (턴 선택 실행)
+     * <p>
+     * turnNumber:
+     * 1 -> 시간 사이를 꿰뚫어 (우누스, 두오, 트레스, 콰투오르)
+     * 2 -> 뚫린 찰나를 뛰어 (행동 없음)
+     * 3 -> 처음부터 아무것도 있지 않았던것 처럼 (쿠에, 식스, 세프템, 옥토, 노엠)
+     * 4 -> 죽음으로 매꾸리라 (데케임 + additionalDamage)
+     */
+    public static Result fatalMoment(int stat, int precision, int turnNumber, int additionalDamage, PrintStream out) {
+        int selectedTurn = Math.max(1, Math.min(4, turnNumber));
+        if (selectedTurn != turnNumber) {
+            out.printf("잘못된 턴 선택 %d -> %d턴으로 보정%n", turnNumber, selectedTurn);
+        }
+
+        FatalMomentState activeState = new FatalMomentState(true, true, 1, selectedTurn - 1, 0, 0);
+        int totalDamage = 0;
+
+        switch (selectedTurn) {
+            case 1 -> {
+                out.println("시간 사이를 꿰뚫어");
+                totalDamage += unus(activeState, stat, precision, out).damageDealt();
+                totalDamage += duo(activeState, stat, precision, out).damageDealt();
+                totalDamage += tres(activeState, stat, precision, out).damageDealt();
+                totalDamage += quattuor(activeState, stat, precision, out).damageDealt();
+            }
+            case 2 -> out.println("뚫린 찰나를 뛰어 (이번 선택에서는 행동하지 않음)");
+            case 3 -> {
+                out.println("처음부터 아무것도 있지 않았던것 처럼");
+                totalDamage += quinque(activeState, stat, precision, out).damageDealt();
+                totalDamage += six(activeState, stat, precision, out).damageDealt();
+                totalDamage += septem(activeState, stat, precision, out).damageDealt();
+                totalDamage += octo(activeState, stat, precision, out).damageDealt();
+                totalDamage += novem(activeState, stat, precision, out).damageDealt();
+            }
+            case 4 -> {
+                out.println("죽음으로 매꾸리라");
+                totalDamage += decem(activeState, stat, precision, out).damageDealt();
+                int extra = Math.max(0, additionalDamage);
+                if (extra > 0) {
+                    out.printf("추가 데미지 적용: +%d%n", extra);
+                    totalDamage += extra;
+                }
+            }
+            default -> {
+            }
+        }
+
+        out.printf("찰나 속의 필살(선택 턴 %d) 총 데미지: %d%n", selectedTurn, totalDamage);
+        return new Result(0, totalDamage, true, 0, 0);
+    }
+
+    /**
      * 찰나 속의 필살 중 누적 피해량 기록
      */
     public static FatalMomentState accumulateFatalMomentDamage(FatalMomentState previousState, int damageDealt) {
