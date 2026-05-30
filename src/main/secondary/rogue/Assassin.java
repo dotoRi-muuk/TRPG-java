@@ -22,6 +22,39 @@ import java.io.PrintStream;
  * </ul>
  */
 public class Assassin {
+    public enum FatalMomentTechnique {
+        UNUS("우누스", 1, 1),
+        DUO("두오", 2, 20),
+        TRES("트레스", 3, 8),
+        QUATTUOR("콰투오르", 4, 10),
+        QUINQUE("쿠에", 5, 6),
+        SIX("식스", 6, 6),
+        SEPTEM("세프템", 7, 8),
+        OCTO("옥토", 8, 7),
+        NOVEM("노엠", 9, 10),
+        DECEM("데케임", 10, 12);
+
+        private final String koreanName;
+        private final int listedDiceCount;
+        private final int listedDiceFace;
+
+        FatalMomentTechnique(String koreanName, int listedDiceCount, int listedDiceFace) {
+            this.koreanName = koreanName;
+            this.listedDiceCount = listedDiceCount;
+            this.listedDiceFace = listedDiceFace;
+        }
+    }
+
+    public record FatalMomentState(boolean active, boolean usedInBattle, int turnsRemaining, int turnEffectIndex,
+                                   int damageTakenDuringEffect, int damageDealtDuringEffect) {
+        public static FatalMomentState idle() {
+            return new FatalMomentState(false, false, 0, 0, 0, 0);
+        }
+    }
+
+    public record FatalMomentTurnResult(FatalMomentState state, int additionalAttacks, int healAmount,
+                                        int additionalActionsAfterAllActed, int delayedAoEDamage) {
+    }
 
     /**
      * 주사위 보정 배율 계산 (stat 판정 결과로부터)
@@ -348,5 +381,251 @@ public class Assassin {
 
         return new Result(0, 0, true, 7, 0);
     }
-}
 
+    /**
+     * 찰나 속의 필살 시작 (전투 중 1회)
+     */
+    public static FatalMomentState startFatalMoment(FatalMomentState previousState, PrintStream out) {
+        FatalMomentState current = previousState == null ? FatalMomentState.idle() : previousState;
+        if (current.usedInBattle()) {
+            out.println("암살자-찰나 속의 필살 실패: 전투 중 1회 제한");
+            return current;
+        }
+
+        out.println("암살자-찰나 속의 필살 발동 (4턴)");
+        out.println("지속 중 행동불가/공격불가 면역");
+        out.println("지속 중 공격은 우누스 ~ 데케임 기술만 사용 가능");
+        return new FatalMomentState(true, true, 4, 0, 0, 0);
+    }
+
+    /**
+     * 찰나 속의 필살 상태에서는 행동불가/공격불가를 무시
+     */
+    public static boolean canActInFatalMoment(boolean actionBlocked, boolean attackBlocked,
+                                              FatalMomentState state, PrintStream out) {
+        if (state != null && state.active()) {
+            out.println("찰나 속의 필살 효과로 행동불가/공격불가 무시");
+            return true;
+        }
+        return !actionBlocked && !attackBlocked;
+    }
+
+    /**
+     * 찰나 속의 필살 턴 효과 처리 (4턴 순차 발동)
+     */
+    public static FatalMomentTurnResult triggerFatalMomentTurn(FatalMomentState previousState, int damageTakenThisTurn,
+                                                               PrintStream out) {
+        FatalMomentState current = previousState == null ? FatalMomentState.idle() : previousState;
+        if (!current.active() || current.turnsRemaining() <= 0) {
+            out.println("찰나 속의 필살 비활성 상태");
+            return new FatalMomentTurnResult(current, 0, 0, 0, 0);
+        }
+
+        int step = current.turnEffectIndex();
+        int additionalAttacks = 0;
+        int healAmount = 0;
+        int additionalActionsAfterAllActed = 0;
+        int delayedAoEDamage = 0;
+
+        switch (step) {
+            case 0 -> {
+                out.println("시간의 사이를 꿰뚫어: 내 턴에 총 4회 공격");
+                additionalAttacks = 4;
+            }
+            case 1 -> {
+                healAmount = Math.max(0, damageTakenThisTurn);
+                out.printf("뚫린 찰나를 뛰어: 이번 턴 받은 피해 %d만큼 회복%n", healAmount);
+            }
+            case 2 -> {
+                out.println("처음부터 아무것도 있지 않았던 것 처럼: 모두 행동 후 5회 행동");
+                additionalActionsAfterAllActed = 5;
+            }
+            case 3 -> {
+                delayedAoEDamage = Math.max(0, current.damageDealtDuringEffect());
+                out.printf("죽음으로 메꾸리라: 모든 적 행동 후 재행동, 누적 피해 %d를 모든 적에게 적용%n", delayedAoEDamage);
+            }
+            default -> out.println("추가 턴 효과 없음");
+        }
+
+        int nextTurns = current.turnsRemaining() - 1;
+        FatalMomentState next = new FatalMomentState(
+                nextTurns > 0,
+                true,
+                Math.max(0, nextTurns),
+                Math.min(4, step + 1),
+                current.damageTakenDuringEffect() + Math.max(0, damageTakenThisTurn),
+                current.damageDealtDuringEffect()
+        );
+        return new FatalMomentTurnResult(next, additionalAttacks, healAmount, additionalActionsAfterAllActed, delayedAoEDamage);
+    }
+
+    /**
+     * 찰나 속의 필살 중 누적 피해량 기록
+     */
+    public static FatalMomentState accumulateFatalMomentDamage(FatalMomentState previousState, int damageDealt) {
+        FatalMomentState current = previousState == null ? FatalMomentState.idle() : previousState;
+        if (!current.active()) return current;
+
+        return new FatalMomentState(
+                true,
+                current.usedInBattle(),
+                current.turnsRemaining(),
+                current.turnEffectIndex(),
+                current.damageTakenDuringEffect(),
+                current.damageDealtDuringEffect() + Math.max(0, damageDealt)
+        );
+    }
+
+    private static Result fatalMomentTechniqueAttack(FatalMomentState state, FatalMomentTechnique technique,
+                                                     int stat, int precision, PrintStream out) {
+        if (state == null || !state.active()) {
+            out.println("찰나 속의 필살 비활성: 우누스~데케임 사용 불가");
+            return new Result(0, 0, false, 0, 0);
+        }
+
+        out.printf("암살자-%s 사용 (표기: %dD%d, 실제 피해 D12)%n",
+                technique.koreanName, technique.listedDiceCount, technique.listedDiceFace);
+        int verdict = Main.verdict(stat, out);
+        if (verdict < 0) {
+            out.println("판정 실패");
+            return new Result(0, 0, false, 0, 0);
+        }
+
+        int diceRoll = stat - verdict;
+        Main.dice(technique.listedDiceCount, technique.listedDiceFace, out); // 기술 연출 로그
+        int baseDamage = Main.dice(1, 12, out);
+        out.printf("기본 데미지(D12): %d%n", baseDamage);
+
+        double diceModifier = computeDiceModifier(stat, diceRoll);
+        int damage = Main.calculateSkillDamage(baseDamage, 0, 100, diceModifier, out);
+        damage = Main.criticalHit(precision, damage, out);
+        out.printf("최종 데미지 : %d%n", damage);
+        return new Result(0, damage, true, 0, 0);
+    }
+
+    public static Result unus(FatalMomentState state, int stat, int precision, PrintStream out) {
+        return fatalMomentTechniqueAttack(state, FatalMomentTechnique.UNUS, stat, precision, out);
+    }
+
+    public static Result duo(FatalMomentState state, int stat, int precision, PrintStream out) {
+        return fatalMomentTechniqueAttack(state, FatalMomentTechnique.DUO, stat, precision, out);
+    }
+
+    public static Result tres(FatalMomentState state, int stat, int precision, PrintStream out) {
+        return fatalMomentTechniqueAttack(state, FatalMomentTechnique.TRES, stat, precision, out);
+    }
+
+    public static Result quattuor(FatalMomentState state, int stat, int precision, PrintStream out) {
+        return fatalMomentTechniqueAttack(state, FatalMomentTechnique.QUATTUOR, stat, precision, out);
+    }
+
+    public static Result quinque(FatalMomentState state, int stat, int precision, PrintStream out) {
+        return fatalMomentTechniqueAttack(state, FatalMomentTechnique.QUINQUE, stat, precision, out);
+    }
+
+    public static Result six(FatalMomentState state, int stat, int precision, PrintStream out) {
+        return fatalMomentTechniqueAttack(state, FatalMomentTechnique.SIX, stat, precision, out);
+    }
+
+    public static Result septem(FatalMomentState state, int stat, int precision, PrintStream out) {
+        return fatalMomentTechniqueAttack(state, FatalMomentTechnique.SEPTEM, stat, precision, out);
+    }
+
+    public static Result octo(FatalMomentState state, int stat, int precision, PrintStream out) {
+        return fatalMomentTechniqueAttack(state, FatalMomentTechnique.OCTO, stat, precision, out);
+    }
+
+    public static Result novem(FatalMomentState state, int stat, int precision, PrintStream out) {
+        return fatalMomentTechniqueAttack(state, FatalMomentTechnique.NOVEM, stat, precision, out);
+    }
+
+    public static Result decem(FatalMomentState state, int stat, int precision, PrintStream out) {
+        return fatalMomentTechniqueAttack(state, FatalMomentTechnique.DECEM, stat, precision, out);
+    }
+
+    /**
+     * 투척: 수비 발동 가정, 적중 시 [단검 표식] 부여, 적 수비 효과 미발동
+     */
+    public static Result throwing(int speed, int currentMarks, PrintStream out) {
+        return throwing(speed, currentMarks, 0, out);
+    }
+
+    /**
+     * 투척 강화 버전 (무명참 효과 반영)
+     */
+    public static Result throwing(int speed, int currentMarks, int additionalMarks, PrintStream out) {
+        out.println("암살자-투척 사용 (수비 발동)");
+        int verdict = Main.verdict(speed, out);
+        if (verdict < 0) {
+            out.println("투척 실패");
+            return new Result(0, 0, false, currentMarks, 0);
+        }
+
+        int damage = Main.dice(1, 6, out);
+        int appliedMarks = 1 + Math.max(0, additionalMarks);
+        int updatedMarks = Math.max(0, currentMarks) + appliedMarks;
+        out.printf("[단검 표식] %d개 부여 (%d -> %d)%n", appliedMarks, currentMarks, updatedMarks);
+        out.println("해당 공격은 적 수비 효과를 발동시키지 않음");
+        return new Result(0, damage, true, updatedMarks, 0);
+    }
+
+    /**
+     * 예견된 암살: [단검 투척] 적중 대상에게만 사용 가능, D80
+     */
+    public static Result premeditatedAssassination(boolean hitByThrowing, PrintStream out) {
+        out.println("암살자-예견된 암살 사용");
+        if (!hitByThrowing) {
+            out.println("실패: [단검 투척] 적중 대상 아님");
+            return new Result(0, 0, false, 0, 0);
+        }
+
+        int damage = Main.dice(1, 80, out);
+        out.printf("예견된 암살 피해(D80): %d%n", damage);
+        return new Result(0, damage, true, 0, 0);
+    }
+
+    /**
+     * 무명참: [단검 표식] 5 이상 대상에게만 사용 가능
+     */
+    public static Result namelessSlash(int targetMarks, PrintStream out) {
+        out.println("암살자-무명참 사용");
+        if (targetMarks < 5) {
+            out.println("실패: [단검 표식] 5개 미만");
+            return new Result(0, 0, false, targetMarks, 0);
+        }
+
+        int nextMarks = targetMarks + 1;
+        out.println("효과: 대상에게 매턴 [단검 표식] +1");
+        out.println("효과: 해당 대상 [투척]의 [단검 표식] 부여량 +1");
+        return new Result(0, 0, true, nextMarks, 1);
+    }
+
+    /**
+     * 종결: [단검 표식] 10 이상 대상에게 사용 가능
+     */
+    public static Result finisher(int targetMarks, int[] allEnemyMarks, PrintStream out) {
+        out.println("암살자-종결 사용");
+        if (targetMarks < 10) {
+            out.println("실패: 대상 [단검 표식] 10개 미만");
+            return new Result(0, 0, false, targetMarks, 0);
+        }
+
+        int totalMarks = 0;
+        if (allEnemyMarks != null) {
+            for (int mark : allEnemyMarks) {
+                totalMarks += Math.max(0, mark);
+            }
+        }
+
+        int baseDamage = Main.dice(1, 250, out);
+        int bonusDamage = 0;
+        for (int i = 0; i < totalMarks; i++) {
+            bonusDamage += Main.dice(1, 10, out);
+        }
+
+        int totalDamage = baseDamage + bonusDamage;
+        out.printf("종결 피해: D250(%d) + 전체 표식(%d) x D10 = %d%n", baseDamage, totalMarks, totalDamage);
+        out.println("모든 적의 [단검 표식] 제거");
+        return new Result(0, totalDamage, true, 0, 0);
+    }
+}
