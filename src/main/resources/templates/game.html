@@ -330,6 +330,10 @@
             </p>
             <div class="param-grid">
                 <div class="param-item">
+                    <label for="globalActivationStat">스킬 발동 스탯 <small style="color:#888">(기본 10)</small></label>
+                    <input type="number" id="globalActivationStat" value="10">
+                </div>
+                <div class="param-item">
                     <label for="globalLevel">레벨 <small style="color:#888">(최종 데미지 (100+레벨²)% 적용, 0=미적용)</small></label>
                     <input type="number" id="globalLevel" value="0" min="0">
                 </div>
@@ -642,6 +646,7 @@
                     subclass: subclass,
                     skill: skill,
                     params: params,
+                    activationStat: parseInt(document.getElementById('globalActivationStat').value) || 10,
                     level: parseInt(document.getElementById('globalLevel').value) || 0,
                     externalDamageBonus: parseInt(document.getElementById('globalDamageBonus').value) || 0,
                     externalFinalDamageMult: parseInt(document.getElementById('globalFinalDamageMult').value) || 100

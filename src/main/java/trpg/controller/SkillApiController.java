@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import trpg.service.SkillService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,7 +58,11 @@ public class SkillApiController {
         int level = request.level != null ? request.level : 0;
         int externalDamageBonus = request.externalDamageBonus != null ? request.externalDamageBonus : 0;
         int externalFinalDamageMult = request.externalFinalDamageMult != null ? request.externalFinalDamageMult : 100;
-        return skillService.executeSkill(request.subclass, request.skill, request.params,
+        Map<String, Object> params = request.params != null ? new HashMap<>(request.params) : new HashMap<>();
+        if (request.activationStat != null) {
+            params.put("stat", request.activationStat);
+        }
+        return skillService.executeSkill(request.subclass, request.skill, params,
                 level, externalDamageBonus, externalFinalDamageMult);
     }
 
@@ -74,6 +79,8 @@ public class SkillApiController {
         public Integer externalDamageBonus;
         /** 직업 외 최종 데미지 배율 (%, 100 = 기본). 기본값 100. */
         public Integer externalFinalDamageMult;
+        /** 스킬 발동 스탯 (기존 params.stat 대체/호환). */
+        public Integer activationStat;
 
         public String getSubclass() { return subclass; }
         public void setSubclass(String subclass) { this.subclass = subclass; }
@@ -87,5 +94,7 @@ public class SkillApiController {
         public void setExternalDamageBonus(Integer externalDamageBonus) { this.externalDamageBonus = externalDamageBonus; }
         public Integer getExternalFinalDamageMult() { return externalFinalDamageMult; }
         public void setExternalFinalDamageMult(Integer externalFinalDamageMult) { this.externalFinalDamageMult = externalFinalDamageMult; }
+        public Integer getActivationStat() { return activationStat; }
+        public void setActivationStat(Integer activationStat) { this.activationStat = activationStat; }
     }
 }

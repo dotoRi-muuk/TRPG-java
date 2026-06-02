@@ -167,6 +167,7 @@ public class SkillService {
 
                 for (Parameter param : method.getParameters()) {
                     if (param.getType() == PrintStream.class) continue;
+                    if ("stat".equals(param.getName())) continue;
                     
                     ParameterInfo paramInfo = new ParameterInfo();
                     paramInfo.name = param.getName();

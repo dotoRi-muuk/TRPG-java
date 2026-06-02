@@ -43,4 +43,24 @@ class SkillServiceTest {
         assertTrue(params.contains("turnNumber"));
         assertTrue(params.contains("additionalDamage"));
     }
+
+    @Test
+    void skillChooserDoesNotExposeActivationStatAsSkillParameter() {
+        SkillService service = new SkillService();
+
+        List<String> primaryClasses = service.getPrimaryClasses();
+        for (String primaryClass : primaryClasses) {
+            List<String> subclasses = service.getSubclasses(primaryClass);
+            for (String subclass : subclasses) {
+                List<SkillService.SkillInfo> skills = service.getSkills(subclass);
+                for (SkillService.SkillInfo skill : skills) {
+                    Set<String> params = skill.getParameters().stream()
+                            .map(SkillService.ParameterInfo::getName)
+                            .collect(Collectors.toSet());
+                    assertFalse(params.contains("stat"),
+                            () -> "stat should be configured globally, but was exposed in " + subclass + "." + skill.getMethodName());
+                }
+            }
+        }
+    }
 }
