@@ -59,11 +59,29 @@ public class SkillApiController {
         int externalDamageBonus = request.externalDamageBonus != null ? request.externalDamageBonus : 0;
         int externalFinalDamageMult = request.externalFinalDamageMult != null ? request.externalFinalDamageMult : 100;
         Map<String, Object> params = request.params != null ? new HashMap<>(request.params) : new HashMap<>();
+        int externalPrecision = request.externalPrecision != null
+                ? request.externalPrecision
+                : parseIntOrDefault(params.get("precision"), 0);
         if (request.activationStat != null) {
             params.put("stat", request.activationStat);
         }
+        params.put("precision", externalPrecision);
         return skillService.executeSkill(request.subclass, request.skill, params,
                 level, externalDamageBonus, externalFinalDamageMult);
+    }
+
+    private int parseIntOrDefault(Object value, int defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+        if (value instanceof Number number) {
+            return number.intValue();
+        }
+        try {
+            return Integer.parseInt(value.toString());
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
     }
 
     /**
@@ -79,6 +97,8 @@ public class SkillApiController {
         public Integer externalDamageBonus;
         /** 직업 외 최종 데미지 배율 (%, 100 = 기본). 기본값 100. */
         public Integer externalFinalDamageMult;
+        /** 직업 외 치명타 정밀 스탯. 기본값 0. */
+        public Integer externalPrecision;
         /** 스킬 발동 스탯 (기존 params.stat 대체/호환). */
         public Integer activationStat;
 
@@ -94,6 +114,8 @@ public class SkillApiController {
         public void setExternalDamageBonus(Integer externalDamageBonus) { this.externalDamageBonus = externalDamageBonus; }
         public Integer getExternalFinalDamageMult() { return externalFinalDamageMult; }
         public void setExternalFinalDamageMult(Integer externalFinalDamageMult) { this.externalFinalDamageMult = externalFinalDamageMult; }
+        public Integer getExternalPrecision() { return externalPrecision; }
+        public void setExternalPrecision(Integer externalPrecision) { this.externalPrecision = externalPrecision; }
         public Integer getActivationStat() { return activationStat; }
         public void setActivationStat(Integer activationStat) { this.activationStat = activationStat; }
     }

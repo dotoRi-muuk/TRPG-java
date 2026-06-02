@@ -45,7 +45,7 @@ class SkillServiceTest {
     }
 
     @Test
-    void skillChooserDoesNotExposeActivationStatAsSkillParameter() {
+    void skillChooserDoesNotExposeGlobalStatsAsSkillParameter() {
         SkillService service = new SkillService();
 
         List<String> primaryClasses = service.getPrimaryClasses();
@@ -59,6 +59,8 @@ class SkillServiceTest {
                             .collect(Collectors.toSet());
                     assertFalse(params.contains("stat"),
                             () -> "stat should be configured globally, but was exposed in " + subclass + "." + skill.getMethodName());
+                    assertFalse(params.contains("precision"),
+                            () -> "precision should be configured globally, but was exposed in " + subclass + "." + skill.getMethodName());
                 }
             }
         }
