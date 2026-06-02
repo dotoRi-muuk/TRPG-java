@@ -20,7 +20,7 @@ class SkillApiControllerTest {
     void executeSkillUsesActivationStatFromExternalSettings() {
         SkillService skillService = mock(SkillService.class);
         SkillApiController controller = new SkillApiController(skillService);
-        when(skillService.executeSkill(eq("암살자"), eq("fatalMoment"), eq(Map.of("stat", 15, "turnNumber", 1)),
+        when(skillService.executeSkill(eq("암살자"), eq("fatalMoment"), eq(Map.of("stat", 15, "turnNumber", 1, "precision", 0)),
                 anyInt(), anyInt(), anyInt()))
                 .thenReturn(new SkillService.SkillResult(true, "ok", Map.of()));
 
@@ -34,7 +34,27 @@ class SkillApiControllerTest {
 
         controller.executeSkill(request);
 
-        verify(skillService).executeSkill("암살자", "fatalMoment", Map.of("stat", 15, "turnNumber", 1), 0, 0, 100);
+        verify(skillService).executeSkill("암살자", "fatalMoment", Map.of("stat", 15, "turnNumber", 1, "precision", 0), 0, 0, 100);
+    }
+
+    @Test
+    void executeSkillUsesExternalPrecisionFromExternalSettings() {
+        SkillService skillService = mock(SkillService.class);
+        SkillApiController controller = new SkillApiController(skillService);
+        when(skillService.executeSkill(eq("암살자"), eq("fatalMoment"), eq(Map.of("turnNumber", 1, "precision", 17)),
+                anyInt(), anyInt(), anyInt()))
+                .thenReturn(new SkillService.SkillResult(true, "ok", Map.of()));
+
+        SkillApiController.ExecuteRequest request = new SkillApiController.ExecuteRequest();
+        request.subclass = "암살자";
+        request.skill = "fatalMoment";
+        request.params = new LinkedHashMap<>();
+        request.params.put("turnNumber", 1);
+        request.externalPrecision = 17;
+
+        controller.executeSkill(request);
+
+        verify(skillService).executeSkill("암살자", "fatalMoment", Map.of("turnNumber", 1, "precision", 17), 0, 0, 100);
     }
 
     @Test
@@ -44,6 +64,7 @@ class SkillApiControllerTest {
         Map<String, Object> legacyParams = new HashMap<>();
         legacyParams.put("stat", 12);
         legacyParams.put("turnNumber", 2);
+        legacyParams.put("precision", 11);
         when(skillService.executeSkill(eq("암살자"), eq("fatalMoment"), eq(legacyParams), anyInt(), anyInt(), anyInt()))
                 .thenReturn(new SkillService.SkillResult(true, "ok", Map.of()));
 
@@ -61,7 +82,7 @@ class SkillApiControllerTest {
     void executeSkillDefaultsWhenNoParamsProvided() {
         SkillService skillService = mock(SkillService.class);
         SkillApiController controller = new SkillApiController(skillService);
-        when(skillService.executeSkill(eq("기사"), eq("strike"), eq(Map.of("stat", 10)), anyInt(), anyInt(), anyInt()))
+        when(skillService.executeSkill(eq("기사"), eq("strike"), eq(Map.of("stat", 10, "precision", 0)), anyInt(), anyInt(), anyInt()))
                 .thenReturn(new SkillService.SkillResult(true, "ok", Map.of()));
 
         SkillApiController.ExecuteRequest request = new SkillApiController.ExecuteRequest();
@@ -75,6 +96,6 @@ class SkillApiControllerTest {
 
         controller.executeSkill(request);
 
-        verify(skillService).executeSkill("기사", "strike", Map.of("stat", 10), 3, 20, 150);
+        verify(skillService).executeSkill("기사", "strike", Map.of("stat", 10, "precision", 0), 3, 20, 150);
     }
 }
