@@ -21,6 +21,12 @@ import main.Result
  * [연계] 정면 찌르기 (기술) : 대상에게 2D10의 피해를 입힙니다. (스태미나 1 소모)
  * [연계] 일섬창 (기술) : 대상에게 4D8의 피해를 입힙니다. (스태미나 3 소모)
  * [연계] 천뢰격 (기술) : 대상에게 5D12의 피해를 입힙니다. (스태미나 5 소모)
+ * 참월붕괴 (기술) : 대상에게 8D10의 피해를 입히고 [연계 : 월]을 획득합니다.
+ * 일광천벌 (기술) : 대상에게 7D8의 피해를 입히고 [연계 : 일]을 획득합니다.
+ * 참월절계천붕참 (기술) : [연계 : 월] 상태에서 대상에게 7D15의 피해를 입힙니다.
+ * 일광극천소멸참 (기술) : [연계 : 일] 상태에서 대상에게 8D13의 피해를 입힙니다.
+ * 소멸 강림 (스킬) : 극신화술참/참월절계천붕참/일광극천소멸참 사용 후 발동, [연계 : 멸]을 획득합니다.
+ * 일월신멸절대철참 (기술) : [연계 : 멸] 획득 다음 턴에만 사용 가능하며 대상에게 4D35의 피해를 입힙니다.
  *
  * 흐름 (스킬) : 전투 중 [연계] 5회 이상 성공 후 사용 가능. 다음 3턴 동안 스태미나를 소모하지 않습니다. 턴을 소모하지 않습니다. (마나 7 소모, 쿨타임 5턴)
  * 현란함 (스킬) : 전투 중 [연계] 5회 이상 성공 후 사용 가능. 데미지 증가: ([연계] 끊기기 전 지속 시간) × 50%. (마나 5 소모, 쿨타임 8턴)
@@ -246,6 +252,121 @@ class SpearMaster {
     ): main.Result {
         out.println("창술사 - [연계] 천뢰격 사용")
         return normalAttack(stat, agi, 5, 12, true, adaptation, 5, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, level, out)
+    }
+
+    fun moonCollapse(
+        stat: Int,
+        agi: Int,
+        precision: Int,
+        isSplendorActive: Boolean,
+        splendorTurns: Int,
+        isAccelerationActive: Boolean,
+        linkSuccessCount: Int,
+        level: Int,
+        out: java.io.PrintStream
+    ): main.Result {
+        out.println("창술사 - 참월붕괴 사용")
+        out.println("[연계 : 월] 획득")
+        return normalAttack(stat, agi, 8, 10, false, false, 0, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, level, out)
+    }
+
+    fun sunlightPunishment(
+        stat: Int,
+        agi: Int,
+        precision: Int,
+        isSplendorActive: Boolean,
+        splendorTurns: Int,
+        isAccelerationActive: Boolean,
+        linkSuccessCount: Int,
+        level: Int,
+        out: java.io.PrintStream
+    ): main.Result {
+        out.println("창술사 - 일광천벌 사용")
+        out.println("[연계 : 일] 획득")
+        return normalAttack(stat, agi, 7, 8, false, false, 0, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, level, out)
+    }
+
+    fun moonSeveringSkyCollapseSlash(
+        stat: Int,
+        agi: Int,
+        adaptation: Boolean,
+        hasMoonLink: Boolean,
+        precision: Int,
+        isSplendorActive: Boolean,
+        splendorTurns: Int,
+        isAccelerationActive: Boolean,
+        linkSuccessCount: Int,
+        level: Int,
+        out: java.io.PrintStream
+    ): main.Result {
+        out.println("창술사 - 참월절계천붕참 사용")
+        if (!hasMoonLink) {
+            out.println("참월절계천붕참 사용 불가: [연계 : 월]이 필요합니다.")
+            return main.Result(0, 0, false, 0, 0)
+        }
+        return normalAttack(stat, agi, 7, 15, true, adaptation, 0, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, level, out)
+    }
+
+    fun sunlightExtremeAnnihilationSlash(
+        stat: Int,
+        agi: Int,
+        adaptation: Boolean,
+        hasSunLink: Boolean,
+        precision: Int,
+        isSplendorActive: Boolean,
+        splendorTurns: Int,
+        isAccelerationActive: Boolean,
+        linkSuccessCount: Int,
+        level: Int,
+        out: java.io.PrintStream
+    ): main.Result {
+        out.println("창술사 - 일광극천소멸참 사용")
+        if (!hasSunLink) {
+            out.println("일광극천소멸참 사용 불가: [연계 : 일]이 필요합니다.")
+            return main.Result(0, 0, false, 0, 0)
+        }
+        return normalAttack(stat, agi, 8, 13, true, adaptation, 0, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, level, out)
+    }
+
+    fun descentOfAnnihilation(
+        usedGeukSinhwaSulCham: Boolean,
+        usedMoonSeveringSkyCollapseSlash: Boolean,
+        usedSunlightExtremeAnnihilationSlash: Boolean,
+        out: java.io.PrintStream
+    ): main.Result {
+        out.println("창술사 - 소멸 강림 사용")
+        if (!usedGeukSinhwaSulCham || !usedMoonSeveringSkyCollapseSlash || !usedSunlightExtremeAnnihilationSlash) {
+            out.println("소멸 강림 사용 불가: 극신화술참/참월절계천붕참/일광극천소멸참 사용 조건이 필요합니다.")
+            return main.Result(0, 0, false, 0, 0)
+        }
+        out.println("[연계 : 멸] 획득")
+        return main.Result(0, 0, true, 0, 0)
+    }
+
+    fun sunMoonDivineAnnihilationAbsoluteIronSlash(
+        stat: Int,
+        agi: Int,
+        adaptation: Boolean,
+        hasDestructionLink: Boolean,
+        nextTurnAfterDestructionLink: Boolean,
+        precision: Int,
+        isSplendorActive: Boolean,
+        splendorTurns: Int,
+        isAccelerationActive: Boolean,
+        linkSuccessCount: Int,
+        level: Int,
+        out: java.io.PrintStream
+    ): main.Result {
+        out.println("창술사 - 일월신멸절대철참 사용")
+        if (!hasDestructionLink) {
+            out.println("일월신멸절대철참 사용 불가: [연계 : 멸]이 필요합니다.")
+            return main.Result(0, 0, false, 0, 0)
+        }
+        if (!nextTurnAfterDestructionLink) {
+            out.println("일월신멸절대철참 사용 불가: [연계 : 멸] 획득 다음 턴에만 사용할 수 있습니다.")
+            return main.Result(0, 0, false, 0, 0)
+        }
+        return normalAttack(stat, agi, 4, 35, true, adaptation, 0, precision, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, level, out)
     }
 
     /**

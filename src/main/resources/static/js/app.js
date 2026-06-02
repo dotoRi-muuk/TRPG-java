@@ -602,12 +602,23 @@ async function calculateSpearman(skill) {
     const splendorTurns = parseInt(document.getElementById('spearman-splendorTurns').value) || 0;
     const isAccelerationActive = document.getElementById('spearman-isAccelerationActive').checked;
     const linkSuccessCount = parseInt(document.getElementById('spearman-linkSuccessCount').value) || 0;
+    const hasMoonLink = document.getElementById('spearman-hasMoonLink')?.checked || false;
+    const hasSunLink = document.getElementById('spearman-hasSunLink')?.checked || false;
+    const usedGeukSinhwaSulCham = document.getElementById('spearman-usedGeukSinhwaSulCham')?.checked || false;
+    const usedMoonSeveringSkyCollapseSlash = document.getElementById('spearman-usedMoonSeveringSkyCollapseSlash')?.checked || false;
+    const usedSunlightExtremeAnnihilationSlash = document.getElementById('spearman-usedSunlightExtremeAnnihilationSlash')?.checked || false;
+    const hasDestructionLink = document.getElementById('spearman-hasDestructionLink')?.checked || false;
+    const nextTurnAfterDestructionLink = document.getElementById('spearman-nextTurnAfterDestructionLink')?.checked || false;
     
     try {
         const response = await fetch(`${API_BASE}/spearman/${skill}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stat, isAdaptationActive, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, level })
+            body: JSON.stringify({
+                stat, isAdaptationActive, isSplendorActive, splendorTurns, isAccelerationActive, linkSuccessCount, level,
+                hasMoonLink, hasSunLink, usedGeukSinhwaSulCham, usedMoonSeveringSkyCollapseSlash,
+                usedSunlightExtremeAnnihilationSlash, hasDestructionLink, nextTurnAfterDestructionLink
+            })
         });
         
         const data = await response.json();
@@ -1186,7 +1197,13 @@ function getSkillName(job, skill) {
             'low-slash': '하단 베기',
             'combo-front-thrust': '[연계]정면 찌르기',
             'combo-flash-spear': '[연계]일섬창',
-            'combo-thunder-strike': '[연계]천뢰격'
+            'combo-thunder-strike': '[연계]천뢰격',
+            'moon-collapse': '참월붕괴',
+            'sunlight-punishment': '일광천벌',
+            'moon-sky-collapse-slash': '참월절계천붕참',
+            'sunlight-extreme-annihilation-slash': '일광극천소멸참',
+            'descent-of-annihilation': '소멸 강림',
+            'sun-moon-divine-annihilation-absolute-iron-slash': '일월신멸절대철참'
         },
         trickster: {
             'plain': '기본공격',

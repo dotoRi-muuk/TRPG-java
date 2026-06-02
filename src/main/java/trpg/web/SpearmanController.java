@@ -40,6 +40,13 @@ public class SpearmanController {
         public int linkSuccessCount;
         public int precision;
         public int level;
+        public boolean hasMoonLink;
+        public boolean hasSunLink;
+        public boolean usedGeukSinhwaSulCham;
+        public boolean usedMoonSeveringSkyCollapseSlash;
+        public boolean usedSunlightExtremeAnnihilationSlash;
+        public boolean hasDestructionLink;
+        public boolean nextTurnAfterDestructionLink;
     }
 
     private static Map<String, Object> buildResponse(Result result, ByteArrayOutputStream baos) {
@@ -164,6 +171,109 @@ public class SpearmanController {
         SpearMaster sm = new SpearMaster();
         Result result = sm.heavenlyThunderStrike(req.stat, req.agi, req.isAdaptationActive, req.precision,
                 req.isSplendorActive, req.splendorTurns, req.isAccelerationActive, req.linkSuccessCount, req.level, ps);
+        ps.flush();
+
+        return buildResponse(result, baos);
+    }
+
+    /**
+     * 참월붕괴 (8D10, 연계:월 획득)
+     * POST /api/spearman/moon-collapse
+     */
+    @PostMapping("/moon-collapse")
+    public Map<String, Object> moonCollapse(@RequestBody SpearmanRequest req) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        SpearMaster sm = new SpearMaster();
+        Result result = sm.moonCollapse(req.stat, req.agi, req.precision,
+                req.isSplendorActive, req.splendorTurns, req.isAccelerationActive, req.linkSuccessCount, req.level, ps);
+        ps.flush();
+
+        return buildResponse(result, baos);
+    }
+
+    /**
+     * 일광천벌 (7D8, 연계:일 획득)
+     * POST /api/spearman/sunlight-punishment
+     */
+    @PostMapping("/sunlight-punishment")
+    public Map<String, Object> sunlightPunishment(@RequestBody SpearmanRequest req) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        SpearMaster sm = new SpearMaster();
+        Result result = sm.sunlightPunishment(req.stat, req.agi, req.precision,
+                req.isSplendorActive, req.splendorTurns, req.isAccelerationActive, req.linkSuccessCount, req.level, ps);
+        ps.flush();
+
+        return buildResponse(result, baos);
+    }
+
+    /**
+     * 참월절계천붕참 ([연계:월] 필요, 7D15)
+     * POST /api/spearman/moon-sky-collapse-slash
+     */
+    @PostMapping("/moon-sky-collapse-slash")
+    public Map<String, Object> moonSkyCollapseSlash(@RequestBody SpearmanRequest req) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        SpearMaster sm = new SpearMaster();
+        Result result = sm.moonSeveringSkyCollapseSlash(req.stat, req.agi, req.isAdaptationActive, req.hasMoonLink, req.precision,
+                req.isSplendorActive, req.splendorTurns, req.isAccelerationActive, req.linkSuccessCount, req.level, ps);
+        ps.flush();
+
+        return buildResponse(result, baos);
+    }
+
+    /**
+     * 일광극천소멸참 ([연계:일] 필요, 8D13)
+     * POST /api/spearman/sunlight-extreme-annihilation-slash
+     */
+    @PostMapping("/sunlight-extreme-annihilation-slash")
+    public Map<String, Object> sunlightExtremeAnnihilationSlash(@RequestBody SpearmanRequest req) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        SpearMaster sm = new SpearMaster();
+        Result result = sm.sunlightExtremeAnnihilationSlash(req.stat, req.agi, req.isAdaptationActive, req.hasSunLink, req.precision,
+                req.isSplendorActive, req.splendorTurns, req.isAccelerationActive, req.linkSuccessCount, req.level, ps);
+        ps.flush();
+
+        return buildResponse(result, baos);
+    }
+
+    /**
+     * 소멸 강림 (조건 충족 시 [연계:멸] 획득)
+     * POST /api/spearman/descent-of-annihilation
+     */
+    @PostMapping("/descent-of-annihilation")
+    public Map<String, Object> descentOfAnnihilation(@RequestBody SpearmanRequest req) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        SpearMaster sm = new SpearMaster();
+        Result result = sm.descentOfAnnihilation(req.usedGeukSinhwaSulCham, req.usedMoonSeveringSkyCollapseSlash,
+                req.usedSunlightExtremeAnnihilationSlash, ps);
+        ps.flush();
+
+        return buildResponse(result, baos);
+    }
+
+    /**
+     * 일월신멸절대철참 ([연계:멸] 보유 + 획득 다음 턴, 4D35)
+     * POST /api/spearman/sun-moon-divine-annihilation-absolute-iron-slash
+     */
+    @PostMapping("/sun-moon-divine-annihilation-absolute-iron-slash")
+    public Map<String, Object> sunMoonDivineAnnihilationAbsoluteIronSlash(@RequestBody SpearmanRequest req) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos, true, StandardCharsets.UTF_8);
+
+        SpearMaster sm = new SpearMaster();
+        Result result = sm.sunMoonDivineAnnihilationAbsoluteIronSlash(req.stat, req.agi, req.isAdaptationActive, req.hasDestructionLink,
+                req.nextTurnAfterDestructionLink, req.precision, req.isSplendorActive, req.splendorTurns,
+                req.isAccelerationActive, req.linkSuccessCount, req.level, ps);
         ps.flush();
 
         return buildResponse(result, baos);
