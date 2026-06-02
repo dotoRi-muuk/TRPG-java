@@ -67,4 +67,21 @@ class SkillServiceTest {
             }
         }
     }
+
+    @Test
+    void spearmanSkillChooserIncludesNewLinkChainSkills() {
+        SkillService service = new SkillService();
+
+        List<SkillService.SkillInfo> skills = service.getSkills("창술사");
+        Set<String> methodNames = skills.stream()
+                .map(SkillService.SkillInfo::getMethodName)
+                .collect(Collectors.toSet());
+
+        assertTrue(methodNames.contains("moonCollapse"));
+        assertTrue(methodNames.contains("sunlightPunishment"));
+        assertTrue(methodNames.contains("moonSeveringSkyCollapseSlash"));
+        assertTrue(methodNames.contains("sunlightExtremeAnnihilationSlash"));
+        assertTrue(methodNames.contains("descentOfAnnihilation"));
+        assertTrue(methodNames.contains("sunMoonDivineAnnihilationAbsoluteIronSlash"));
+    }
 }

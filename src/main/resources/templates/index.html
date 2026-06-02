@@ -1019,6 +1019,48 @@
                                 가속 스킬 (연계 성공 횟수 / 2 힘/민첩 증가)
                             </label>
                         </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="spearman-hasMoonLink">
+                                [연계 : 월] 보유
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="spearman-hasSunLink">
+                                [연계 : 일] 보유
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="spearman-usedGeukSinhwaSulCham">
+                                극신화술참 사용 완료
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="spearman-usedMoonSeveringSkyCollapseSlash">
+                                참월절계천붕참 사용 완료
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="spearman-usedSunlightExtremeAnnihilationSlash">
+                                일광극천소멸참 사용 완료
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="spearman-hasDestructionLink">
+                                [연계 : 멸] 보유
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="spearman-nextTurnAfterDestructionLink">
+                                [연계 : 멸] 획득 다음 턴
+                            </label>
+                        </div>
                     </div>
                     <p class="note" style="font-size: 0.9em; color: #666;">※ 약점파악: 기본 기술 50%, [연계]기술 200%<br>※ 적응 + 약점파악: 200% × 400% = 800%<br>※ 현란함: 지속 턴 × 50% 데미지 증가<br>※ 가속: 연계 성공 횟수 / 2 만큼 힘/민첩 증가</p>
                     <div class="skill-buttons">
@@ -1027,12 +1069,18 @@
                         <button onclick="calculateSpearman('spin-thrust')" class="btn btn-skill">돌려 찌르기 (D8)</button>
                         <button onclick="calculateSpearman('spin-strike')" class="btn btn-skill">회전 타격 (D10, 연계)</button>
                         <button onclick="calculateSpearman('low-slash')" class="btn btn-skill">하단 베기 (D6, 연계)</button>
+                        <button onclick="calculateSpearman('moon-collapse')" class="btn btn-skill">참월붕괴 (8D10, [연계 : 월])</button>
+                        <button onclick="calculateSpearman('sunlight-punishment')" class="btn btn-skill">일광천벌 (7D8, [연계 : 일])</button>
                     </div>
                     <div class="skill-buttons">
                         <h4>[연계] 기술 (200%~800%)</h4>
                         <button onclick="calculateSpearman('combo-front-thrust')" class="btn btn-skill">[연계]정면 찌르기 (2D10)</button>
                         <button onclick="calculateSpearman('combo-flash-spear')" class="btn btn-skill">[연계]일섬창 (4D8)</button>
                         <button onclick="calculateSpearman('combo-thunder-strike')" class="btn btn-skill">[연계]천뢰격 (5D12)</button>
+                        <button onclick="calculateSpearman('moon-sky-collapse-slash')" class="btn btn-skill">참월절계천붕참 ([연계 : 월], 7D15)</button>
+                        <button onclick="calculateSpearman('sunlight-extreme-annihilation-slash')" class="btn btn-skill">일광극천소멸참 ([연계 : 일], 8D13)</button>
+                        <button onclick="calculateSpearman('descent-of-annihilation')" class="btn btn-skill">소멸 강림 ([연계 : 멸] 획득)</button>
+                        <button onclick="calculateSpearman('sun-moon-divine-annihilation-absolute-iron-slash')" class="btn btn-skill">일월신멸절대철참 ([연계 : 멸], 4D35)</button>
                     </div>
                 </div>
 

@@ -481,6 +481,12 @@ public class SkillService {
             case "frontalStab" -> "[연계] 정면 찌르기";
             case "flashSpear" -> "[연계] 일섬창";
             case "heavenlyThunderStrike" -> "[연계] 천뢰격";
+            case "moonCollapse" -> "참월붕괴";
+            case "sunlightPunishment" -> "일광천벌";
+            case "moonSeveringSkyCollapseSlash" -> "참월절계천붕참";
+            case "sunlightExtremeAnnihilationSlash" -> "일광극천소멸참";
+            case "descentOfAnnihilation" -> "소멸 강림";
+            case "sunMoonDivineAnnihilationAbsoluteIronSlash" -> "일월신멸절대철참";
             case "splendor" -> "현란함";
             case "acceleration" -> "가속";
             case "adaptation" -> "적응";
@@ -633,6 +639,13 @@ public class SkillService {
             case "splendorTurns" -> "현란함 지속 턴 수";
             case "isAccelerationActive" -> "가속 여부";
             case "turnsSustained" -> "지속 턴 수";
+            case "hasMoonLink" -> "[연계 : 월] 보유 여부";
+            case "hasSunLink" -> "[연계 : 일] 보유 여부";
+            case "usedGeukSinhwaSulCham" -> "극신화술참 사용 여부";
+            case "usedMoonSeveringSkyCollapseSlash" -> "참월절계천붕참 사용 여부";
+            case "usedSunlightExtremeAnnihilationSlash" -> "일광극천소멸참 사용 여부";
+            case "hasDestructionLink" -> "[연계 : 멸] 보유 여부";
+            case "nextTurnAfterDestructionLink" -> "[연계 : 멸] 획득 다음 턴 여부";
             case "totalCast" -> "총 영창 시간";
             case "remainingCast" -> "남은 영창 시간";
             case "scarCount" -> "검흔 수";
