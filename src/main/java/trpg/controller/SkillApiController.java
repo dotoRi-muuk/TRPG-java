@@ -65,6 +65,9 @@ public class SkillApiController {
         if (request.activationStat != null) {
             params.put("stat", request.activationStat);
         }
+        if (request.level != null) {
+            params.put("level", level);
+        }
         params.put("precision", externalPrecision);
         return skillService.executeSkill(request.subclass, request.skill, params,
                 level, externalDamageBonus, externalFinalDamageMult);

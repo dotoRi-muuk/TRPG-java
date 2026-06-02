@@ -61,6 +61,8 @@ class SkillServiceTest {
                             () -> "stat should be configured globally, but was exposed in " + subclass + "." + skill.getMethodName());
                     assertFalse(params.contains("precision"),
                             () -> "precision should be configured globally, but was exposed in " + subclass + "." + skill.getMethodName());
+                    assertFalse(params.contains("level"),
+                            () -> "level should be configured globally, but was exposed in " + subclass + "." + skill.getMethodName());
                 }
             }
         }

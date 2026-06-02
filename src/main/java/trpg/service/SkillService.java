@@ -169,6 +169,7 @@ public class SkillService {
                     if (param.getType() == PrintStream.class) continue;
                     if ("stat".equals(param.getName())) continue;
                     if ("precision".equals(param.getName())) continue;
+                    if ("level".equals(param.getName())) continue;
                     
                     ParameterInfo paramInfo = new ParameterInfo();
                     paramInfo.name = param.getName();

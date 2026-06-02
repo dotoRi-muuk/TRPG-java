@@ -82,7 +82,7 @@ class SkillApiControllerTest {
     void executeSkillDefaultsWhenNoParamsProvided() {
         SkillService skillService = mock(SkillService.class);
         SkillApiController controller = new SkillApiController(skillService);
-        when(skillService.executeSkill(eq("기사"), eq("strike"), eq(Map.of("stat", 10, "precision", 0)), anyInt(), anyInt(), anyInt()))
+        when(skillService.executeSkill(eq("기사"), eq("strike"), eq(Map.of("stat", 10, "level", 3, "precision", 0)), anyInt(), anyInt(), anyInt()))
                 .thenReturn(new SkillService.SkillResult(true, "ok", Map.of()));
 
         SkillApiController.ExecuteRequest request = new SkillApiController.ExecuteRequest();
@@ -96,6 +96,6 @@ class SkillApiControllerTest {
 
         controller.executeSkill(request);
 
-        verify(skillService).executeSkill("기사", "strike", Map.of("stat", 10, "precision", 0), 3, 20, 150);
+        verify(skillService).executeSkill("기사", "strike", Map.of("stat", 10, "level", 3, "precision", 0), 3, 20, 150);
     }
 }
