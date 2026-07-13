@@ -46,9 +46,9 @@ public class Summoner {
     private static final Random RANDOM = new Random();
 
     /** 소환수 행동 시 기본 판정 스탯 */
-    private static final int DEFAULT_MINION_STAT = 10;
+    private static final int DEFAULT_MINION_STAT = 20;
     /** 소환수 행동 시 기본 정밀 스탯 */
-    private static final int DEFAULT_MINION_PRECISION = 0;
+    private static final int DEFAULT_MINION_PRECISION = 15;
 
     // ─────────────────────────────────────────────────────────────────────────
     // 기본 공격 / 기술
