@@ -303,22 +303,22 @@
             </div>
         </div>
         
-        <!-- Step 3: Skill Selection -->
+        <!-- Step 3: Parameters -->
+        <div class="section params-section" id="paramsSection">
+            <h2><span class="step-number">3</span> 스킬 인자 입력</h2>
+            <div class="param-grid" id="paramsContainer">
+                <!-- Parameters will be dynamically added here -->
+            </div>
+        </div>
+
+        <!-- Step 4: Skill Selection -->
         <div class="section">
-            <h2><span class="step-number">3</span> 스킬 선택</h2>
+            <h2><span class="step-number">4</span> 스킬 선택</h2>
             <div class="form-group">
                 <label for="skill">스킬을 선택하세요</label>
                 <select id="skill" onchange="loadParameters()" disabled>
                     <option value="">-- 먼저 직업을 선택하세요 --</option>
                 </select>
-            </div>
-        </div>
-        
-        <!-- Step 4: Parameters -->
-        <div class="section params-section" id="paramsSection">
-            <h2><span class="step-number">4</span> 스킬 인자 입력</h2>
-            <div class="param-grid" id="paramsContainer">
-                <!-- Parameters will be dynamically added here -->
             </div>
         </div>
 
@@ -370,6 +370,7 @@
     <script>
         // Store current skills data
         let currentSkills = [];
+        let allParameters = [];
         let currentParameters = [];
 
         // Load primary classes on page load
@@ -401,12 +402,17 @@
             const subclassSelect = document.getElementById('subclass');
             const skillSelect = document.getElementById('skill');
             const paramsSection = document.getElementById('paramsSection');
+            const paramsContainer = document.getElementById('paramsContainer');
             const executeBtn = document.getElementById('executeBtn');
             
             // Reset downstream selections
             subclassSelect.innerHTML = '<option value="">-- 직업 선택 --</option>';
             skillSelect.innerHTML = '<option value="">-- 먼저 직업을 선택하세요 --</option>';
             skillSelect.disabled = true;
+            currentSkills = [];
+            allParameters = [];
+            currentParameters = [];
+            paramsContainer.innerHTML = '';
             paramsSection.classList.remove('show');
             executeBtn.disabled = true;
             document.getElementById('resultBox').classList.remove('show');
@@ -438,10 +444,15 @@
             const subclass = document.getElementById('subclass').value;
             const skillSelect = document.getElementById('skill');
             const paramsSection = document.getElementById('paramsSection');
+            const paramsContainer = document.getElementById('paramsContainer');
             const executeBtn = document.getElementById('executeBtn');
             
             // Reset downstream selections
             skillSelect.innerHTML = '<option value="">-- 스킬 선택 --</option>';
+            currentSkills = [];
+            allParameters = [];
+            currentParameters = [];
+            paramsContainer.innerHTML = '';
             paramsSection.classList.remove('show');
             executeBtn.disabled = true;
             document.getElementById('resultBox').classList.remove('show');
@@ -463,6 +474,8 @@
                         option.textContent = skill.displayName;
                         skillSelect.appendChild(option);
                     });
+                    allParameters = collectAllParameters(skills);
+                    renderAllParameters(subclass, allParameters);
                 })
                 .catch(error => {
                     console.error('Error loading skills:', error);
@@ -470,108 +483,100 @@
                 });
         }
 
-        function loadParameters() {
-            const skillName = document.getElementById('skill').value;
-            const subclass = document.getElementById('subclass').value;
+        function collectAllParameters(skills) {
+            const parameterMap = new Map();
+            skills.forEach(skill => {
+                (skill.parameters || []).forEach(param => {
+                    if (!parameterMap.has(param.name)) {
+                        parameterMap.set(param.name, param);
+                    }
+                });
+            });
+            return Array.from(parameterMap.values());
+        }
+
+        function renderAllParameters(subclass, parameters) {
             const paramsSection = document.getElementById('paramsSection');
             const paramsContainer = document.getElementById('paramsContainer');
+
+            paramsContainer.innerHTML = '';
+
+            if (!parameters.length) {
+                paramsSection.classList.remove('show');
+                return;
+            }
+
+            parameters.forEach(param => {
+                const item = document.createElement('div');
+                item.className = 'param-item';
+
+                if (param.type === 'boolean') {
+                    item.innerHTML = `
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="param_${param.name}" name="${param.name}">
+                            <label for="param_${param.name}">${param.displayName}</label>
+                        </div>
+                    `;
+                } else if (param.type === 'int') {
+                    if (subclass === '암살자' && param.name === 'turnNumber') {
+                        item.innerHTML = `
+                            <label for="param_${param.name}">${param.displayName}</label>
+                            <select id="param_${param.name}" name="${param.name}">
+                                <option value="1">1 - 시간 사이를 꿰뚫어</option>
+                                <option value="2">2 - 뚫린 찰나를 뛰어</option>
+                                <option value="3">3 - 처음부터 아무것도 있지 않았던것 처럼</option>
+                                <option value="4">4 - 죽음으로 매꾸리라</option>
+                            </select>
+                        `;
+                    } else {
+                        item.innerHTML = `
+                            <label for="param_${param.name}">${param.displayName}</label>
+                            <input type="number" id="param_${param.name}" name="${param.name}" value="10">
+                        `;
+                    }
+                } else if (param.type === 'double') {
+                    item.innerHTML = `
+                        <label for="param_${param.name}">${param.displayName}</label>
+                        <input type="number" step="0.1" id="param_${param.name}" name="${param.name}" value="0.5">
+                    `;
+                } else if (param.type.startsWith('enum:')) {
+                    const enumName = param.type.split(':')[1];
+                    let options = getEnumOptions(enumName);
+                    item.innerHTML = `
+                        <label for="param_${param.name}">${param.displayName}</label>
+                        <select id="param_${param.name}" name="${param.name}">
+                            ${options.map(o => `<option value="${o.value}">${o.label}</option>`).join('')}
+                        </select>
+                    `;
+                } else {
+                    item.innerHTML = `
+                        <label for="param_${param.name}">${param.displayName}</label>
+                        <input type="text" id="param_${param.name}" name="${param.name}">
+                    `;
+                }
+
+                paramsContainer.appendChild(item);
+            });
+
+            paramsSection.classList.add('show');
+        }
+
+        function loadParameters() {
+            const skillName = document.getElementById('skill').value;
             const executeBtn = document.getElementById('executeBtn');
             
             document.getElementById('resultBox').classList.remove('show');
 
             if (!skillName) {
-                paramsSection.classList.remove('show');
+                currentParameters = [];
                 executeBtn.disabled = true;
                 return;
             }
 
             // Find the selected skill
             const skill = currentSkills.find(s => s.methodName === skillName);
-            if (!skill) return;
-
-            currentParameters = skill.parameters;
-            paramsContainer.innerHTML = '';
-
-            if (skill.parameters.length === 0) {
-                paramsSection.classList.remove('show');
-            } else {
-                skill.parameters.forEach(param => {
-                    const item = document.createElement('div');
-                    item.className = 'param-item';
-                    
-                    if (param.type === 'boolean') {
-                        item.innerHTML = `
-                            <div class="checkbox-wrapper">
-                                <input type="checkbox" id="param_${param.name}" name="${param.name}">
-                                <label for="param_${param.name}">${param.displayName}</label>
-                            </div>
-                        `;
-                    } else if (param.type === 'int') {
-                        if (subclass === '암살자' && skillName === 'fatalMoment' && param.name === 'turnNumber') {
-                            item.innerHTML = `
-                                <label for="param_${param.name}">${param.displayName}</label>
-                                <select id="param_${param.name}" name="${param.name}">
-                                    <option value="1">1 - 시간 사이를 꿰뚫어</option>
-                                    <option value="2">2 - 뚫린 찰나를 뛰어</option>
-                                    <option value="3">3 - 처음부터 아무것도 있지 않았던것 처럼</option>
-                                    <option value="4">4 - 죽음으로 매꾸리라</option>
-                                </select>
-                            `;
-                        } else {
-                            item.innerHTML = `
-                                <label for="param_${param.name}">${param.displayName}</label>
-                                <input type="number" id="param_${param.name}" name="${param.name}" value="10">
-                            `;
-                        }
-                    } else if (param.type === 'double') {
-                        item.innerHTML = `
-                            <label for="param_${param.name}">${param.displayName}</label>
-                            <input type="number" step="0.1" id="param_${param.name}" name="${param.name}" value="0.5">
-                        `;
-                    } else if (param.type.startsWith('enum:')) {
-                        const enumName = param.type.split(':')[1];
-                        let options = getEnumOptions(enumName);
-                        item.innerHTML = `
-                            <label for="param_${param.name}">${param.displayName}</label>
-                            <select id="param_${param.name}" name="${param.name}">
-                                ${options.map(o => `<option value="${o.value}">${o.label}</option>`).join('')}
-                            </select>
-                        `;
-                    } else {
-                        item.innerHTML = `
-                            <label for="param_${param.name}">${param.displayName}</label>
-                            <input type="text" id="param_${param.name}" name="${param.name}">
-                        `;
-                    }
-
-                    if (subclass === '암살자' && skillName === 'fatalMoment' && param.name === 'additionalDamage') {
-                        item.id = 'assassin-additionalDamage-item';
-                    }
-                    
-                    paramsContainer.appendChild(item);
-                });
-                paramsSection.classList.add('show');
-                setupAssassinFatalMomentSlot(subclass, skillName);
-            }
-            
-            executeBtn.disabled = false;
-        }
-
-        function setupAssassinFatalMomentSlot(subclass, skillName) {
-            if (subclass !== '암살자' || skillName !== 'fatalMoment') return;
-            const turnSelect = document.getElementById('param_turnNumber');
-            const additionalDamageItem = document.getElementById('assassin-additionalDamage-item');
-            const additionalDamageInput = document.getElementById('param_additionalDamage');
-            if (!turnSelect || !additionalDamageItem || !additionalDamageInput) return;
-
-            const toggleAdditionalDamage = () => {
-                const show = turnSelect.value === '4';
-                additionalDamageItem.style.display = show ? '' : 'none';
-                if (!show) additionalDamageInput.value = '0';
-            };
-
-            turnSelect.addEventListener('change', toggleAdditionalDamage);
-            toggleAdditionalDamage();
+            currentParameters = skill ? (skill.parameters || []) : [];
+            executeBtn.disabled = !skill;
         }
 
         function getEnumOptions(enumName) {
